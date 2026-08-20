@@ -9,7 +9,14 @@ require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/authz.php';
 require __DIR__ . '/includes/settings.php';
 
+// Instalasi dianggap selesai bila file config.php sudah dibuat wizard (ada penanda) — lihat install.php
 $page = preg_replace('/[^a-z0-9_]/i', '', $_GET['page'] ?? 'dashboard');
+
+// Wizard instalasi bisa diakses tanpa login
+if ($page === 'install') {
+    require __DIR__ . '/pages/install.php';
+    return;
+}
 
 $routes = [
     'login' => 'login.php',
@@ -29,6 +36,8 @@ $routes = [
     'laporan' => 'laporan.php',
     'users' => 'users.php',
     'pengaturan' => 'pengaturan.php',
+    'akun' => 'akun.php',
+    'admin' => 'admin.php',
 ];
 
 if (!isset($routes[$page])) {

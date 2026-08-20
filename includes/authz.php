@@ -19,6 +19,8 @@ const PAGE_PERMISSIONS = [
     'laporan' => 'kunjungan_ralan',
     'users' => 'pegawai_user',
     'pengaturan' => 'pegawai_admin',
+    'akun' => null,   // akun saya: semua pengguna login
+    'admin' => null,  // panel admin: dicek manual (hanya role admin) di pages/admin.php
 ];
 
 // Katalog izin yang dikelola di modul Manajemen Pengguna

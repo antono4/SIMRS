@@ -33,3 +33,13 @@ function setting_update(array $data): void
         );
     }
 }
+
+// Catat login pengguna ke tabel tracker (riwayat login)
+function tracker_catat_login(string $nip): void
+{
+    try {
+        db_exec('INSERT IGNORE INTO tracker (nip, tgl_login, jam_login) VALUES (?, CURDATE(), CURTIME())', [$nip]);
+    } catch (Throwable) {
+        // tracker bukan fitur kritis — abaikan bila gagal
+    }
+}

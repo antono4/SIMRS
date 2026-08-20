@@ -14,6 +14,7 @@ function auth_attempt(string $username, string $password): bool
     );
     if ($row !== null) {
         $_SESSION['auth'] = ['username' => $username, 'role' => 'admin'];
+        tracker_catat_login($username);
         return true;
     }
 
@@ -32,6 +33,7 @@ function auth_attempt(string $username, string $password): bool
             }
         }
         $_SESSION['auth'] = ['username' => $username, 'role' => 'user', 'permissions' => $permissions];
+        tracker_catat_login($username);
         return true;
     }
     return false;

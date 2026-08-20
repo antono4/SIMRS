@@ -20,9 +20,15 @@ $menu = [
     ['page' => 'laporan', 'label' => 'Laporan Kunjungan', 'icon' => 'bi-bar-chart'],
     ['page' => 'users', 'label' => 'Pengguna', 'icon' => 'bi-person-gear'],
     ['page' => 'pengaturan', 'label' => 'Pengaturan', 'icon' => 'bi-gear'],
+    ['page' => 'admin', 'label' => 'Administrator', 'icon' => 'bi-shield-lock', 'admin_only' => true],
+    ['page' => 'akun', 'label' => 'Akun Saya', 'icon' => 'bi-person-circle'],
 ];
 // Saring menu sesuai hak akses (user level)
-$menu = array_values(array_filter(array_map(function (array $item): ?array {
+$isAdmin = (auth_user()['role'] ?? '') === 'admin';
+$menu = array_values(array_filter(array_map(function (array $item) use ($isAdmin): ?array {
+    if (!empty($item['admin_only']) && !$isAdmin) {
+        return null;
+    }
     if (isset($item['children'])) {
         $item['children'] = array_values(array_filter($item['children'], fn($c) => auth_can($c['page'])));
         return $item['children'] ? $item : null;
@@ -84,8 +90,9 @@ $namaRs = setting_nama_rs();
               <i class="bi bi-person-circle" style="font-size:3rem"></i>
               <p><?= e($user['username'] ?? '') ?><small><?= e(auth_level_label()) ?></small></p>
             </li>
-            <li class="user-footer">
-              <a href="<?= e(url('logout')) ?>" class="btn btn-default btn-flat float-end">Keluar</a>
+            <li class="user-footer d-flex justify-content-between">
+              <a href="<?= e(url('akun')) ?>" class="btn btn-default btn-flat">Akun Saya</a>
+              <a href="<?= e(url('logout')) ?>" class="btn btn-default btn-flat">Keluar</a>
             </li>
           </ul>
         </li>
@@ -141,13 +148,17 @@ $namaRs = setting_nama_rs();
   <main class="app-main">
     <div class="app-content-header">
       <div class="container-fluid">
-        <div class="row">
-          <div class="col-sm-6"><h3 class="mb-0"><?= e($pageTitle ?? '') ?></h3></div>
+        <div class="row align-items-center">
           <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-end">
-              <li class="breadcrumb-item"><a href="<?= e(url('dashboard')) ?>">Beranda</a></li>
-              <li class="breadcrumb-item active" aria-current="page"><?= e($pageTitle ?? '') ?></li>
-            </ol>
+            <h3 class="mb-0 fw-bold"><?= e($pageTitle ?? '') ?></h3>
+          </div>
+          <div class="col-sm-6">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb float-sm-end mb-0 bg-body px-3 py-2 rounded-pill shadow-sm">
+                <li class="breadcrumb-item"><a href="<?= e(url('dashboard')) ?>"><i class="bi bi-house-door me-1"></i>Beranda</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><?= e($pageTitle ?? '') ?></li>
+              </ol>
+            </nav>
           </div>
         </div>
       </div>
