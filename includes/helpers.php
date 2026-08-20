@@ -1,5 +1,7 @@
 <?php
-// Fungsi bantu umum
+/**
+ * Fungsi bantu umum: escaping, URL, redirect, flash, tanggal, umur, badge, paginasi.
+ */
 declare(strict_types=1);
 
 function e(?string $value): string
@@ -14,7 +16,6 @@ function e(?string $value): string
             $t = @iconv('ISO-8859-1', 'UTF-8//IGNORE', $s);
             $s = $t !== false ? $t : $s;
         } else {
-            // Fallback manual: peta byte latin1 → UTF-8 (hanya untuk byte >= 0x80)
             $s = preg_replace_callback('/[\x80-\xFF]/', fn($m) => chr(0xC0 | (ord($m[0]) >> 6)) . chr(0x80 | (ord($m[0]) & 0x3F)), $s) ?? $s;
         }
     }
@@ -27,7 +28,6 @@ function url(string $page, array $params = []): string
     return BASE_URL . 'index.php?' . http_build_query($params);
 }
 
-// Path aset (CSS/JS) relatif terhadap base path aplikasi
 function asset(string $path): string
 {
     return BASE_URL . 'assets/' . ltrim($path, '/');
@@ -72,15 +72,14 @@ function umur_dari(?string $tglLahir): array
     }
     $lahir = new DateTime($tglLahir);
     $now = new DateTime('today');
-    $th = (int)$lahir->diff($now)->y;
-    if ($th > 0) {
-        return [$th, 'Th'];
+    $diff = $lahir->diff($now);
+    if ((int)$diff->y > 0) {
+        return [(int)$diff->y, 'Th'];
     }
-    $bl = (int)$lahir->diff($now)->m;
-    if ($bl > 0) {
-        return [$bl, 'Bl'];
+    if ((int)$diff->m > 0) {
+        return [(int)$diff->m, 'Bl'];
     }
-    return [max(1, (int)$lahir->diff($now)->days), 'Hr'];
+    return [max(1, (int)$diff->days), 'Hr'];
 }
 
 function badge_status(string $status): string

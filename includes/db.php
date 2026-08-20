@@ -1,8 +1,10 @@
 <?php
-// Koneksi database MySQL (PDO) ke skema "sik" milik SIMRS
+/**
+ * Lapisan akses database (PDO) ke skema MySQL aplikasi.
+ * db() mengembalikan koneksi lazily dengan fallback host/port (variasi XAMPP).
+ */
 declare(strict_types=1);
 
-// Daftar kandidat host/port yang dicoba berurutan (XAMPP: localhost socket atau 127.0.0.1 TCP)
 function db_kandidat_host(): array
 {
     $list = [[DB_HOST, DB_PORT]];
@@ -11,7 +13,6 @@ function db_kandidat_host(): array
     } elseif (DB_HOST === '127.0.0.1') {
         $list[] = ['localhost', DB_PORT];
     }
-    // port alternatif umum di XAMPP bawaan
     $list[] = [DB_HOST, DB_PORT === '3306' ? '3307' : '3306'];
     return $list;
 }
@@ -34,7 +35,7 @@ function db_connect(bool $tanpaDb): PDO
     throw $last ?? new PDOException('Tidak dapat terhubung ke server MySQL.');
 }
 
-function db(?bool $tanpaDb = false): PDO
+function db(bool $tanpaDb = false): PDO
 {
     static $pdo = null;
     static $pdoTanpaDb = null;

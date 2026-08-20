@@ -1,5 +1,7 @@
 <?php
-// Komponen bersama: informasi kunjungan untuk modul klinis (tindakan, diagnosa, resep, kasir)
+/**
+ * Komponen bersama: informasi kunjungan untuk modul klinis (tindakan, diagnosa, resep, kasir).
+ */
 declare(strict_types=1);
 
 function kunjungan_load(string $noRawat): ?array

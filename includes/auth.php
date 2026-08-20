@@ -1,5 +1,8 @@
 <?php
-// Autentikasi kompatibel skema bawaan: tabel admin/user dienkripsi AES dengan kunci 'nur'
+/**
+ * Autentikasi: tabel admin/user terenkripsi AES dengan kunci AES_KEY.
+ * Login tercatat otomatis ke tabel tracker.
+ */
 declare(strict_types=1);
 
 function auth_attempt(string $username, string $password): bool

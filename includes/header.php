@@ -1,5 +1,8 @@
 <?php
-// Layout AdminLTE 4: bagian atas (head, navbar, sidebar)
+/**
+ * Layout AdminLTE 4: head, navbar (tema siang/malam + level user), sidebar.
+ * Variabel yang dipakai: $pageTitle, $currentPage, $pageScripts (di footer).
+ */
 declare(strict_types=1);
 
 $menu = [

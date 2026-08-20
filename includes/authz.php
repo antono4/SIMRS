@@ -1,5 +1,7 @@
 <?php
-// Otorisasi / user level — memetakan halaman aplikasi ke kolom izin tabel `user`
+/**
+ * Otorisasi / user level — memetakan halaman aplikasi ke kolom izin tabel user.
+ */
 declare(strict_types=1);
 
 // Halaman => kolom izin pada tabel user (null = bebas untuk semua yang login)

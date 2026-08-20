@@ -143,7 +143,7 @@ require_once __DIR__ . '/../includes/header.php';
         <p class="mb-1"><i class="bi bi-person-walking me-2"></i>Rawat Jalan: <strong><?= $ralanHariIni ?></strong></p>
         <p class="mb-1"><i class="bi bi-hospital me-2"></i>Rawat Inap: <strong><?= $ranapHariIni ?></strong></p>
         <hr />
-        <p class="mb-0 small">Database: <code>sik</code> (<?= number_format((int)db_val("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='sik'")) ?> tabel, kompatibel SIMRS)</p>
+        <p class="mb-0 small">Database: <code>sik</code> (<?= number_format((int)db_val("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='sik'")) ?> tabel inti)</p>
       </div>
     </div>
   </div>

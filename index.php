@@ -1,5 +1,7 @@
 <?php
-// Front controller SIMRS Web
+/**
+ * Front controller SIMRS Web — routing, autentikasi, otorisasi.
+ */
 declare(strict_types=1);
 
 require_once __DIR__ . '/config.php';
@@ -9,16 +11,15 @@ require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/authz.php';
 require_once __DIR__ . '/includes/settings.php';
 
-// Instalasi dianggap selesai bila file config.php sudah dibuat wizard (ada penanda) — lihat install.php
 $page = preg_replace('/[^a-z0-9_]/i', '', $_GET['page'] ?? 'dashboard');
 
 // Wizard instalasi & diagnostik bisa diakses tanpa login
 if ($page === 'install') {
-    require __DIR__ . '/pages/install.php';
+    require_once __DIR__ . '/pages/install.php';
     return;
 }
 if ($page === 'diagnostik') {
-    require __DIR__ . '/pages/diagnostik.php';
+    require_once __DIR__ . '/pages/diagnostik.php';
     return;
 }
 
@@ -64,7 +65,7 @@ if (!in_array($page, $publicPages, true)) {
 
 $currentPage = $page;
 try {
-    require __DIR__ . '/pages/' . $routes[$page];
+    require_once __DIR__ . '/pages/' . $routes[$page];
 } catch (Throwable $e) {
     if (PHP_SAPI !== 'cli' && !headers_sent()) {
         flash_set('danger', 'Terjadi kesalahan: ' . $e->getMessage());

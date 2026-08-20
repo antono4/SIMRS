@@ -1,5 +1,7 @@
 <?php
-// Pengaturan instansi — tabel setting aplikasi (nama_instansi, alamat, dll)
+/**
+ * Pengaturan instansi (tabel setting) + pencatatan login (tabel tracker).
+ */
 declare(strict_types=1);
 
 function setting_rs(): array
