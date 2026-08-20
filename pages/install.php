@@ -112,7 +112,44 @@ function import_sql_file(PDO $pdo, string $file): int
 }
 
 $importLog = '';
-if ($step >= 3 && ($_GET['aksi'] ?? '') === 'impor') {
+$aksi = $_GET['aksi'] ?? '';
+
+// Perbaiki hanya tabel user: ambil blok CREATE TABLE user + INSERT-nya dari dump
+if ($step >= 3 && $aksi === 'user') {
+    $sqlFile = __DIR__ . '/../database/sik.sql';
+    if (!is_file($sqlFile)) {
+        $importLog = 'Berkas database/sik.sql tidak ditemukan.';
+    } else {
+        try {
+            $pdo = db(true);
+            $pdo->exec("USE `" . DB_NAME . "`");
+            $isi = (string)file_get_contents($sqlFile);
+            $buat = [];
+            $sisip = [];
+            // CREATE TABLE `user` (pakai IF NOT EXISTS agar aman diulang)
+            if (preg_match('/CREATE TABLE `user` \((.*?)\) ENGINE[^;]*;/s', $isi, $m)) {
+                $buat[] = 'CREATE TABLE IF NOT EXISTS `user` (' . $m[1] . ') ENGINE=MyISAM DEFAULT CHARSET=latin1';
+            }
+            // INSERT INTO `user` ...
+            if (preg_match_all('/INSERT INTO `user` VALUES (.+?);\n/s', $isi, $mm)) {
+                foreach ($mm[0] as $q) {
+                    $sisip[] = rtrim($q, ";\n");
+                }
+            }
+            $jml = 0;
+            foreach ($buat as $q) { $pdo->exec($q); $jml++; }
+            $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
+            foreach ($sisip as $q) {
+                try { $pdo->exec($q); $jml++; } catch (Throwable) { /* abaikan duplikat */ }
+            }
+            $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
+            $baris = (int)db_val('SELECT COUNT(*) FROM `user`');
+            $importLog = "Tabel user diperbaiki ($jml pernyataan). Jumlah pengguna: <strong>$baris</strong>.";
+        } catch (Throwable $e) {
+            $importLog = 'Gagal memperbaiki tabel user: ' . $e->getMessage();
+        }
+    }
+} elseif ($step >= 3 && $aksi === 'impor') {
     $sqlFile = __DIR__ . '/../database/sik.sql';
     if (!is_file($sqlFile)) {
         $importLog = "Berkas database/sik.sql tidak ditemukan.";
@@ -126,7 +163,17 @@ if ($step >= 3 && ($_GET['aksi'] ?? '') === 'impor') {
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ?");
             $stmt->execute([DB_NAME]);
             $jumlahTabel = (int)$stmt->fetchColumn();
-            $importLog = "Impor berhasil ($pernyataan pernyataan). Jumlah tabel: $jumlahTabel.";
+            // Verifikasi tabel kritis — bila kurang, impor kemungkinan gagal di tengah
+            $kritis = ['user', 'admin', 'pasien', 'dokter', 'poliklinik', 'setting'];
+            $kurang = [];
+            foreach ($kritis as $t) {
+                if ((int)db_val("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ? AND table_name = ?", [DB_NAME, $t]) === 0) {
+                    $kurang[] = $t;
+                }
+            }
+            $importLog = $kurang
+                ? "Impor selesai ($pernyataan pernyataan, $jumlahTabel tabel) tetapi tabel kritis berikut BELUM ada: <strong>" . implode(', ', $kurang) . "</strong>. Silakan klik Impor Database lagi untuk melanjutkan."
+                : "Impor berhasil ($pernyataan pernyataan). Jumlah tabel: $jumlahTabel.";
         } catch (Throwable $e) {
             $importLog = 'Impor gagal: ' . $e->getMessage();
         }
@@ -279,11 +326,12 @@ $settingSekarang = $dbOk ? (setting_rs() ?? []) : [];
               <div class="alert alert-info"><i class="bi bi-info-circle me-1"></i>Database <code><?= e(DB_NAME) ?></code> sudah berisi <strong><?= number_format($jumlahTabel) ?></strong> tabel. Anda dapat melewati langkah ini, atau mengimpor ulang untuk memulai dari data awal.</div>
             <?php endif; ?>
             <?php if ($importLog !== ''): ?>
-              <div class="alert <?= str_starts_with($importLog, 'Impor berhasil') ? 'alert-success' : 'alert-danger' ?> py-2"><?= e($importLog) ?></div>
+              <div class="alert <?= str_starts_with($importLog, 'Impor berhasil') ? 'alert-success' : 'alert-warning' ?> py-2"><?= $importLog /* aman: dibangun dari data terkontrol */ ?></div>
             <?php endif; ?>
             <p class="text-body-secondary">Berkas yang diimpor: <code>database/sik.sql</code> (skema + data contoh, 1.182 tabel).</p>
             <div class="d-flex gap-2 flex-wrap">
               <a href="index.php?page=install&step=3&aksi=impor" class="btn btn-warning" onclick="return confirm('Impor database/sik.sql? Data yang ada akan ditimpa.')"><i class="bi bi-database-down me-1"></i>Impor Database</a>
+              <a href="index.php?page=install&step=3&aksi=user" class="btn btn-outline-warning" onclick="return confirm('Buat ulang tabel user dari dump?')"><i class="bi bi-person-gear me-1"></i>Perbaiki Tabel User</a>
               <form method="post" class="d-inline"><input type="hidden" name="do" value="import" /><button class="btn btn-primary"><i class="bi bi-arrow-right me-1"></i>Lanjut</button></form>
               <a href="index.php?page=install&step=2" class="btn btn-outline-secondary">Kembali</a>
             </div>
