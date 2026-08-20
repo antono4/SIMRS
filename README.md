@@ -11,6 +11,9 @@ Aplikasi web menjadi **satu aplikasi web** berbasis **PHP murni**, **UI AdminLTE
 | Manajemen Pengguna | CRUD pengguna terenkripsi AES + pengaturan hak akses per modul |
 | Pengaturan Instansi | Edit nama RS, alamat, kabupaten, propinsi, kontak, email (tabel `setting`); nama RS tampil di sidebar, judul, login, dan footer |
 | Skin Siang/Malam | Tombol di navbar & halaman login; default siang; pilihan tersimpan di `localStorage` (`sk-theme`) dan diterapkan sebelum render (tanpa kedip) |
+| Wizard Instalasi | Setup 5 langkah di `index.php?page=install` (tanpa login): cek PHP/PDO, uji koneksi DB, impor `database/sik.sql`, akun admin + identitas RS, selesai |
+| Modul User (Akun Saya) | Kotak masuk (kunjungan hari ini, pasien sedang dirawat, ringkasan belum bayar) + ganti kata sandi dengan verifikasi sandi lama; tercatat di tabel `tracker` |
+| Modul Admin | Panel khusus superuser: info database (ukuran, tabel terbesar), riwayat login (`tracker`), audit query (`trackersql`), kelola akun superuser (tambah/hapus admin) |
 | Dashboard | Statistik pasien, kunjungan, dokter, poli + grafik Chart.js |
 | Master Pasien | CRUD lengkap, pencarian, paginasi, No. RM otomatis, umur otomatis |
 | Master Dokter | CRUD + relasi spesialis |
