@@ -12,6 +12,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($do === 'cek') {
         $step = 2;
+    } elseif ($do === 'simpan_config') {
+        // Tulis kredensial DB baru ke config.php (wizard instalasi)
+        $host = trim($_POST['db_host'] ?? '127.0.0.1');
+        $user = trim($_POST['db_user'] ?? 'root');
+        $pass = (string)($_POST['db_pass'] ?? '');
+        $name = trim($_POST['db_name'] ?? 'sik');
+        $cfg = file_get_contents(__DIR__ . '/../config.php');
+        $cfg = preg_replace("/define\('DB_HOST', '[^']*'\);/", "define('DB_HOST', '" . addslashes($host) . "');", (string)$cfg);
+        $cfg = preg_replace("/define\('DB_USER', '[^']*'\);/", "define('DB_USER', '" . addslashes($user) . "');", (string)$cfg);
+        $cfg = preg_replace("/define\('DB_PASS', '[^']*'\);/", "define('DB_PASS', '" . addslashes($pass) . "');", (string)$cfg);
+        $cfg = preg_replace("/define\('DB_NAME', '[^']*'\);/", "define('DB_NAME', '" . addslashes($name) . "');", (string)$cfg);
+        if (file_put_contents(__DIR__ . '/../config.php', $cfg) === false) {
+            $err = 'config.php tidak dapat ditulis. Atur izin tulis folder aplikasi.';
+            $step = 2;
+        } else {
+            redirect('index.php?page=install&step=2');
+        }
     } elseif ($do === 'db') {
         $step = 3;
     } elseif ($do === 'import') {
@@ -100,9 +117,9 @@ $settingSekarang = $dbOk ? (setting_rs() ?? []) : [];
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>Instalasi | <?= APP_NAME ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="assets/icons/css/bootstrap-icons.min.css" />
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="assets/adminlte/css/adminlte.min.css" />
+  <link rel="stylesheet" href="<?= asset('icons/css/bootstrap-icons.min.css') ?>" />
+  <link rel="stylesheet" href="<?= asset('bootstrap/css/bootstrap.min.css') ?>" />
+  <link rel="stylesheet" href="<?= asset('adminlte/css/adminlte.min.css') ?>" />
   <style>
     body { background: linear-gradient(135deg, #0b3d91, #1565c0 45%, #00b4d8); min-height: 100vh; }
     .wizard-card { border: 0; border-radius: 1.25rem; box-shadow: 0 20px 60px rgba(15,40,90,.3); }
@@ -183,6 +200,17 @@ $settingSekarang = $dbOk ? (setting_rs() ?? []) : [];
                 <tr><td>Jumlah Tabel</td><td><?= number_format($jumlahTabel) ?> tabel</td></tr>
               <?php endif; ?>
             </table>
+            <details class="mb-3">
+              <summary class="text-body-secondary" style="cursor:pointer"><i class="bi bi-sliders me-1"></i>Ubah kredensial database (disimpan ke <code>config.php</code>)</summary>
+              <form method="post" class="row g-2 mt-2">
+                <input type="hidden" name="do" value="simpan_config" />
+                <div class="col-md-3"><input class="form-control form-control-sm" name="db_host" value="<?= e(DB_HOST) ?>" placeholder="Host" /></div>
+                <div class="col-md-3"><input class="form-control form-control-sm" name="db_user" value="<?= e(DB_USER) ?>" placeholder="Pengguna" /></div>
+                <div class="col-md-3"><input class="form-control form-control-sm" type="text" name="db_pass" value="<?= e(DB_PASS) ?>" placeholder="Kata sandi" /></div>
+                <div class="col-md-2"><input class="form-control form-control-sm" name="db_name" value="<?= e(DB_NAME) ?>" placeholder="Database" /></div>
+                <div class="col-md-1"><button class="btn btn-sm btn-outline-primary w-100">Simpan</button></div>
+              </form>
+            </details>
             <div class="d-flex gap-2">
               <?php if ($dbOk): ?>
                 <form method="post"><input type="hidden" name="do" value="db" /><button class="btn btn-primary"><i class="bi bi-arrow-right me-1"></i>Lanjut</button></form>
@@ -276,7 +304,7 @@ $settingSekarang = $dbOk ? (setting_rs() ?? []) : [];
     </div>
   </div>
 </div>
-<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="<?= asset('bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
 </body>
 </html>
 <?php

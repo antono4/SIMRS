@@ -36,9 +36,9 @@ $alamatRs = trim(($rs['alamat_instansi'] ?? '') . ' ' . ($rs['kabupaten'] ?? '')
       document.documentElement.setAttribute('data-bs-theme', theme);
     })();
   </script>
-  <link rel="stylesheet" href="assets/icons/css/bootstrap-icons.min.css" />
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="assets/adminlte/css/adminlte.min.css" />
+  <link rel="stylesheet" href="<?= asset('icons/css/bootstrap-icons.min.css') ?>" />
+  <link rel="stylesheet" href="<?= asset('bootstrap/css/bootstrap.min.css') ?>" />
+  <link rel="stylesheet" href="<?= asset('adminlte/css/adminlte.min.css') ?>" />
   <style>
     body.login-split {
       min-height: 100vh;
@@ -163,7 +163,7 @@ $alamatRs = trim(($rs['alamat_instansi'] ?? '') . ' ' . ($rs['kabupaten'] ?? '')
     </div>
   </div>
 </div>
-<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="<?= asset('bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
 <script>
   (function () {
     const icon = document.getElementById('themeIcon');

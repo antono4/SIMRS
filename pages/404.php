@@ -8,7 +8,7 @@ http_response_code(404);
   <meta charset="utf-8" />
   <title>404 | <?= APP_NAME ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="<?= asset('bootstrap/css/bootstrap.min.css') ?>" />
 </head>
 <body class="bg-body-secondary d-flex align-items-center" style="min-height:100vh">
   <div class="container text-center">

@@ -67,12 +67,12 @@ Aplikasi web menjadi **satu aplikasi web** berbasis **PHP murni**, **UI AdminLTE
    mysql -e "CREATE DATABASE sik CHARACTER SET latin1 COLLATE latin1_swedish_ci"
    mysql sik < sik.sql   # dari repo SIMRS (1.182 tabel)
    ```
-3. Sesuaikan kredensial di `config.php` (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`).
+3. Sesuaikan kredensial DB lewat wizard instalasi (`index.php?page=install`) atau langsung di `config.php` (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`).
 4. Tambahkan akun admin (bila database kosong):
    ```sql
    INSERT INTO admin VALUES (AES_ENCRYPT('admin','nur'), AES_ENCRYPT('admin','nur'));
    ```
-5. Jalankan:
+Untuk XAMPP (Apache), cukup letakkan folder ini di `htdocs/SIMRS` lalu buka `http://localhost/SIMRS`. Untuk server bawaan PHP, jalankan:
    ```bash
    php -S 0.0.0.0:12000 -t /path/ke/proyek
    ```

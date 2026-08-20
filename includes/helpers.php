@@ -10,7 +10,13 @@ function e(?string $value): string
 function url(string $page, array $params = []): string
 {
     $params = array_merge(['page' => $page], $params);
-    return 'index.php?' . http_build_query($params);
+    return BASE_URL . 'index.php?' . http_build_query($params);
+}
+
+// Path aset (CSS/JS) relatif terhadap base path aplikasi
+function asset(string $path): string
+{
+    return BASE_URL . 'assets/' . ltrim($path, '/');
 }
 
 function redirect(string $target): never

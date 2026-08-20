@@ -11,7 +11,10 @@ define('DB_CHARSET', 'latin1'); // skema asli memakai latin1
 
 define('APP_NAME', 'SIMRS Web');
 define('APP_VERSION', '1.0.0');
-define('BASE_URL', '/');
+
+// Base path dinamis: mendukung root (/), subfolder XAMPP (/SIMRS), dsb.
+define('BASE_PATH', rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/') === '' ? '' : rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/'));
+define('BASE_URL', BASE_PATH . '/');
 
 // Kunci AES bawaan sistem untuk tabel admin/user (jangan diubah agar tetap kompatibel)
 define('AES_KEY', 'nur');

@@ -9,9 +9,9 @@
   </footer>
   <!--end::Footer-->
 </div>
-<script src="assets/overlayscrollbars/overlayscrollbars.browser.es6.min.js"></script>
-<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets/adminlte/js/adminlte.min.js"></script>
+<script src="<?= asset('overlayscrollbars/overlayscrollbars.browser.es6.min.js') ?>"></script>
+<script src="<?= asset('bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
+<script src="<?= asset('adminlte/js/adminlte.min.js') ?>"></script>
 <script>
   const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
   const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);

@@ -51,10 +51,10 @@ $namaRs = setting_nama_rs();
       document.documentElement.setAttribute('data-bs-theme', theme);
     })();
   </script>
-  <link rel="stylesheet" href="assets/overlayscrollbars/overlayscrollbars.min.css" />
-  <link rel="stylesheet" href="assets/icons/css/bootstrap-icons.min.css" />
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="assets/adminlte/css/adminlte.min.css" />
+  <link rel="stylesheet" href="<?= asset('overlayscrollbars/overlayscrollbars.min.css') ?>" />
+  <link rel="stylesheet" href="<?= asset('icons/css/bootstrap-icons.min.css') ?>" />
+  <link rel="stylesheet" href="<?= asset('bootstrap/css/bootstrap.min.css') ?>" />
+  <link rel="stylesheet" href="<?= asset('adminlte/css/adminlte.min.css') ?>" />
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
 <div class="app-wrapper">
