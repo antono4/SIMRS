@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = (string)($_POST['password'] ?? '');
     try {
-        auth_logout(); // muat ulang izin terbaru bila sudah login
+        // Jangan logout sebelum verifikasi — cukup timpa sesi bila kredensial valid
         if (auth_attempt($username, $password)) {
             unset($_SESSION['flash']); // bersihkan flash lama (mis. pesan keluar)
             redirect(url('dashboard'));
