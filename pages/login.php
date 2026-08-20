@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 $error = null;
+$errorDb = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = (string)($_POST['password'] ?? '');
@@ -15,13 +16,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Nama pengguna atau kata sandi salah.';
     } catch (Throwable $e) {
         $error = 'Gagal terhubung ke database: ' . $e->getMessage();
+        $errorDb = true;
     }
 } elseif (auth_check()) {
     redirect(url('dashboard'));
 }
 
 $namaRs = setting_nama_rs();
-$rs = setting_rs();
+try {
+    $rs = setting_rs();
+} catch (Throwable) {
+    $rs = [];
+}
 $alamatRs = trim(($rs['alamat_instansi'] ?? '') . ' ' . ($rs['kabupaten'] ?? ''));
 ?>
 <!doctype html>
@@ -135,7 +141,13 @@ $alamatRs = trim(($rs['alamat_instansi'] ?? '') . ' ' . ($rs['kabupaten'] ?? '')
           </div>
           <?php if ($error): ?>
             <div class="alert alert-danger d-flex align-items-center py-2" role="alert">
-              <i class="bi bi-exclamation-triangle-fill me-2"></i><?= e($error) ?>
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              <div>
+                <?= e($error) ?>
+                <?php if ($errorDb): ?>
+                  <br /><a href="<?= e(url('install')) ?>" class="alert-link">Buka wizard instalasi</a> untuk menyiapkan database.
+                <?php endif; ?>
+              </div>
             </div>
           <?php endif; ?>
           <form method="post" action="<?= e(url('login')) ?>">

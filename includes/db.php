@@ -2,30 +2,46 @@
 // Koneksi database MySQL (PDO) ke skema "sik" milik SIMRS
 declare(strict_types=1);
 
+// Daftar kandidat host/port yang dicoba berurutan (XAMPP: localhost socket atau 127.0.0.1 TCP)
+function db_kandidat_host(): array
+{
+    $list = [[DB_HOST, DB_PORT]];
+    if (DB_HOST === 'localhost') {
+        $list[] = ['127.0.0.1', DB_PORT];
+    } elseif (DB_HOST === '127.0.0.1') {
+        $list[] = ['localhost', DB_PORT];
+    }
+    // port alternatif umum di XAMPP bawaan
+    $list[] = [DB_HOST, DB_PORT === '3306' ? '3307' : '3306'];
+    return $list;
+}
+
+function db_connect(bool $tanpaDb): PDO
+{
+    $last = null;
+    foreach (db_kandidat_host() as [$host, $port]) {
+        $dsn = 'mysql:host=' . $host . ';port=' . $port . ($tanpaDb ? '' : ';dbname=' . DB_NAME) . ';charset=' . DB_CHARSET;
+        try {
+            return new PDO($dsn, DB_USER, DB_PASS, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false,
+            ]);
+        } catch (PDOException $e) {
+            $last = $e;
+        }
+    }
+    throw $last ?? new PDOException('Tidak dapat terhubung ke server MySQL.');
+}
+
 function db(?bool $tanpaDb = false): PDO
 {
     static $pdo = null;
     static $pdoTanpaDb = null;
     if ($tanpaDb) {
-        if (!$pdoTanpaDb instanceof PDO) {
-            $dsn = 'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';charset=' . DB_CHARSET;
-            $pdoTanpaDb = new PDO($dsn, DB_USER, DB_PASS, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
-            ]);
-        }
-        return $pdoTanpaDb;
+        return $pdoTanpaDb ??= db_connect(true);
     }
-    if (!$pdo instanceof PDO) {
-        $dsn = 'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME . ';charset=' . DB_CHARSET;
-        $pdo = new PDO($dsn, DB_USER, DB_PASS, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ]);
-    }
-    return $pdo;
+    return $pdo ??= db_connect(false);
 }
 
 function db_all(string $sql, array $params = []): array

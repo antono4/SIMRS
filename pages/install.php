@@ -59,6 +59,58 @@ if ($step >= 2) {
 }
 
 // ---- Langkah 3: impor database/sik.sql bila diminta ----
+// Impor per-pernyataan SQL dengan parser state yang aman terhadap komentar mysqldump
+function import_sql_file(PDO $pdo, string $file): int
+{
+    $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
+    $pdo->exec('SET SESSION sql_mode = "NO_AUTO_VALUE_ON_ZERO"');
+    $fh = fopen($file, 'rb');
+    if ($fh === false) {
+        throw new RuntimeException('Tidak dapat membuka berkas SQL.');
+    }
+    $buffer = '';
+    $count = 0;
+    $inBlockComment = false;
+    while (($line = fgets($fh)) !== false) {
+        $i = 0;
+        $n = strlen($line);
+        while ($i < $n) {
+            if ($inBlockComment) {
+                $end = strpos($line, '*/', $i);
+                if ($end === false) { $i = $n; continue; }
+                $inBlockComment = false;
+                $i = $end + 2;
+                continue;
+            }
+            // komentar baris: -- dan #
+            if (substr($line, $i, 2) === '--' || $line[$i] === '#') { $i = $n; continue; }
+            // blok komentar biasa /* ... */ — BUKAN /*! ... */ atau /*M! ... */ (executable di MySQL)
+            if (substr($line, $i, 2) === '/*' && substr($line, $i, 3) !== '/*!' && substr($line, $i, 4) !== '/*M!') {
+                $inBlockComment = true; $i += 2; continue;
+            }
+            $buffer .= $line[$i];
+            if ($line[$i] === ';') {
+                $sql = trim($buffer);
+                // Buang CREATE DATABASE & USE dari dump — kita sudah mengaturnya secara eksplisit
+                if ($sql !== '' && !preg_match('/^\s*(CREATE\s+DATABASE|USE\s)/i', $sql)) {
+                    try { $pdo->exec($sql); } catch (Throwable) { /* abaikan: tabel sudah ada / data ganda */ }
+                    $count++;
+                }
+                $buffer = '';
+            }
+            $i++;
+        }
+    }
+    fclose($fh);
+    $sisa = trim($buffer);
+    if ($sisa !== '' && !preg_match('/^\s*(CREATE\s+DATABASE|USE\s)/i', $sisa)) {
+        try { $pdo->exec($sisa); } catch (Throwable) {}
+        $count++;
+    }
+    $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
+    return $count;
+}
+
 $importLog = '';
 if ($step >= 3 && ($_GET['aksi'] ?? '') === 'impor') {
     $sqlFile = __DIR__ . '/../database/sik.sql';
@@ -70,11 +122,11 @@ if ($step >= 3 && ($_GET['aksi'] ?? '') === 'impor') {
             $pdo = db(true); // koneksi tanpa database
             $pdo->exec("CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` CHARACTER SET latin1 COLLATE latin1_swedish_ci");
             $pdo->exec("USE `" . DB_NAME . "`");
-            $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
-            $pdo->exec((string)file_get_contents($sqlFile));
-            $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
-            $jumlahTabel = (int)db_val("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ?", [DB_NAME]);
-            $importLog = "Impor berhasil. Jumlah tabel: $jumlahTabel.";
+            $pernyataan = import_sql_file($pdo, $sqlFile);
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ?");
+            $stmt->execute([DB_NAME]);
+            $jumlahTabel = (int)$stmt->fetchColumn();
+            $importLog = "Impor berhasil ($pernyataan pernyataan). Jumlah tabel: $jumlahTabel.";
         } catch (Throwable $e) {
             $importLog = 'Impor gagal: ' . $e->getMessage();
         }
