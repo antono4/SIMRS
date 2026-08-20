@@ -41,7 +41,8 @@ function auth_attempt(string $username, string $password): bool
 
 function auth_check(): bool
 {
-    return isset($_SESSION['auth']);
+    $u = $_SESSION['auth'] ?? null;
+    return is_array($u) && !empty($u['username']) && !empty($u['role']);
 }
 
 function auth_user(): ?array

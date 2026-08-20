@@ -19,7 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errorDb = true;
     }
 } elseif (auth_check()) {
-    redirect(url('dashboard'));
+    // Sesi valid → lanjut ke dashboard. Sesi usang/rusak dibersihkan agar tidak loop.
+    $u = auth_user();
+    if (is_array($u) && !empty($u['username']) && !empty($u['role'])) {
+        redirect(url('dashboard'));
+    }
+    auth_logout();
 }
 
 $namaRs = setting_nama_rs();
