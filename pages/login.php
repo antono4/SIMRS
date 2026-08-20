@@ -1,0 +1,183 @@
+<?php
+// Halaman login bergaya modern (split-screen, tema siang/malam)
+declare(strict_types=1);
+
+$error = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username'] ?? '');
+    $password = (string)($_POST['password'] ?? '');
+    try {
+        auth_logout(); // muat ulang izin terbaru bila sudah login
+        if (auth_attempt($username, $password)) {
+            unset($_SESSION['flash']); // bersihkan flash lama (mis. pesan keluar)
+            redirect(url('dashboard'));
+        }
+        $error = 'Nama pengguna atau kata sandi salah.';
+    } catch (Throwable $e) {
+        $error = 'Gagal terhubung ke database: ' . $e->getMessage();
+    }
+} elseif (auth_check()) {
+    redirect(url('dashboard'));
+}
+
+$namaRs = setting_nama_rs();
+$rs = setting_rs();
+$alamatRs = trim(($rs['alamat_instansi'] ?? '') . ' ' . ($rs['kabupaten'] ?? ''));
+?>
+<!doctype html>
+<html lang="id">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Masuk | <?= e($namaRs) ?></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+    (function () {
+      const theme = localStorage.getItem('sk-theme') === 'dark' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-bs-theme', theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="assets/icons/css/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="assets/adminlte/css/adminlte.min.css" />
+  <style>
+    body.login-split {
+      min-height: 100vh;
+      margin: 0;
+    }
+    .login-hero {
+      background: linear-gradient(135deg, #0b3d91 0%, #1565c0 45%, #00b4d8 100%);
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+    }
+    .login-hero::before,
+    .login-hero::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .08);
+    }
+    .login-hero::before { width: 420px; height: 420px; top: -140px; right: -120px; }
+    .login-hero::after { width: 300px; height: 300px; bottom: -110px; left: -90px; }
+    .login-hero .hero-icon {
+      width: 96px; height: 96px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, .15);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, .25);
+    }
+    .hero-feature { display: flex; align-items: center; gap: .6rem; opacity: .92; }
+    .hero-feature i { font-size: 1.1rem; }
+    .login-panel {
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .login-card-modern {
+      width: 100%; max-width: 420px;
+      border: 0; border-radius: 1.25rem;
+      box-shadow: 0 20px 60px rgba(15, 40, 90, .18);
+      animation: rise .55s ease both;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    [data-bs-theme="dark"] .login-card-modern {
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .55);
+    }
+    .btn-login {
+      background: linear-gradient(135deg, #1565c0, #00b4d8);
+      border: 0;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .btn-login:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(21, 101, 192, .4); }
+    .theme-fab {
+      position: fixed; top: 1rem; right: 1rem; z-index: 10;
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+  </style>
+</head>
+<body class="login-split">
+<button class="btn btn-outline-secondary theme-fab" id="themeToggle" title="Ganti tema siang/malam" aria-label="Ganti tema siang/malam">
+  <i class="bi bi-moon-stars" id="themeIcon"></i>
+</button>
+<div class="container-fluid g-0">
+  <div class="row g-0 min-vh-100">
+    <!-- Panel hero -->
+    <div class="col-lg-7 d-none d-lg-flex login-hero align-items-center">
+      <div class="px-5 position-relative" style="z-index:1">
+        <div class="hero-icon mb-4"><i class="bi bi-hospital"></i></div>
+        <h1 class="display-5 fw-bold mb-2"><?= e($namaRs) ?></h1>
+        <p class="lead opacity-75 mb-4">Sistem Informasi Manajemen Rumah Sakit<br />terpadu, cepat, dan mudah digunakan.</p>
+        <?php if ($alamatRs !== ''): ?>
+          <p class="mb-4 opacity-75"><i class="bi bi-geo-alt me-2"></i><?= e($alamatRs) ?></p>
+        <?php endif; ?>
+        <div class="d-flex flex-column gap-2 mt-4">
+          <div class="hero-feature"><i class="bi bi-clipboard2-pulse"></i><span>Pendaftaran, tindakan, diagnosa &amp; resep dalam satu alur</span></div>
+          <div class="hero-feature"><i class="bi bi-hospital"></i><span>Manajemen kamar inap &amp; kasir terintegrasi</span></div>
+          <div class="hero-feature"><i class="bi bi-shield-check"></i><span>Hak akses bertingkat &amp; kompatibel database SIMRS Khanza</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- Panel form -->
+    <div class="col-lg-5 login-panel bg-body-tertiary">
+      <div class="card login-card-modern">
+        <div class="card-body p-4 p-md-5">
+          <div class="text-center mb-4">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary-subtle text-primary mb-3" style="width:72px;height:72px;font-size:2rem">
+              <i class="bi bi-hospital"></i>
+            </div>
+            <h4 class="fw-bold mb-1"><?= e($namaRs) ?></h4>
+            <p class="text-body-secondary mb-0">Masuk untuk memulai sesi Anda</p>
+          </div>
+          <?php if ($error): ?>
+            <div class="alert alert-danger d-flex align-items-center py-2" role="alert">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i><?= e($error) ?>
+            </div>
+          <?php endif; ?>
+          <form method="post" action="<?= e(url('login')) ?>">
+            <div class="form-floating mb-3">
+              <input id="username" name="username" type="text" class="form-control" placeholder="Nama Pengguna" required autofocus />
+              <label for="username"><i class="bi bi-person me-1"></i>Nama Pengguna</label>
+            </div>
+            <div class="form-floating mb-4">
+              <input id="password" name="password" type="password" class="form-control" placeholder="Kata Sandi" required />
+              <label for="password"><i class="bi bi-lock me-1"></i>Kata Sandi</label>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-login btn-lg text-white">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Masuk
+              </button>
+            </div>
+          </form>
+          <hr class="my-4" />
+          <p class="text-center text-body-secondary small mb-0">
+            Akun bawaan <code>admin</code> / <code>admin</code><br />
+            Kompatibel tabel <code>admin</code> &amp; <code>user</code> SIMRS Khanza
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script>
+  (function () {
+    const icon = document.getElementById('themeIcon');
+    const apply = (theme) => {
+      document.documentElement.setAttribute('data-bs-theme', theme);
+      if (icon) icon.className = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon-stars';
+    };
+    apply(localStorage.getItem('sk-theme') === 'dark' ? 'dark' : 'light');
+    document.getElementById('themeToggle')?.addEventListener('click', () => {
+      const next = document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('sk-theme', next);
+      apply(next);
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<?php
+// Autentikasi kompatibel Khanza: tabel admin/user dienkripsi AES dengan kunci 'nur'
+declare(strict_types=1);
+
+function auth_attempt(string $username, string $password): bool
+{
+    // Superuser Khanza (tabel admin)
+    $row = db_row(
+        "SELECT CAST(AES_DECRYPT(usere, ?) AS CHAR) AS usr
+         FROM admin
+         WHERE CAST(AES_DECRYPT(usere, ?) AS CHAR) = ?
+           AND CAST(AES_DECRYPT(passworde, ?) AS CHAR) = ?",
+        [KHANZA_AES_KEY, KHANZA_AES_KEY, $username, KHANZA_AES_KEY, $password]
+    );
+    if ($row !== null) {
+        $_SESSION['auth'] = ['username' => $username, 'role' => 'admin'];
+        return true;
+    }
+
+    // User/petugas Khanza (tabel user) — sekaligus ambil seluruh izin modulnya
+    $row = db_row(
+        "SELECT * FROM user
+         WHERE CAST(AES_DECRYPT(id_user, ?) AS CHAR) = ?
+           AND CAST(AES_DECRYPT(password, ?) AS CHAR) = ?",
+        [KHANZA_AES_KEY, $username, KHANZA_AES_KEY, $password]
+    );
+    if ($row !== null) {
+        $permissions = [];
+        foreach ($row as $kolom => $nilai) {
+            if ($nilai === 'true') {
+                $permissions[$kolom] = true;
+            }
+        }
+        $_SESSION['auth'] = ['username' => $username, 'role' => 'user', 'permissions' => $permissions];
+        return true;
+    }
+    return false;
+}
+
+function auth_check(): bool
+{
+    return isset($_SESSION['auth']);
+}
+
+function auth_user(): ?array
+{
+    return $_SESSION['auth'] ?? null;
+}
+
+function auth_require(): void
+{
+    if (!auth_check()) {
+        redirect(url('login'));
+    }
+}
+
+function auth_logout(): void
+{
+    unset($_SESSION['auth']);
+}
