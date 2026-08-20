@@ -65,7 +65,7 @@ Aplikasi web menjadi **satu aplikasi web** berbasis **PHP murni**, **UI AdminLTE
 2. Buat database dan impor skema asli sistem:
    ```bash
    mysql -e "CREATE DATABASE sik CHARACTER SET latin1 COLLATE latin1_swedish_ci"
-   mysql sik < sik.sql   # dari repo SIMRS (1.182 tabel)
+   mysql sik < sik.sql   # 51 tabel inti SIMRS Web
    ```
 3. Sesuaikan kredensial DB lewat wizard instalasi (`index.php?page=install`) atau langsung di `config.php` (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`).
 4. Tambahkan akun admin (bila database kosong):

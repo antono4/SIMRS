@@ -328,7 +328,7 @@ $settingSekarang = $dbOk ? (setting_rs() ?? []) : [];
             <?php if ($importLog !== ''): ?>
               <div class="alert <?= str_starts_with($importLog, 'Impor berhasil') ? 'alert-success' : 'alert-warning' ?> py-2"><?= $importLog /* aman: dibangun dari data terkontrol */ ?></div>
             <?php endif; ?>
-            <p class="text-body-secondary">Berkas yang diimpor: <code>database/sik.sql</code> (skema + data contoh, 1.182 tabel).</p>
+            <p class="text-body-secondary">Berkas yang diimpor: <code>database/sik.sql</code> (skema + data contoh, 51 tabel inti).</p>
             <div class="d-flex gap-2 flex-wrap">
               <a href="index.php?page=install&step=3&aksi=impor" class="btn btn-warning" onclick="return confirm('Impor database/sik.sql? Data yang ada akan ditimpa.')"><i class="bi bi-database-down me-1"></i>Impor Database</a>
               <a href="index.php?page=install&step=3&aksi=user" class="btn btn-outline-warning" onclick="return confirm('Buat ulang tabel user dari dump?')"><i class="bi bi-person-gear me-1"></i>Perbaiki Tabel User</a>
