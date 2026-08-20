@@ -59,11 +59,21 @@ if ($step >= 2) {
 }
 
 // ---- Langkah 3: impor database/sik.sql bila diminta ----
-// Impor per-pernyataan SQL dengan parser state yang aman terhadap komentar mysqldump
+// Impor per-pernyataan SQL dengan parser state; tahan "server has gone away" (timeout/packet kecil di XAMPP)
 function import_sql_file(PDO $pdo, string $file): int
 {
-    $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
-    $pdo->exec('SET SESSION sql_mode = "NO_AUTO_VALUE_ON_ZERO"');
+    // Naikkan batas sesi agar tidak diputus di tengah impor besar (umum di XAMPP bawaan)
+    foreach ([
+        'SET SESSION wait_timeout = 28800',
+        'SET SESSION interactive_timeout = 28800',
+        'SET SESSION net_read_timeout = 600',
+        'SET SESSION net_write_timeout = 600',
+        'SET SESSION max_allowed_packet = 67108864',
+        'SET SESSION sql_mode = "NO_AUTO_VALUE_ON_ZERO"',
+        'SET FOREIGN_KEY_CHECKS=0',
+    ] as $init) {
+        try { $pdo->exec($init); } catch (Throwable) {}
+    }
     $fh = fopen($file, 'rb');
     if ($fh === false) {
         throw new RuntimeException('Tidak dapat membuka berkas SQL.');
@@ -71,6 +81,7 @@ function import_sql_file(PDO $pdo, string $file): int
     $buffer = '';
     $count = 0;
     $inBlockComment = false;
+    $sejakKeepAlive = microtime(true);
     while (($line = fgets($fh)) !== false) {
         $i = 0;
         $n = strlen($line);
@@ -82,33 +93,53 @@ function import_sql_file(PDO $pdo, string $file): int
                 $i = $end + 2;
                 continue;
             }
-            // komentar baris: -- dan #
             if (substr($line, $i, 2) === '--' || $line[$i] === '#') { $i = $n; continue; }
-            // blok komentar biasa /* ... */ — BUKAN /*! ... */ atau /*M! ... */ (executable di MySQL)
             if (substr($line, $i, 2) === '/*' && substr($line, $i, 3) !== '/*!' && substr($line, $i, 4) !== '/*M!') {
                 $inBlockComment = true; $i += 2; continue;
             }
             $buffer .= $line[$i];
             if ($line[$i] === ';') {
                 $sql = trim($buffer);
-                // Buang CREATE DATABASE & USE dari dump — kita sudah mengaturnya secara eksplisit
                 if ($sql !== '' && !preg_match('/^\s*(CREATE\s+DATABASE|USE\s)/i', $sql)) {
-                    try { $pdo->exec($sql); } catch (Throwable) { /* abaikan: tabel sudah ada / data ganda */ }
+                    import_exec($pdo, $sql);
                     $count++;
                 }
                 $buffer = '';
             }
             $i++;
         }
+        // Keep-alive agar server tidak memutus koneksi saat impor lama
+        if (microtime(true) - $sejakKeepAlive > 5) {
+            try { $pdo->query('SELECT 1'); } catch (Throwable) {}
+            $sejakKeepAlive = microtime(true);
+        }
     }
     fclose($fh);
     $sisa = trim($buffer);
     if ($sisa !== '' && !preg_match('/^\s*(CREATE\s+DATABASE|USE\s)/i', $sisa)) {
-        try { $pdo->exec($sisa); } catch (Throwable) {}
+        try { import_exec($pdo, $sisa); } catch (Throwable) {}
         $count++;
     }
-    $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
+    try { $pdo->exec('SET FOREIGN_KEY_CHECKS=1'); } catch (Throwable) {}
     return $count;
+}
+
+// Eksekusi satu pernyataan dengan reconnect otomatis bila "server has gone away"
+function import_exec(PDO &$pdo, string $sql): void
+{
+    try {
+        $pdo->exec($sql);
+    } catch (Throwable $e) {
+        $msg = $e->getMessage();
+        if (str_contains($msg, 'gone away') || str_contains($msg, 'Lost connection') || str_contains($msg, '2006') || str_contains($msg, '2013')) {
+            // Sambung ulang dan coba sekali lagi
+            $pdo = db(true);
+            try { $pdo->exec("USE `" . DB_NAME . "`"); } catch (Throwable) {}
+            try { $pdo->exec('SET FOREIGN_KEY_CHECKS=0'); } catch (Throwable) {}
+            try { $pdo->exec($sql); } catch (Throwable) { /* abaikan */ }
+        }
+        // selain itu: abaikan (tabel sudah ada / data ganda)
+    }
 }
 
 $importLog = '';
