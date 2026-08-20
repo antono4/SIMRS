@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $kdDokter = $_POST['kd_dokter'] ?? '';
         $kdPoli = $_POST['kd_poli'] ?? '';
         $kdPj = $_POST['kd_pj'] ?? '';
-        $tgl = $_POST['tgl_registrasi'] ?: date('Y-m-d');
+        $tgl = ($_POST['tgl_registrasi'] ?? '') ?: date('Y-m-d');
         $lanjut = $_POST['status_lanjut'] ?? 'Ralan';
 
         $pasien = db_row('SELECT * FROM pasien WHERE no_rkm_medis = ?', [$rm]);
@@ -90,7 +90,7 @@ if ($action === 'form') {
     $dokterList = db_all("SELECT kd_dokter, nm_dokter FROM dokter WHERE status='1' ORDER BY nm_dokter");
     $poliList = db_all("SELECT kd_poli, nm_poli FROM poliklinik WHERE status='1' ORDER BY nm_poli");
     $penjabList = db_all("SELECT kd_pj, png_jawab FROM penjab WHERE status='1' ORDER BY png_jawab");
-    require __DIR__ . '/../includes/header.php';
+    require_once __DIR__ . '/../includes/header.php';
     ?>
     <div class="row">
       <div class="col-lg-5">
@@ -183,7 +183,7 @@ if ($action === 'form') {
       </div>
     </div>
     <?php
-    require __DIR__ . '/../includes/footer.php';
+    require_once __DIR__ . '/../includes/footer.php';
     return;
 }
 
@@ -208,7 +208,7 @@ $rows = db_all(
     $params
 );
 $poliList = db_all('SELECT kd_poli, nm_poli FROM poliklinik ORDER BY nm_poli');
-require __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="card">
   <div class="card-header">
@@ -276,4 +276,4 @@ require __DIR__ . '/../includes/header.php';
     </table>
   </div>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

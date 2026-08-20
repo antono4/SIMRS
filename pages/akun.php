@@ -53,7 +53,7 @@ $ranapAktif = db_all(
 );
 $belumBayar = (int)db_val("SELECT COUNT(*) FROM reg_periksa WHERE status_bayar = 'Belum Bayar' AND stts != 'Batal' AND tgl_registrasi = CURDATE()");
 
-require __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="row">
   <div class="col-lg-3">
@@ -148,4 +148,4 @@ require __DIR__ . '/../includes/header.php';
     </div>
   </div>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

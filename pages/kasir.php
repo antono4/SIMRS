@@ -2,7 +2,7 @@
 // Modul Kasir Ralan — rincian tagihan & pembayaran kunjungan
 declare(strict_types=1);
 
-require __DIR__ . '/../includes/kunjungan.php';
+require_once __DIR__ . '/../includes/kunjungan.php';
 
 $noRawat = $_GET['no_rawat'] ?? $_POST['no_rawat'] ?? '';
 $kunjungan = $noRawat ? kunjungan_load($noRawat) : null;
@@ -32,7 +32,7 @@ if (!$kunjungan && $_SERVER['REQUEST_METHOD'] !== 'POST') {
          $where ORDER BY rp.status_bayar DESC, rp.tgl_registrasi DESC, rp.jam_reg DESC LIMIT 100",
         $params
     );
-    require __DIR__ . '/../includes/header.php';
+    require_once __DIR__ . '/../includes/header.php';
     ?>
     <div class="card">
       <div class="card-header">
@@ -69,7 +69,7 @@ if (!$kunjungan && $_SERVER['REQUEST_METHOD'] !== 'POST') {
       </div>
     </div>
     <?php
-    require __DIR__ . '/../includes/footer.php';
+    require_once __DIR__ . '/../includes/footer.php';
     return;
 }
 
@@ -153,7 +153,7 @@ $totalTagihan = array_sum(array_column($rincian, 'harga'));
 $nota = db_row('SELECT * FROM nota_jalan WHERE no_rawat = ?', [$noRawat]);
 $sudahBayar = $kunjungan['status_bayar'] === 'Sudah Bayar';
 
-require __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 kunjungan_card($kunjungan);
 ?>
 <div class="row">
@@ -212,4 +212,4 @@ kunjungan_card($kunjungan);
     </div>
   </div>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

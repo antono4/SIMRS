@@ -47,7 +47,7 @@ new Chart(document.getElementById("chartBayar"), {
 });
 </script>';
 
-require __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="card mb-4">
   <div class="card-body">
@@ -132,4 +132,4 @@ require __DIR__ . '/../includes/header.php';
     </div>
   </div>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['act'] ?? '') === 'save') {
 $pageTitle = 'Pengaturan Instansi';
 $s = setting_rs() + ['nama_instansi' => '', 'alamat_instansi' => '', 'kabupaten' => '', 'propinsi' => '', 'kontak' => '', 'email' => ''];
 
-require __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 <form method="post" action="<?= e(url('pengaturan')) ?>" class="card card-primary col-lg-7">
   <input type="hidden" name="act" value="save" />
@@ -61,4 +61,4 @@ require __DIR__ . '/../includes/header.php';
     <button class="btn btn-primary"><i class="bi bi-save me-1"></i>Simpan</button>
   </div>
 </form>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

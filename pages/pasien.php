@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($act === 'save') {
         $rm = trim($_POST['no_rkm_medis'] ?? '');
         $isEdit = ($_POST['mode'] ?? '') === 'edit';
-        $tglLahir = $_POST['tgl_lahir'] ?: null;
+        $tglLahir = ($_POST['tgl_lahir'] ?? '') ?: null;
         [$umurTh] = umur_dari($tglLahir);
         $umurText = '';
         if ($tglLahir) {
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'pekerjaan' => trim($_POST['pekerjaan'] ?? '-'),
             'stts_nikah' => $_POST['stts_nikah'] ?? 'BELUM MENIKAH',
             'agama' => strtoupper(trim($_POST['agama'] ?? '-')),
-            'tgl_daftar' => $_POST['tgl_daftar'] ?: date('Y-m-d'),
+            'tgl_daftar' => ($_POST['tgl_daftar'] ?? '') ?: date('Y-m-d'),
             'no_tlp' => trim($_POST['no_tlp'] ?? '-'),
             'umur' => $umurText,
             'pnd' => $_POST['pnd'] ?? '-',
@@ -120,7 +120,7 @@ if ($action === 'form') {
     $cacat = db_all('SELECT id, nama_cacat FROM cacat_fisik ORDER BY nama_cacat');
     $perusahaan = db_all('SELECT kode_perusahaan, nama_perusahaan FROM perusahaan_pasien ORDER BY nama_perusahaan');
 
-    require __DIR__ . '/../includes/header.php';
+    require_once __DIR__ . '/../includes/header.php';
     ?>
     <form method="post" action="<?= e(url('pasien')) ?>">
       <input type="hidden" name="act" value="save" />
@@ -331,7 +331,7 @@ if ($action === 'form') {
       </div>
     </form>
     <?php
-    require __DIR__ . '/../includes/footer.php';
+    require_once __DIR__ . '/../includes/footer.php';
     return;
 }
 
@@ -356,7 +356,7 @@ $rows = db_all(
     $params
 );
 
-require __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="card">
   <div class="card-header">
@@ -409,4 +409,4 @@ require __DIR__ . '/../includes/header.php';
     <?= paginate($total, $perPage, $hal, 'pasien', ['q' => $q]) ?>
   </div>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

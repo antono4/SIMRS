@@ -2,19 +2,23 @@
 // Front controller SIMRS Web
 declare(strict_types=1);
 
-require __DIR__ . '/config.php';
-require __DIR__ . '/includes/db.php';
-require __DIR__ . '/includes/helpers.php';
-require __DIR__ . '/includes/auth.php';
-require __DIR__ . '/includes/authz.php';
-require __DIR__ . '/includes/settings.php';
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/helpers.php';
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/authz.php';
+require_once __DIR__ . '/includes/settings.php';
 
 // Instalasi dianggap selesai bila file config.php sudah dibuat wizard (ada penanda) — lihat install.php
 $page = preg_replace('/[^a-z0-9_]/i', '', $_GET['page'] ?? 'dashboard');
 
-// Wizard instalasi bisa diakses tanpa login
+// Wizard instalasi & diagnostik bisa diakses tanpa login
 if ($page === 'install') {
     require __DIR__ . '/pages/install.php';
+    return;
+}
+if ($page === 'diagnostik') {
+    require __DIR__ . '/pages/diagnostik.php';
     return;
 }
 

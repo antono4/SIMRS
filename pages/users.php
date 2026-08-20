@@ -116,7 +116,7 @@ if ($action === 'form') {
             redirect(url('users'));
         }
     }
-    require __DIR__ . '/../includes/header.php';
+    require_once __DIR__ . '/../includes/header.php';
     ?>
     <form method="post" action="<?= e(url('users')) ?>" class="card card-primary col-lg-7">
       <input type="hidden" name="act" value="save" />
@@ -154,7 +154,7 @@ if ($action === 'form') {
       </div>
     </form>
     <?php
-    require __DIR__ . '/../includes/footer.php';
+    require_once __DIR__ . '/../includes/footer.php';
     return;
 }
 
@@ -162,7 +162,7 @@ if ($action === 'form') {
 $pageTitle = 'Manajemen Pengguna';
 $flagsSelect = implode(', ', array_keys(PERMISSION_CATALOG));
 $rows = db_all("SELECT CAST(AES_DECRYPT(id_user, ?) AS CHAR) AS username, $flagsSelect FROM user ORDER BY username", [$key]);
-require __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="card">
   <div class="card-header">
@@ -208,4 +208,4 @@ require __DIR__ . '/../includes/header.php';
     Superuser (tabel <code>admin</code>) selalu memiliki akses penuh. Pengguna tabel <code>user</code> dibatasi sesuai hak akses di atas &mdash; menu yang tidak diizinkan disembunyikan dan akses langsung via URL ditolak (403).
   </div>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

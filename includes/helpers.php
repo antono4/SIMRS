@@ -4,7 +4,21 @@ declare(strict_types=1);
 
 function e(?string $value): string
 {
-    return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+    $s = (string)$value;
+    // Data dari database latin1: konversi ke UTF-8 bila bukan UTF-8 valid,
+    // agar htmlspecialchars tidak mengembalikan string kosong pada karakter beraksen.
+    if ($s !== '' && !preg_match('//u', $s)) {
+        if (function_exists('mb_convert_encoding')) {
+            $s = mb_convert_encoding($s, 'UTF-8', 'ISO-8859-1');
+        } elseif (function_exists('iconv')) {
+            $t = @iconv('ISO-8859-1', 'UTF-8//IGNORE', $s);
+            $s = $t !== false ? $t : $s;
+        } else {
+            // Fallback manual: peta byte latin1 → UTF-8 (hanya untuk byte >= 0x80)
+            $s = preg_replace_callback('/[\x80-\xFF]/', fn($m) => chr(0xC0 | (ord($m[0]) >> 6)) . chr(0x80 | (ord($m[0]) & 0x3F)), $s) ?? $s;
+        }
+    }
+    return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
 function url(string $page, array $params = []): string

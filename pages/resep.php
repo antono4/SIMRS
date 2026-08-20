@@ -2,7 +2,7 @@
 // Modul Resep Obat — resep_obat, resep_dokter, databarang
 declare(strict_types=1);
 
-require __DIR__ . '/../includes/kunjungan.php';
+require_once __DIR__ . '/../includes/kunjungan.php';
 
 $noRawat = $_GET['no_rawat'] ?? $_POST['no_rawat'] ?? '';
 $kunjungan = $noRawat ? kunjungan_load($noRawat) : null;
@@ -84,7 +84,7 @@ if ($q !== '') {
     );
 }
 
-require __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 kunjungan_card($kunjungan);
 ?>
 <div class="row">
@@ -213,4 +213,4 @@ kunjungan_card($kunjungan);
     <?php endif; ?>
   </div>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

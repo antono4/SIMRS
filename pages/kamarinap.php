@@ -2,7 +2,7 @@
 // Modul Kamar Inap — kamar_inap, kamar, bangsal
 declare(strict_types=1);
 
-require __DIR__ . '/../includes/kunjungan.php';
+require_once __DIR__ . '/../includes/kunjungan.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $act = $_POST['act'] ?? '';
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'INSERT INTO kamar_inap (no_rawat, kd_kamar, trf_kamar, diagnosa_awal, diagnosa_akhir, tgl_masuk, jam_masuk, tgl_keluar, jam_keluar, lama, ttl_biaya, stts_pulang)
                  VALUES (?,?,?,?,"-",?,?, "0000-00-00","00:00:00",0,0,"-")',
                 [$noRawat, $kdKamar, (float)$kamar['trf_kamar'], trim($_POST['diagnosa_awal'] ?? '-'),
-                 $_POST['tgl_masuk'] ?: date('Y-m-d'), $_POST['jam_masuk'] ?: date('H:i:s')]
+                 ($_POST['tgl_masuk'] ?? '') ?: date('Y-m-d'), ($_POST['jam_masuk'] ?? '') ?: date('H:i:s')]
             );
             db_exec("UPDATE kamar SET status='ISI' WHERE kd_kamar = ?", [$kdKamar]);
             db_exec("UPDATE reg_periksa SET status_lanjut='Ranap', stts='Dirawat' WHERE no_rawat = ?", [$noRawat]);
@@ -37,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', 'Data kamar inap aktif tidak ditemukan.');
             redirect(url('kamarinap'));
         }
-        $tglKeluar = $_POST['tgl_keluar'] ?: date('Y-m-d');
-        $jamKeluar = $_POST['jam_keluar'] ?: date('H:i:s');
+        $tglKeluar = ($_POST['tgl_keluar'] ?? '') ?: date('Y-m-d');
+        $jamKeluar = ($_POST['jam_keluar'] ?? '') ?: date('H:i:s');
         $lama = max(1, (int)((strtotime($tglKeluar) - strtotime($inap['tgl_masuk'])) / 86400));
         $ttl = $lama * (float)$inap['trf_kamar'];
         db_exec(
@@ -92,7 +92,7 @@ $kunjunganRanap = db_all(
      ORDER BY rp.tgl_registrasi DESC LIMIT 50"
 );
 
-require __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 <ul class="nav nav-tabs mb-3">
   <li class="nav-item"><a class="nav-link <?= $view === 'aktif' ? 'active' : '' ?>" href="<?= e(url('kamarinap')) ?>">Pasien Dirawat (<?= count($aktif) ?>)</a></li>
@@ -214,4 +214,4 @@ require __DIR__ . '/../includes/header.php';
     </div>
   </form>
 <?php endif; ?>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

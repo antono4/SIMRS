@@ -73,7 +73,7 @@ if ($action === 'form') {
     $kategori = db_all('SELECT kd_kategori, nm_kategori FROM kategori_perawatan ORDER BY nm_kategori');
     $poliList = db_all('SELECT kd_poli, nm_poli FROM poliklinik ORDER BY nm_poli');
     $penjabList = db_all('SELECT kd_pj, png_jawab FROM penjab ORDER BY png_jawab');
-    require __DIR__ . '/../includes/header.php';
+    require_once __DIR__ . '/../includes/header.php';
     ?>
     <form method="post" action="<?= e(url('perawatan')) ?>" class="card card-primary">
       <input type="hidden" name="act" value="save" />
@@ -140,7 +140,7 @@ if ($action === 'form') {
       </div>
     </form>
     <?php
-    require __DIR__ . '/../includes/footer.php';
+    require_once __DIR__ . '/../includes/footer.php';
     return;
 }
 
@@ -163,7 +163,7 @@ $rows = db_all(
      $where ORDER BY k.nm_kategori, j.nm_perawatan LIMIT $perPage OFFSET $offset",
     $params
 );
-require __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="card">
   <div class="card-header">
@@ -211,4 +211,4 @@ require __DIR__ . '/../includes/header.php';
   </div>
   <div class="card-footer d-flex justify-content-end"><?= paginate($total, $perPage, $hal, 'perawatan', ['q' => $q]) ?></div>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

@@ -6,7 +6,7 @@ declare(strict_types=1);
 if ((auth_user()['role'] ?? '') !== 'admin') {
     http_response_code(403);
     $pageTitle = 'Akses Ditolak';
-    require __DIR__ . '/403.php';
+    require_once __DIR__ . '/403.php';
     return;
 }
 
@@ -69,7 +69,7 @@ $ukuranDb = db_row(
 // Daftar admin
 $adminList = db_all('SELECT CAST(AES_DECRYPT(usere, ?) AS CHAR) AS username FROM admin', [AES_KEY]);
 
-require __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="row">
   <div class="col-lg-3 col-6">
@@ -135,7 +135,7 @@ require __DIR__ . '/../includes/header.php';
               <tr>
                 <td><?= e($t['tanggal']) ?></td>
                 <td><?= e($t['usere']) ?></td>
-                <td><code class="small"><?= e(mb_strimwidth((string)$t['sqle'], 0, 180, '…')) ?></code></td>
+                <td><code class="small"><?= e(strlen((string)$t['sqle']) > 180 ? substr((string)$t['sqle'], 0, 180) . '…' : (string)$t['sqle']) ?></code></td>
               </tr>
             <?php endforeach; ?>
             <?php if (!$tracerSql): ?>
@@ -199,4 +199,4 @@ require __DIR__ . '/../includes/header.php';
     <?php endif; ?>
   </div>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

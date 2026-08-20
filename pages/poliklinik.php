@@ -50,7 +50,7 @@ if ($action === 'form') {
     if (!$poli) {
         $poli = ['kd_poli' => '', 'nm_poli' => '', 'registrasi' => 0, 'registrasilama' => 0, 'status' => '1'];
     }
-    require __DIR__ . '/../includes/header.php';
+    require_once __DIR__ . '/../includes/header.php';
     ?>
     <form method="post" action="<?= e(url('poliklinik')) ?>" class="card card-primary col-lg-6">
       <input type="hidden" name="act" value="save" />
@@ -89,13 +89,13 @@ if ($action === 'form') {
       </div>
     </form>
     <?php
-    require __DIR__ . '/../includes/footer.php';
+    require_once __DIR__ . '/../includes/footer.php';
     return;
 }
 
 $pageTitle = 'Data Poliklinik';
 $rows = db_all('SELECT * FROM poliklinik ORDER BY kd_poli');
-require __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="card">
   <div class="card-header">
@@ -129,4 +129,4 @@ require __DIR__ . '/../includes/header.php';
     </table>
   </div>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

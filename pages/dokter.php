@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'nm_dokter' => trim($_POST['nm_dokter'] ?? ''),
             'jk' => $_POST['jk'] ?? 'L',
             'tmp_lahir' => trim($_POST['tmp_lahir'] ?? ''),
-            'tgl_lahir' => $_POST['tgl_lahir'] ?: null,
+            'tgl_lahir' => ($_POST['tgl_lahir'] ?? '') ?: null,
             'gol_drh' => $_POST['gol_drh'] ?? '-',
             'agama' => strtoupper(trim($_POST['agama'] ?? '-')),
             'almt_tgl' => trim($_POST['almt_tgl'] ?? ''),
@@ -105,7 +105,7 @@ if ($action === 'form') {
         ];
     }
     $spesialis = db_all('SELECT kd_sps, nm_sps FROM spesialis ORDER BY nm_sps');
-    require __DIR__ . '/../includes/header.php';
+    require_once __DIR__ . '/../includes/header.php';
     ?>
     <form method="post" action="<?= e(url('dokter')) ?>" class="card card-primary">
       <input type="hidden" name="act" value="save" />
@@ -202,7 +202,7 @@ if ($action === 'form') {
       </div>
     </form>
     <?php
-    require __DIR__ . '/../includes/footer.php';
+    require_once __DIR__ . '/../includes/footer.php';
     return;
 }
 
@@ -222,7 +222,7 @@ $rows = db_all(
      $where ORDER BY d.kd_dokter LIMIT $perPage OFFSET $offset",
     $params
 );
-require __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="card">
   <div class="card-header">
@@ -268,4 +268,4 @@ require __DIR__ . '/../includes/header.php';
   </div>
   <div class="card-footer d-flex justify-content-end"><?= paginate($total, $perPage, $hal, 'dokter', ['q' => $q]) ?></div>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

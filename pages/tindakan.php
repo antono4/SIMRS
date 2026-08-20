@@ -2,7 +2,7 @@
 // Modul Tindakan/Perawatan Rawat Jalan — rawat_jl_dr & rawat_jl_pr
 declare(strict_types=1);
 
-require __DIR__ . '/../includes/kunjungan.php';
+require_once __DIR__ . '/../includes/kunjungan.php';
 
 $noRawat = $_GET['no_rawat'] ?? $_POST['no_rawat'] ?? '';
 $kunjungan = $noRawat ? kunjungan_load($noRawat) : null;
@@ -21,8 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', 'Jenis perawatan tidak valid.');
             redirect(url('tindakan', ['no_rawat' => $noRawat]));
         }
-        $tgl = $_POST['tgl_perawatan'] ?: date('Y-m-d');
-        $jam = $_POST['jam_rawat'] ?: date('H:i:s');
+        $tgl = ($_POST['tgl_perawatan'] ?? '') ?: date('Y-m-d');
+        $jam = ($_POST['jam_rawat'] ?? '') ?: date('H:i:s');
 
         if ($jenis === 'dr') {
             $pelaksana = $_POST['kd_dokter'] ?? '';
@@ -95,7 +95,7 @@ if (!$perawatan) {
 $dokterList = db_all("SELECT kd_dokter, nm_dokter FROM dokter WHERE status='1' ORDER BY nm_dokter");
 $petugasList = db_all("SELECT nip, nama FROM petugas WHERE status='1' ORDER BY nama");
 
-require __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 kunjungan_card($kunjungan);
 
 $renderTabel = function (array $rows, string $jenis) use ($noRawat): void {
@@ -216,4 +216,4 @@ document.getElementById("jenisPelaksana").addEventListener("change", function ()
   document.getElementById("wrapPetugas").classList.toggle("d-none", this.value !== "pr");
 });
 </script>';
-require __DIR__ . '/../includes/footer.php';
+require_once __DIR__ . '/../includes/footer.php';
