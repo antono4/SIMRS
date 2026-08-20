@@ -72,7 +72,7 @@ Aplikasi web menjadi **satu aplikasi web** berbasis **PHP murni**, **UI AdminLTE
    ```sql
    INSERT INTO admin VALUES (AES_ENCRYPT('admin','nur'), AES_ENCRYPT('admin','nur'));
    ```
-Untuk XAMPP (Apache), cukup letakkan folder ini di `htdocs/SIMRS` lalu buka `http://localhost/SIMRS`. Untuk server bawaan PHP, jalankan:
+Untuk XAMPP (Apache), cukup letakkan folder ini di `htdocs/SIMRS` lalu buka `http://localhost/SIMRS` (hasilnya otomatis ke `index.php`). Pastikan XAMPP mengizinkan penggunaan `.htaccess` (bawaan: ya). Untuk server bawaan PHP, jalankan:
    ```bash
    php -S 0.0.0.0:12000 -t /path/ke/proyek
    ```

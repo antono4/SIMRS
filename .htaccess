@@ -1,18 +1,13 @@
 # SIMRS Web — konfigurasi Apache (XAMPP)
-# Aplikasi memakai index.php?page=..., sehingga tidak wajib rewrite.
-# Blok akses langsung ke berkas sensitif.
-<FilesMatch "^\.">
-    Require all denied
-</FilesMatch>
-<FilesMatch "\.(sql|lock|log|md)$">
-    Require all denied
-</FilesMatch>
-
-# Lindungi folder database dari akses web
-RedirectMatch 403 ^.*/database/.*$
-
-# Halaman default
+# Selalu arahkan ke index.php sehingga akses "localhost/SIMRS" langsung bekerja.
 DirectoryIndex index.php
+
+# Lindungi folder database & berkas sensitif dari akses web
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule (^|/)database/ - [F,L]
+    RewriteRule \.(sql|lock|log)$ - [F,L]
+</IfModule>
 
 # Charset bawaan
 AddDefaultCharset UTF-8
