@@ -48,7 +48,10 @@ $dbErr = '';
 $jumlahTabel = 0;
 if ($step >= 2) {
     try {
-        $jumlahTabel = (int)db_val("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ?", [DB_NAME]);
+        $pdoTest = db(true); // koneksi tanpa memilih database
+        $stmt = $pdoTest->prepare("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ?");
+        $stmt->execute([DB_NAME]);
+        $jumlahTabel = (int)$stmt->fetchColumn();
         $dbOk = true;
     } catch (Throwable $e) {
         $dbErr = $e->getMessage();
@@ -63,15 +66,12 @@ if ($step >= 3 && ($_GET['aksi'] ?? '') === 'impor') {
         $importLog = "Berkas database/sik.sql tidak ditemukan.";
     } else {
         try {
-            $pdo = new PDO(
-                'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';charset=' . DB_CHARSET,
-                DB_USER,
-                DB_PASS,
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
-            $sql = file_get_contents($sqlFile);
+            // Koneksi TANPA database agar bisa membuat database sik bila belum ada
+            $pdo = db(true); // koneksi tanpa database
+            $pdo->exec("CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` CHARACTER SET latin1 COLLATE latin1_swedish_ci");
+            $pdo->exec("USE `" . DB_NAME . "`");
             $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
-            $pdo->exec($sql);
+            $pdo->exec((string)file_get_contents($sqlFile));
             $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
             $jumlahTabel = (int)db_val("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ?", [DB_NAME]);
             $importLog = "Impor berhasil. Jumlah tabel: $jumlahTabel.";

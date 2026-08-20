@@ -6,7 +6,11 @@ function setting_rs(): array
 {
     static $setting = null;
     if ($setting === null) {
-        $setting = db_row('SELECT nama_instansi, alamat_instansi, kabupaten, propinsi, kontak, email FROM setting LIMIT 1') ?? [];
+        try {
+            $setting = db_row('SELECT nama_instansi, alamat_instansi, kabupaten, propinsi, kontak, email FROM setting LIMIT 1') ?? [];
+        } catch (Throwable) {
+            $setting = [];
+        }
     }
     return $setting;
 }
