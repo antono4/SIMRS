@@ -48,7 +48,7 @@ $terakhir = db_all(
      ORDER BY rp.tgl_registrasi DESC, rp.jam_reg DESC LIMIT 8"
 );
 
-$pageScripts = '<script src="<?= asset('chartjs/chart.umd.js') ?>"></script>
+$pageScripts = '<script src="assets/chartjs/chart.umd.js"></script>
 <script>
 new Chart(document.getElementById("chartKunjungan"), {
   type: "line",

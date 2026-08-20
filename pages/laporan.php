@@ -36,7 +36,7 @@ $perBayar = db_all(
 $totalKunjungan = array_sum(array_column($perPoli, 'jml'));
 $totalPendapatan = array_sum(array_map('floatval', array_column($perPoli, 'pendapatan')));
 
-$pageScripts = '<script src="<?= asset('chartjs/chart.umd.js') ?>"></script>
+$pageScripts = '<script src="assets/chartjs/chart.umd.js"></script>
 <script>
 new Chart(document.getElementById("chartBayar"), {
   type: "doughnut",
