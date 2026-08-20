@@ -1,5 +1,5 @@
 <?php
-// Modul Pengaturan Instansi — tabel setting Khanza
+// Modul Pengaturan Instansi — tabel setting aplikasi
 declare(strict_types=1);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['act'] ?? '') === 'save') {

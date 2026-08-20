@@ -1,5 +1,5 @@
 <?php
-// Modul Registrasi Kunjungan — tabel reg_periksa (logika mengikuti DlgReg SIMRS Khanza)
+// Modul Registrasi Kunjungan — tabel reg_periksa (logika mengikuti DlgReg SIMRS)
 declare(strict_types=1);
 
 $action = $_GET['action'] ?? 'list';
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect(url('registrasi', ['action' => 'form']));
         }
 
-        // No. Rawat: yyyy/mm/dd/ + nomor urut 6 digit (ala Khanza)
+        // No. Rawat: yyyy/mm/dd/ + nomor urut 6 digit (ala sistem)
         $prefix = date('Y/m/d', strtotime($tgl)) . '/';
         $last = db_val('SELECT no_rawat FROM reg_periksa WHERE no_rawat LIKE ? ORDER BY no_rawat DESC LIMIT 1', [$prefix . '%']);
         $noRawat = $prefix . str_pad((string)((int)substr((string)$last, -6) + 1), 6, '0', STR_PAD_LEFT);
@@ -172,7 +172,7 @@ if ($action === 'form') {
               </div>
             </div>
             <p class="text-muted small mt-3 mb-0">
-              No. Rawat, No. Urut, status pasien baru/lama, dan biaya registrasi dihitung otomatis mengikuti aturan SIMRS Khanza.
+              No. Rawat, No. Urut, status pasien baru/lama, dan biaya registrasi dihitung otomatis mengikuti aturan SIMRS.
             </p>
           </div>
           <div class="card-footer">

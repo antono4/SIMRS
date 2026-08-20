@@ -1,13 +1,13 @@
-# SIMRS Khanza Web (PHP + AdminLTE 4 + MySQL)
+# SIMRS Web (PHP + AdminLTE 4 + MySQL)
 
-Pengembangan ulang [SIMRS-Khanza](https://github.com/mas-elkhanza/SIMRS-Khanza) (aplikasi desktop Java Swing) menjadi **satu aplikasi web** berbasis **PHP murni**, **UI AdminLTE 4 (Bootstrap 5)**, dan **database MySQL** — tetap memakai skema database asli `sik` sehingga **kompatibel penuh** dengan database SIMRS Khanza yang sudah ada.
+Aplikasi web menjadi **satu aplikasi web** berbasis **PHP murni**, **UI AdminLTE 4 (Bootstrap 5)**, dan **database MySQL** — tetap memakai skema database asli `sik` sehingga **kompatibel penuh** dengan database SIMRS yang sudah ada.
 
 ## Fitur
 
 | Modul | Keterangan |
 |---|---|
-| Login | Kompatibel tabel `admin`/`user` Khanza (AES key `nur`). Akun bawaan: `admin` / `admin` |
-| User Level / Hak Akses | Izin per modul memakai kolom `enum('true','false')` pada tabel `user` Khanza; superuser (tabel `admin`) akses penuh; menu otomatis disaring, akses URL tanpa izin ditolak (403) |
+| Login | Kompatibel tabel `admin`/`user` sistem (AES key `nur`). Akun bawaan: `admin` / `admin` |
+| User Level / Hak Akses | Izin per modul memakai kolom `enum('true','false')` pada tabel `user` sistem; superuser (tabel `admin`) akses penuh; menu otomatis disaring, akses URL tanpa izin ditolak (403) |
 | Manajemen Pengguna | CRUD pengguna terenkripsi AES + pengaturan hak akses per modul |
 | Pengaturan Instansi | Edit nama RS, alamat, kabupaten, propinsi, kontak, email (tabel `setting`); nama RS tampil di sidebar, judul, login, dan footer |
 | Skin Siang/Malam | Tombol di navbar & halaman login; default siang; pilihan tersimpan di `localStorage` (`sk-theme`) dan diterapkan sebelum render (tanpa kedip) |
@@ -17,7 +17,7 @@ Pengembangan ulang [SIMRS-Khanza](https://github.com/mas-elkhanza/SIMRS-Khanza) 
 | Master Poliklinik | CRUD + tarif registrasi baru/lama |
 | Master Penjab | CRUD cara bayar/penanggung jawab |
 | Master Tarif Perawatan | CRUD tarif tindakan (`jns_perawatan`) per kategori, poli, dan cara bayar |
-| Registrasi | Kunjungan rawat jalan/inap dengan logika ala Khanza (lihat di bawah) |
+| Registrasi | Kunjungan rawat jalan/inap dengan logika ala sistem (lihat di bawah) |
 | Tindakan/Perawatan | Tindakan dokter & perawat per kunjungan (`rawat_jl_dr`, `rawat_jl_pr`) dengan tarif otomatis sesuai poli & cara bayar |
 | Diagnosa ICD-10 | Pencarian 40.000+ diagnosa (`penyakit`), prioritas otomatis, status penyakit baru/lama |
 | Resep Obat | Buat resep (format `yyyymmddNNNN`), tambah obat dari `databarang`, aturan pakai, penyerahan obat |
@@ -25,7 +25,7 @@ Pengembangan ulang [SIMRS-Khanza](https://github.com/mas-elkhanza/SIMRS-Khanza) 
 | Kasir / Billing | Daftar tagihan semua kunjungan + rincian per kunjungan (registrasi + tindakan + obat + kamar), proses pembayaran dengan penerbitan `nota_jalan`, pembatalan pembayaran |
 | Laporan | Kunjungan per periode: per poli, per dokter, distribusi cara bayar |
 
-## Logika bisnis yang direplikasi dari SIMRS Khanza
+## Logika bisnis yang direplikasi dari SIMRS
 
 - **No. Rawat**: format `yyyy/mm/dd/NNNNNN` (nomor urut 6 digit per tanggal)
 - **No. Urut (no_reg)**: urutan 3 digit per dokter per tanggal
@@ -46,7 +46,7 @@ Pengembangan ulang [SIMRS-Khanza](https://github.com/mas-elkhanza/SIMRS-Khanza) 
 ├── config.php           # Konfigurasi DB & aplikasi
 ├── includes/
 │   ├── db.php           # Koneksi PDO MySQL + helper query
-│   ├── auth.php         # Autentikasi kompatibel Khanza
+│   ├── auth.php         # Autentikasi kompatibel sistem
 │   ├── helpers.php      # Helper (escape, flash, paginasi, umur, dll)
 │   ├── header.php       # Layout AdminLTE 4 (navbar + sidebar)
 │   └── footer.php
@@ -59,10 +59,10 @@ Pengembangan ulang [SIMRS-Khanza](https://github.com/mas-elkhanza/SIMRS-Khanza) 
 ## Instalasi
 
 1. Siapkan PHP 8.x (`php-cli`, `php-mysql`) dan MySQL/MariaDB.
-2. Buat database dan impor skema asli Khanza:
+2. Buat database dan impor skema asli sistem:
    ```bash
    mysql -e "CREATE DATABASE sik CHARACTER SET latin1 COLLATE latin1_swedish_ci"
-   mysql sik < sik.sql   # dari repo SIMRS-Khanza (1.182 tabel)
+   mysql sik < sik.sql   # dari repo SIMRS (1.182 tabel)
    ```
 3. Sesuaikan kredensial di `config.php` (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`).
 4. Tambahkan akun admin (bila database kosong):
@@ -77,6 +77,6 @@ Pengembangan ulang [SIMRS-Khanza](https://github.com/mas-elkhanza/SIMRS-Khanza) 
 
 ## Catatan
 
-- Charset database memakai `latin1` sesuai skema asli Khanza.
+- Charset database memakai `latin1` sesuai skema asli sistem.
 - Semua aset frontend disajikan lokal (tanpa CDN).
 - Modul dapat dikembangkan lebih lanjut (tindakan, resep, kasir, kamar inap, dsb.) dengan pola yang sama: tambah file di `pages/` dan daftarkan di `$routes` pada `index.php`.

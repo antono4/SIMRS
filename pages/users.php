@@ -1,9 +1,9 @@
 <?php
-// Modul Manajemen Pengguna & Hak Akses — tabel user Khanza (id_user/password terenkripsi AES 'nur')
+// Modul Manajemen Pengguna & Hak Akses — tabel user aplikasi (id_user/password terenkripsi AES 'nur')
 declare(strict_types=1);
 
 $action = $_GET['action'] ?? 'list';
-$key = KHANZA_AES_KEY;
+$key = AES_KEY;
 
 function user_columns(): array
 {
@@ -135,7 +135,7 @@ if ($action === 'form') {
           </div>
         </div>
         <h5>Hak Akses Modul</h5>
-        <p class="text-muted small">Centang modul yang boleh diakses pengguna ini. Izin disimpan di tabel <code>user</code> yang sama dengan SIMRS Khanza.</p>
+        <p class="text-muted small">Centang modul yang boleh diakses pengguna ini. Izin disimpan di tabel <code>user</code> yang sama dengan SIMRS.</p>
         <div class="row">
           <?php foreach (PERMISSION_CATALOG as $flag => $label): ?>
             <div class="col-md-6">

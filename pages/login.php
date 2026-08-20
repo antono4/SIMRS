@@ -118,7 +118,7 @@ $alamatRs = trim(($rs['alamat_instansi'] ?? '') . ' ' . ($rs['kabupaten'] ?? '')
         <div class="d-flex flex-column gap-2 mt-4">
           <div class="hero-feature"><i class="bi bi-clipboard2-pulse"></i><span>Pendaftaran, tindakan, diagnosa &amp; resep dalam satu alur</span></div>
           <div class="hero-feature"><i class="bi bi-hospital"></i><span>Manajemen kamar inap &amp; kasir terintegrasi</span></div>
-          <div class="hero-feature"><i class="bi bi-shield-check"></i><span>Hak akses bertingkat &amp; kompatibel database SIMRS Khanza</span></div>
+          <div class="hero-feature"><i class="bi bi-shield-check"></i><span>Hak akses bertingkat &amp; kompatibel database SIMRS</span></div>
         </div>
       </div>
     </div>
@@ -156,7 +156,7 @@ $alamatRs = trim(($rs['alamat_instansi'] ?? '') . ' ' . ($rs['kabupaten'] ?? '')
           <hr class="my-4" />
           <p class="text-center text-body-secondary small mb-0">
             Akun bawaan <code>admin</code> / <code>admin</code><br />
-            Kompatibel tabel <code>admin</code> &amp; <code>user</code> SIMRS Khanza
+            Kompatibel tabel <code>admin</code> &amp; <code>user</code> SIMRS
           </p>
         </div>
       </div>

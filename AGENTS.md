@@ -1,11 +1,11 @@
-# AGENTS.md — SIMRS Khanza Web
+# AGENTS.md — SIMRS Web
 
-Aplikasi web PHP (AdminLTE 4 + MySQL) hasil pengembangan ulang SIMRS-Khanza (Java).
+Aplikasi web PHP (AdminLTE 4 + MySQL) hasil pengembangan ulang SIMRS (Java).
 
 ## Fakta Penting
-- Database: `sik` di MariaDB lokal, user `sik`/`sikhanza`, charset `latin1` (skema asli Khanza, 1.182 tabel).
-- Skema sumber: `/workspace/khanza-src/sik.sql` (clone SIMRS-Khanza ada di `/workspace/khanza-src`).
-- Login kompatibel Khanza: tabel `admin`/`user`, `AES_DECRYPT(kolom,'nur')`. Akun bawaan: admin/admin.
+- Database: `sik` di MariaDB lokal, user `root` tanpa password, charset `latin1` (skema asli sistem, 1.182 tabel).
+- Skema sumber: `/workspace/simrs-src/sik.sql` (clone SIMRS ada di `/workspace/simrs-src`).
+- Login kompatibel sistem: tabel `admin`/`user`, `AES_DECRYPT(kolom,'nur')`. Akun bawaan: admin/admin.
 - Menjalankan aplikasi: `cd /workspace/project && php -S 0.0.0.0:12000` (work host port 12000).
 - MariaDB dijalankan dengan `sudo service mariadb start`; akses root via `sudo mysql`.
 
@@ -14,7 +14,7 @@ Aplikasi web PHP (AdminLTE 4 + MySQL) hasil pengembangan ulang SIMRS-Khanza (Jav
 - Layout: `includes/header.php` + `includes/footer.php` (butuh `$pageTitle`, opsional `$pageScripts`).
 - DB: helper `db_all/db_row/db_val/db_exec` di `includes/db.php` (PDO prepared statements).
 - Pola modul: blok POST handler di atas (act=save/delete/status) → redirect; blok `action=form`; blok daftar.
-- Logika registrasi mengikuti Khanza: no_rawat `yyyy/mm/dd/NNNNNN`, no_reg urut per dokter/tanggal,
+- Logika registrasi mengikuti sistem: no_rawat `yyyy/mm/dd/NNNNNN`, no_reg urut per dokter/tanggal,
   stts_daftar Baru/Lama, biaya dari `poliklinik.registrasi(lama)`, umur Th/Bl/Hr.
 - Tabel `pasien` punya FK ke `penjab.kd_pj` — kd_pj harus valid.
 - Modul klinis per kunjungan (tindakan, diagnosa, resep, kasir) memakai `includes/kunjungan.php`

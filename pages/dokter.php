@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         [
                             $kd, $data['nm_dokter'], $data['jk'] === 'P' ? 'Wanita' : 'Pria',
                             $data['kd_sps'] !== '-' && $data['kd_sps'] !== '' ? 'DOKTER SPESIALIS' : 'DOKTER',
-                            // Nilai FK harus ada di tabel referensi Khanza
+                            // Nilai FK harus ada di tabel referensi
                             'DIRU', 'KP', 'IV', 'III', 'DOK', '-',
                             '-', '-', '-', '-', 0,
                             $data['tmp_lahir'] !== '' ? $data['tmp_lahir'] : '-',

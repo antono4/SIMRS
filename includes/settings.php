@@ -1,5 +1,5 @@
 <?php
-// Pengaturan instansi — tabel setting Khanza (nama_instansi, alamat, dll)
+// Pengaturan instansi — tabel setting aplikasi (nama_instansi, alamat, dll)
 declare(strict_types=1);
 
 function setting_rs(): array

@@ -95,7 +95,7 @@ if ($action === 'form') {
     $pasien = $rm ? db_row('SELECT * FROM pasien WHERE no_rkm_medis = ?', [$rm]) : null;
 
     if (!$pasien) {
-        // Nomor RM otomatis ala Khanza: nomor terakhir + 1, 6 digit
+        // Nomor RM otomatis ala sistem: nomor terakhir + 1, 6 digit
         $last = db_val("SELECT no_rkm_medis FROM pasien WHERE no_rkm_medis REGEXP '^[0-9]+$' ORDER BY CAST(no_rkm_medis AS UNSIGNED) DESC LIMIT 1");
         $nextRm = str_pad((string)((int)$last + 1), 6, '0', STR_PAD_LEFT);
         $pasien = [

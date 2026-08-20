@@ -1,5 +1,5 @@
 <?php
-// Otorisasi / user level — memetakan halaman aplikasi ke kolom izin tabel `user` Khanza
+// Otorisasi / user level — memetakan halaman aplikasi ke kolom izin tabel `user`
 declare(strict_types=1);
 
 // Halaman => kolom izin pada tabel user (null = bebas untuk semua yang login)
@@ -43,7 +43,7 @@ function auth_can(string $page): bool
         return false;
     }
     if (($user['role'] ?? '') === 'admin') {
-        return true; // superuser Khanza: akses penuh
+        return true; // superuser: akses penuh
     }
     $flag = PAGE_PERMISSIONS[$page] ?? null;
     if ($flag === null) {

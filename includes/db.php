@@ -1,5 +1,5 @@
 <?php
-// Koneksi database MySQL (PDO) ke skema "sik" milik SIMRS Khanza
+// Koneksi database MySQL (PDO) ke skema "sik" milik SIMRS
 declare(strict_types=1);
 
 function db(): PDO

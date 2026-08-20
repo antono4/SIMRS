@@ -1,28 +1,28 @@
 <?php
-// Autentikasi kompatibel Khanza: tabel admin/user dienkripsi AES dengan kunci 'nur'
+// Autentikasi kompatibel skema bawaan: tabel admin/user dienkripsi AES dengan kunci 'nur'
 declare(strict_types=1);
 
 function auth_attempt(string $username, string $password): bool
 {
-    // Superuser Khanza (tabel admin)
+    // Superuser (tabel admin)
     $row = db_row(
         "SELECT CAST(AES_DECRYPT(usere, ?) AS CHAR) AS usr
          FROM admin
          WHERE CAST(AES_DECRYPT(usere, ?) AS CHAR) = ?
            AND CAST(AES_DECRYPT(passworde, ?) AS CHAR) = ?",
-        [KHANZA_AES_KEY, KHANZA_AES_KEY, $username, KHANZA_AES_KEY, $password]
+        [AES_KEY, AES_KEY, $username, AES_KEY, $password]
     );
     if ($row !== null) {
         $_SESSION['auth'] = ['username' => $username, 'role' => 'admin'];
         return true;
     }
 
-    // User/petugas Khanza (tabel user) — sekaligus ambil seluruh izin modulnya
+    // User/petugas (tabel user) — sekaligus ambil seluruh izin modulnya
     $row = db_row(
         "SELECT * FROM user
          WHERE CAST(AES_DECRYPT(id_user, ?) AS CHAR) = ?
            AND CAST(AES_DECRYPT(password, ?) AS CHAR) = ?",
-        [KHANZA_AES_KEY, $username, KHANZA_AES_KEY, $password]
+        [AES_KEY, $username, AES_KEY, $password]
     );
     if ($row !== null) {
         $permissions = [];

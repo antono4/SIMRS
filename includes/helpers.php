@@ -46,7 +46,7 @@ function tgl_indo(?string $tanggal): string
 
 function umur_dari(?string $tglLahir): array
 {
-    // Mengembalikan [umur, sttsumur] ala Khanza (Th/Bl/Hr)
+    // Mengembalikan [umur, sttsumur] ala sistem (Th/Bl/Hr)
     if (!$tglLahir || $tglLahir === '0000-00-00') {
         return [0, 'Th'];
     }

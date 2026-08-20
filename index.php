@@ -1,5 +1,5 @@
 <?php
-// Front controller SIMRS Khanza Web
+// Front controller SIMRS Web
 declare(strict_types=1);
 
 require __DIR__ . '/config.php';

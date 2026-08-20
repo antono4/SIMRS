@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $act = $_POST['act'] ?? '';
 
     if ($act === 'buat') {
-        // No. resep ala Khanza: yyyymmdd + urutan 4 digit per tanggal
+        // No. resep ala sistem: yyyymmdd + urutan 4 digit per tanggal
         $tgl = date('Y-m-d');
         $prefix = date('Ymd');
         $last = db_val('SELECT no_resep FROM resep_obat WHERE no_resep LIKE ? ORDER BY no_resep DESC LIMIT 1', [$prefix . '%']);
