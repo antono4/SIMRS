@@ -5,8 +5,8 @@ declare(strict_types=1);
 define('DB_HOST', '127.0.0.1');
 define('DB_PORT', '3306');
 define('DB_NAME', 'sik');
-define('DB_USER', 'sik');
-define('DB_PASS', 'sikhanza');
+define('DB_USER', 'root');
+define('DB_PASS', '');
 define('DB_CHARSET', 'latin1'); // skema asli Khanza memakai latin1
 
 define('APP_NAME', 'SIMRS Khanza Web');
