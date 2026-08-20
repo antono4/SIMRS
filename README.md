@@ -80,3 +80,5 @@ Aplikasi web menjadi **satu aplikasi web** berbasis **PHP murni**, **UI AdminLTE
 - Charset database memakai `latin1` sesuai skema asli sistem.
 - Semua aset frontend disajikan lokal (tanpa CDN).
 - Modul dapat dikembangkan lebih lanjut (tindakan, resep, kasir, kamar inap, dsb.) dengan pola yang sama: tambah file di `pages/` dan daftarkan di `$routes` pada `index.php`.
+
+- ----------------------------------------------------
