@@ -49,11 +49,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             db_exec("UPDATE dokter SET $set WHERE kd_dokter = :kd_dokter", $data);
             flash_set('success', "Data dokter $kd diperbarui.");
         } else {
-            $data['kd_dokter'] = $kd;
-            $cols = implode(', ', array_keys($data));
-            $marks = ':' . implode(', :', array_keys($data));
-            db_exec("INSERT INTO dokter ($cols) VALUES ($marks)", $data);
-            flash_set('success', "Dokter baru ($kd) ditambahkan.");
+            $pdo = db();
+            $pdo->beginTransaction();
+            try {
+                // FK dokter_ibfk_3: kd_dokter wajib terdaftar sebagai pegawai.nik — buat otomatis bila belum ada
+                $adaPegawai = (int)db_val('SELECT COUNT(*) FROM pegawai WHERE nik = ?', [$kd]);
+                if ($adaPegawai === 0) {
+                    db_exec(
+                        'INSERT INTO pegawai
+                         (nik, nama, jk, jbtn, jnj_jabatan, kode_kelompok, kode_resiko, kode_emergency, departemen, bidang,
+                          stts_wp, stts_kerja, npwp, pendidikan, gapok, tmp_lahir, tgl_lahir, alamat, kota, mulai_kerja,
+                          ms_kerja, indexins, bpd, rekening, stts_aktif, wajibmasuk, pengurang, indek, mulai_kontrak,
+                          cuti_diambil, dankes, photo, no_ktp)
+                         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                        [
+                            $kd, $data['nm_dokter'], $data['jk'] === 'P' ? 'Wanita' : 'Pria',
+                            $data['kd_sps'] !== '-' && $data['kd_sps'] !== '' ? 'DOKTER SPESIALIS' : 'DOKTER',
+                            // Nilai FK harus ada di tabel referensi Khanza
+                            'DIRU', 'KP', 'IV', 'III', 'DOK', '-',
+                            '-', '-', '-', '-', 0,
+                            $data['tmp_lahir'] !== '' ? $data['tmp_lahir'] : '-',
+                            $data['tgl_lahir'] ?: date('Y-m-d'),
+                            $data['almt_tgl'] !== '' ? $data['almt_tgl'] : '-', '-', date('Y-m-d'),
+                            '<1', '-', 'T', '-', 'AKTIF', 0, 0, 0, '1900-01-01',
+                            0, 0, '-', '-',
+                        ]
+                    );
+                }
+                $data['kd_dokter'] = $kd;
+                $cols = implode(', ', array_keys($data));
+                $marks = ':' . implode(', :', array_keys($data));
+                db_exec("INSERT INTO dokter ($cols) VALUES ($marks)", $data);
+                $pdo->commit();
+            } catch (Throwable $e) {
+                $pdo->rollBack();
+                throw $e;
+            }
+            flash_set('success', "Dokter baru ($kd) ditambahkan" . ($adaPegawai === 0 ? ' sekaligus sebagai pegawai.' : '.'));
         }
         redirect(url('dokter'));
     }
@@ -84,6 +116,9 @@ if ($action === 'form') {
           <div class="col-md-3">
             <label class="form-label">Kode Dokter</label>
             <input class="form-control" name="kd_dokter" value="<?= e($dokter['kd_dokter']) ?>" <?= $kd ? 'readonly' : '' ?> required />
+            <?php if (!$kd): ?>
+              <div class="form-text">Otomatis didaftarkan juga sebagai pegawai (NIK) bila belum ada.</div>
+            <?php endif; ?>
           </div>
           <div class="col-md-5">
             <label class="form-label">Nama Dokter *</label>
