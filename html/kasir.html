@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Dashboard | SIMRS Web</title>
+  <title>Kasir / Billing | SIMRS Web</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script>
     (function () {
@@ -41,7 +41,7 @@
     <div class="sidebar-wrapper">
       <nav class="mt-2">
         <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false" id="navigation">
-          <li class="nav-item"><a href="./index.html" class="nav-link  active"><i class="nav-icon bi bi-speedometer2"></i><p>Dashboard</p></a></li>
+          <li class="nav-item"><a href="./index.html" class="nav-link "><i class="nav-icon bi bi-speedometer2"></i><p>Dashboard</p></a></li>
           <li class="nav-item ">
             <a href="#" class="nav-link "><i class="nav-icon bi bi-database"></i><p>Master Data<i class="nav-arrow bi bi-chevron-right"></i></p></a>
             <ul class="nav nav-treeview">
@@ -55,7 +55,7 @@
           <li class="nav-item"><a href="./registrasi.html" class="nav-link "><i class="nav-icon bi bi-clipboard2-plus"></i><p>Registrasi</p></a></li>
           <li class="nav-item"><a href="./kamarinap.html" class="nav-link "><i class="nav-icon bi bi-hospital"></i><p>Kamar Inap</p></a></li>
           <li class="nav-item"><a href="./tindakan.html" class="nav-link "><i class="nav-icon bi bi-bandaid"></i><p>Tindakan</p></a></li>
-          <li class="nav-item"><a href="./kasir.html" class="nav-link "><i class="nav-icon bi bi-cash-coin"></i><p>Kasir / Billing</p></a></li>
+          <li class="nav-item"><a href="./kasir.html" class="nav-link  active"><i class="nav-icon bi bi-cash-coin"></i><p>Kasir / Billing</p></a></li>
           <li class="nav-item"><a href="./laporan.html" class="nav-link "><i class="nav-icon bi bi-bar-chart"></i><p>Laporan Kunjungan</p></a></li>
           <li class="nav-item"><a href="./users.html" class="nav-link "><i class="nav-icon bi bi-person-gear"></i><p>Pengguna</p></a></li>
           <li class="nav-item"><a href="./pengaturan.html" class="nav-link "><i class="nav-icon bi bi-gear"></i><p>Pengaturan</p></a></li>
@@ -68,12 +68,12 @@
     <div class="app-content-header">
       <div class="container-fluid">
         <div class="row align-items-center">
-          <div class="col-sm-6"><h3 class="mb-0 fw-bold">Dashboard</h3></div>
+          <div class="col-sm-6"><h3 class="mb-0 fw-bold">Kasir / Billing</h3></div>
           <div class="col-sm-6">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb float-sm-end mb-0 bg-body px-3 py-2 rounded-pill shadow-sm">
                 <li class="breadcrumb-item"><a href="./index.html"><i class="bi bi-house-door me-1"></i>Beranda</a></li>
-                <li class="breadcrumb-item active">Dashboard</li>
+                <li class="breadcrumb-item active">Kasir / Billing</li>
               </ol>
             </nav>
           </div>
@@ -82,84 +82,52 @@
     </div>
     <div class="app-content">
       <div class="container-fluid">
-
-    <div class="app-content-header">
-      <div class="container-fluid">
-        <div class="row align-items-center">
-          <div class="col-sm-6"><h3 class="mb-0 fw-bold">Dashboard</h3></div>
-          <div class="col-sm-6">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb float-sm-end mb-0 bg-body px-3 py-2 rounded-pill shadow-sm">
-                <li class="breadcrumb-item"><a href="./index.html"><i class="bi bi-house-door me-1"></i>Beranda</a></li>
-                <li class="breadcrumb-item active">Dashboard</li>
-              </ol>
-            </nav>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="app-content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-lg-3 col-6">
-            <div class="small-box text-bg-primary"><div class="inner"><h3>10,019</h3><p>Total Pasien</p></div><i class="small-box-icon bi bi-people"></i><a href="./pasien.html" class="small-box-footer link-light">Lihat <i class="bi bi-arrow-right-circle"></i></a></div>
-          </div>
-          <div class="col-lg-3 col-6">
-            <div class="small-box text-bg-success"><div class="inner"><h3>2</h3><p>Kunjungan Hari Ini</p></div><i class="small-box-icon bi bi-clipboard2-pulse"></i><a href="#" class="small-box-footer link-light">Lihat <i class="bi bi-arrow-right-circle"></i></a></div>
-          </div>
-          <div class="col-lg-3 col-6">
-            <div class="small-box text-bg-warning"><div class="inner"><h3>5</h3><p>Dokter Aktif</p></div><i class="small-box-icon bi bi-heart-pulse"></i><a href="#" class="small-box-footer link-dark">Lihat <i class="bi bi-arrow-right-circle"></i></a></div>
-          </div>
-          <div class="col-lg-3 col-6">
-            <div class="small-box text-bg-danger"><div class="inner"><h3>22</h3><p>Poliklinik Aktif</p></div><i class="small-box-icon bi bi-hospital"></i><a href="#" class="small-box-footer link-light">Lihat <i class="bi bi-arrow-right-circle"></i></a></div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-7">
-            <div class="card mb-4">
-              <div class="card-header"><h3 class="card-title">Kunjungan 14 Hari Terakhir</h3></div>
-              <div class="card-body"><canvas id="chartKunjungan" height="120"></canvas></div>
+        <div class="card card-outline card-primary mb-3">
+          <div class="card-body py-2">
+            <div class="row align-items-center">
+              <div class="col-md-4"><strong>Uji Coba Pasien Edit</strong> <span class="badge text-bg-secondary">999001</span><br /><small class="text-muted">L &middot; 36 Th &middot; 15 Mei 1990</small></div>
+              <div class="col-md-3"><small class="text-muted">No. Rawat</small><br /><strong>2026/08/20/000001</strong></div>
+              <div class="col-md-3"><small class="text-muted">ANA Poli Anak tr &middot; dr. Aisyah</small><br /><small class="text-muted">20 Agu 2026 02:13 &middot; UMUM</small></div>
+              <div class="col-md-2 text-md-end"><span class="badge text-bg-success">Sudah</span><br /><small class="text-muted">Ralan &middot; Sudah Bayar</small></div>
             </div>
-          </div>
-          <div class="col-lg-5">
-            <div class="card mb-4">
-              <div class="card-header"><h3 class="card-title">Kunjungan per Poli (Bulan Ini)</h3></div>
-              <div class="card-body"><canvas id="chartPoli" height="180"></canvas></div>
+            <div class="mt-2 border-top pt-2 d-flex flex-wrap gap-2">
+              <a class="btn btn-sm btn-outline-primary" href="./tindakan.html"><i class="bi bi-bandaid me-1"></i>Tindakan</a>
+              <a class="btn btn-sm btn-outline-danger" href="#"><i class="bi bi-clipboard2-pulse me-1"></i>Diagnosa</a>
+              <a class="btn btn-sm btn-outline-success" href="#"><i class="bi bi-capsule me-1"></i>Resep</a>
+              <a class="btn btn-sm btn-outline-warning" href="./kasir.html"><i class="bi bi-cash-coin me-1"></i>Kasir</a>
+              <a class="btn btn-sm btn-outline-secondary" href="./registrasi.html"><i class="bi bi-arrow-left me-1"></i>Kembali</a>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-lg-8">
-            <div class="card mb-4">
-              <div class="card-header"><h3 class="card-title">Registrasi Terakhir</h3></div>
-              <div class="card-body p-0">
+            <div class="card"><div class="card-header"><h3 class="card-title">Rincian Tagihan</h3></div>
+              <div class="card-body p-0 table-responsive">
                 <table class="table table-striped mb-0">
-                  <thead><tr><th>No. Rawat</th><th>Tanggal</th><th>Pasien</th><th>Poli</th><th>Dokter</th><th>Status</th></tr></thead>
+                  <thead><tr><th style="width:50px">No</th><th>Uraian</th><th class="text-end">Jml</th><th class="text-end">Biaya</th></tr></thead>
                   <tbody>
-                    <tr><td>2026/08/20/000002</td><td>20 Agu 2026 02:13</td><td>Uji Coba Pasien Edit</td><td>BEDAH SARAF</td><td>dr. Hilyatul Nadia</td><td><span class="badge text-bg-secondary">Dirawat</span></td></tr>
-                    <tr><td>2026/08/20/000001</td><td>20 Agu 2026 02:13</td><td>Uji Coba Pasien Edit</td><td>ANA Poli Anak tr</td><td>dr. Aisyah</td><td><span class="badge text-bg-success">Sudah</span></td></tr>
-                    <tr><td>2026/08/12/000792</td><td>12 Agu 2026 16:32</td><td>Fitri Sari</td><td>Poliklinik Syaraf</td><td>dr. Qotrunnada</td><td><span class="badge text-bg-success">Sudah</span></td></tr>
-                    <tr><td>2026/08/12/000342</td><td>12 Agu 2026 16:02</td><td>Agus Maharani</td><td>-</td><td>dr. Qotrunnada</td><td><span class="badge text-bg-success">Sudah</span></td></tr>
+                    <tr><td>1</td><td>Biaya Registrasi (Pasien Baru)</td><td class="text-end">1</td><td class="text-end">Rp 0</td></tr>
+                    <tr><td>2</td><td>Tindakan: Tarif Uji Coba Baru</td><td class="text-end">1</td><td class="text-end">Rp 0</td></tr>
+                    <tr><td>3</td><td>Obat: Alkohol 70% 5 liter OM</td><td class="text-end">2</td><td class="text-end">Rp 316.800</td></tr>
+                    <tr><td>4</td><td>Kamar Inap ANG.K1.002 (2 hari)</td><td class="text-end">2</td><td class="text-end">Rp 1.000.000</td></tr>
                   </tbody>
+                  <tfoot><tr class="table-primary"><th colspan="3">Total Tagihan</th><th class="text-end">Rp 1.316.800</th></tr></tfoot>
                 </table>
               </div>
             </div>
           </div>
           <div class="col-lg-4">
-            <div class="card text-bg-primary mb-4">
-              <div class="card-header"><h3 class="card-title">Ringkasan Hari Ini</h3></div>
+            <div class="card card-success"><div class="card-header"><h3 class="card-title">Pembayaran</h3></div>
               <div class="card-body">
-                <p class="mb-1"><i class="bi bi-person-walking me-2"></i>Rawat Jalan: <strong>1</strong></p>
-                <p class="mb-1"><i class="bi bi-hospital me-2"></i>Rawat Inap: <strong>1</strong></p>
-                <hr />
-                <p class="mb-0 small">Database: <code>sik</code> (1.182 tabel)</p>
+                <p class="mb-2">Cara Bayar: <strong>UMUM</strong></p>
+                <p class="mb-2">Status: <span class="badge text-bg-success">Sudah Bayar</span></p>
+                <p class="mb-2">No. Nota: <strong>2026/08/20/RJ001</strong><br /><small class="text-muted">20 Agu 2026 02:40</small></p>
+                <h4 class="mt-3">Rp 1.316.800</h4>
               </div>
+              <div class="card-footer"><button class="btn btn-outline-danger w-100"><i class="bi bi-arrow-counterclockwise me-1"></i>Batalkan Pembayaran</button></div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  
       </div>
     </div>
   </main>
@@ -172,7 +140,7 @@
 <script src="../assets/overlayscrollbars/overlayscrollbars.browser.es6.min.js"></script>
 <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/adminlte/js/adminlte.min.js"></script>
-<script src="../assets/chartjs/chart.umd.js"></script>
+
 <script>
   const sw = document.querySelector('.sidebar-wrapper');
   if (sw && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
