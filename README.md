@@ -1,87 +1,76 @@
-# SIMRS Web (PHP + AdminLTE 4 + MySQL)
+<!-- README ini dihasilkan otomatis oleh workflow .github/workflows/generate-readme.yml -->
+<!-- Jangan edit manual; perubahan akan ditim pada run berikutnya. -->
 
-Aplikasi web menjadi **satu aplikasi web** berbasis **PHP murni**, **UI AdminLTE 4 (Bootstrap 5)**, dan **database MySQL** — tetap memakai skema database asli `sik` sehingga **kompatibel penuh** dengan database SIMRS yang sudah ada.
+<h1 align="center">Project 👋</h1>
 
-## Fitur
+<p align="center">
+  <strong></strong>
+</p>
 
-| Modul | Keterangan |
-|---|---|
-| Login | Kompatibel tabel `admin`/`user` sistem (AES key `nur`). Akun bawaan: `admin` / `admin` |
-| User Level / Hak Akses | Izin per modul memakai kolom `enum('true','false')` pada tabel `user` sistem; superuser (tabel `admin`) akses penuh; menu otomatis disaring, akses URL tanpa izin ditolak (403) |
-| Manajemen Pengguna | CRUD pengguna terenkripsi AES + pengaturan hak akses per modul |
-| Pengaturan Instansi | Edit nama RS, alamat, kabupaten, propinsi, kontak, email (tabel `setting`); nama RS tampil di sidebar, judul, login, dan footer |
-| Skin Siang/Malam | Tombol di navbar & halaman login; default siang; pilihan tersimpan di `localStorage` (`sk-theme`) dan diterapkan sebelum render (tanpa kedip) |
-| Wizard Instalasi | Setup 5 langkah di `index.php?page=install` (tanpa login): cek PHP/PDO, uji koneksi DB, impor `database/sik.sql`, akun admin + identitas RS, selesai |
-| Modul User (Akun Saya) | Kotak masuk (kunjungan hari ini, pasien sedang dirawat, ringkasan belum bayar) + ganti kata sandi dengan verifikasi sandi lama; tercatat di tabel `tracker` |
-| Modul Admin | Panel khusus superuser: info database (ukuran, tabel terbesar), riwayat login (`tracker`), audit query (`trackersql`), kelola akun superuser (tambah/hapus admin) |
-| Dashboard | Statistik pasien, kunjungan, dokter, poli + grafik Chart.js |
-| Master Pasien | CRUD lengkap, pencarian, paginasi, No. RM otomatis, umur otomatis |
-| Master Dokter | CRUD + relasi spesialis |
-| Master Poliklinik | CRUD + tarif registrasi baru/lama |
-| Master Penjab | CRUD cara bayar/penanggung jawab |
-| Master Tarif Perawatan | CRUD tarif tindakan (`jns_perawatan`) per kategori, poli, dan cara bayar |
-| Registrasi | Kunjungan rawat jalan/inap dengan logika ala sistem (lihat di bawah) |
-| Tindakan/Perawatan | Tindakan dokter & perawat per kunjungan (`rawat_jl_dr`, `rawat_jl_pr`) dengan tarif otomatis sesuai poli & cara bayar |
-| Diagnosa ICD-10 | Pencarian 40.000+ diagnosa (`penyakit`), prioritas otomatis, status penyakit baru/lama |
-| Resep Obat | Buat resep (format `yyyymmddNNNN`), tambah obat dari `databarang`, aturan pakai, penyerahan obat |
-| Kamar Inap | Masuk kamar (kamar kosong → ISI, kunjungan jadi Ranap/Dirawat), pulangkan (lama & biaya otomatis, kamar → DIBERSIHKAN), kelola status kamar |
-| Kasir / Billing | Daftar tagihan semua kunjungan + rincian per kunjungan (registrasi + tindakan + obat + kamar), proses pembayaran dengan penerbitan `nota_jalan`, pembatalan pembayaran |
-| Laporan | Kunjungan per periode: per poli, per dokter, distribusi cara bayar |
+<p align="center">
+  <a href="https://github.com/antono4/SIMRS"><img alt="GitHub repo" src="https://img.shields.io/badge/GitHub-antono4/SIMRS-blue?logo=github"></a>
+  <a href="https://antono4.github.io/SIMRS/"><img alt="Live Demo" src="https://img.shields.io/badge/Live%20Demo-Online-success?logo=githubpages"></a>
+  <img alt="Files" src="https://img.shields.io/badge/Files-69-informational">
+  <img alt="Updated" src="https://img.shields.io/badge/Updated-2026-08-30 15:15:14 WIB-lightgrey">
+</p>
 
-## Logika bisnis yang direplikasi dari SIMRS
+---
 
-- **No. Rawat**: format `yyyy/mm/dd/NNNNNN` (nomor urut 6 digit per tanggal)
-- **No. Urut (no_reg)**: urutan 3 digit per dokter per tanggal
-- **Status daftar**: `Baru` bila pasien belum pernah berkunjung, `Lama` bila sudah
-- **Status poli**: `Baru`/`Lama` dihitung per poliklinik
-- **Biaya registrasi**: `poliklinik.registrasi` (pasien baru) atau `poliklinik.registrasilama` (pasien lama)
-- **Umur daftar**: dihitung dari `tgl_lahir` dengan satuan `Th`/`Bl`/`Hr`
-- **Autentikasi**: `AES_DECRYPT(..., 'nur')` pada tabel `admin` dan `user`, sama seperti aplikasi Java
-- **Otorisasi**: halaman dipetakan ke kolom izin tabel `user` (`includes/authz.php` — `PAGE_PERMISSIONS`); izin dimuat ke sesi saat login; perubahan izin berlaku setelah login ulang
-- **No. resep**: format `yyyymmddNNNN` (urutan 4 digit per tanggal)
-- **No. nota jalan**: format `yyyy/mm/dd/RJNNN` (urutan 3 digit per tanggal)
-- **Tagihan kasir**: agregat biaya registrasi + tindakan dokter/perawat + obat resep (harga `databarang.ralan`) + biaya kamar inap; pembayaran menandai `status_bayar`/`stts_bayar` menjadi Sudah dalam satu transaksi
+## 📖 Tentang
 
-## Struktur Proyek
+Repository **`SIMRS`** adalah situs web pribadi / portofolio yang diterbitkan melalui **GitHub Pages**. Situs utama berada di [`https://antono4.github.io/SIMRS/`](https://antono4.github.io/SIMRS/).
+
+## 🗂️ Struktur Proyek
 
 ```
-├── index.php            # Front controller / router (?page=...)
-├── config.php           # Konfigurasi DB & aplikasi
-├── includes/
-│   ├── db.php           # Koneksi PDO MySQL + helper query
-│   ├── auth.php         # Autentikasi kompatibel sistem
-│   ├── helpers.php      # Helper (escape, flash, paginasi, umur, dll)
-│   ├── header.php       # Layout AdminLTE 4 (navbar + sidebar)
-│   └── footer.php
-├── pages/               # Modul: login, dashboard, pasien, dokter,
-│                        # poliklinik, penjab, registrasi, laporan
-└── assets/              # AdminLTE 4.8.4, Bootstrap 5.3, Bootstrap Icons,
-                         # Chart.js 4, OverlayScrollbars (semua lokal)
+SIMRS/
+├── index.html          # Halaman utama (landing / portofolio)
+├── assets/             # Aset statis (css, js, img, vendor)
+├── forms/               # Form handler (PHP)
+└── html/              # Dashboard | SIMRS Web  ->  https://antono4.github.io/SIMRS/html/
 ```
 
-## Instalasi
+## 🌐 Sub-Proyek / Demo
 
-1. Siapkan PHP 8.x (`php-cli`, `php-mysql`) dan MySQL/MariaDB.
-2. Buat database dan impor skema asli sistem:
-   ```bash
-   mysql -e "CREATE DATABASE sik CHARACTER SET latin1 COLLATE latin1_swedish_ci"
-   mysql sik < sik.sql   # 51 tabel inti SIMRS Web
-   ```
-3. Sesuaikan kredensial DB lewat wizard instalasi (`index.php?page=install`) atau langsung di `config.php` (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`).
-4. Tambahkan akun admin (bila database kosong):
-   ```sql
-   INSERT INTO admin VALUES (AES_ENCRYPT('admin','nur'), AES_ENCRYPT('admin','nur'));
-   ```
-Untuk XAMPP (Apache), cukup letakkan folder ini di `htdocs/SIMRS` lalu buka `http://localhost/SIMRS` (hasilnya otomatis ke `index.php`). Pastikan XAMPP mengizinkan penggunaan `.htaccess` (bawaan: ya). Untuk server bawaan PHP, jalankan:
-   ```bash
-   php -S 0.0.0.0:12000 -t /path/ke/proyek
-   ```
-   atau arahkan document root Apache/Nginx ke direktori proyek.
+Situs ini juga memuat beberapa sub-proyek (masing-masing punya `index.html` tersendiri):
 
-## Catatan
+| Folder | Demo Live | Keterangan |
+|--------|-----------|-----------|
+| [`html`](./html) | [https://antono4.github.io/SIMRS/html/](https://antono4.github.io/SIMRS/html/) | Dashboard | SIMRS Web |
 
-- Charset database memakai `latin1` sesuai skema asli sistem.
-- Semua aset frontend disajikan lokal (tanpa CDN).
-- Modul dapat dikembangkan lebih lanjut (tindakan, resep, kasir, kamar inap, dsb.) dengan pola yang sama: tambah file di `pages/` dan daftarkan di `$routes` pada `index.php`.
+## 🛠️ Teknologi
 
-- ----------------------------------------------------
+Berdasarkan isi repository, proyek ini menggunakan:
+
+- `HTML`
+- `CSS`
+- `JavaScript`
+- `PHP`
+
+> Total **69 file** terdeteksi di repository.
+
+## 🚀 Menjalankan Secara Lokal
+
+Karena ini situs statis (HTML/CSS/JS/PHP), cukup buka `index.html` di browser, atau jalankan server lokal:
+
+```bash
+# Tanpa dependency
+python3 -m http.server 8000
+# lalu buka http://localhost:8000
+
+# atau dengan PHP (untuk form handler di forms/)
+php -S localhost:8000
+```
+
+## 📬 Kontak
+
+- GitHub: [antono4](https://github.com/antono4)
+- Situs: [https://antono4.github.io/SIMRS/](https://antono4.github.io/SIMRS/)
+
+## 📄 Lisensi
+
+Lihat berkas [`LICENSE`](./LICENSE) untuk informasi lisensi.
+
+---
+
+<sub>README ini di-generate otomatis pada **2026-08-30 15:15:14 WIB** oleh GitHub Actions .</sub>
