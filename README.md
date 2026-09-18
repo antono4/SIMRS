@@ -1,134 +1,76 @@
-<!-- README ini dihasilkan otomatis oleh .github/workflows/generate-readme.yml -->
-<!-- Jangan edit manual: perubahan akan ditimpa pada run berikutnya. -->
+<!-- README ini dihasilkan otomatis oleh workflow .github/workflows/generate-readme.yml -->
+<!-- Jangan edit manual; perubahan akan ditim pada run berikutnya. -->
 
-<h1 align="center">SIMRS 👋</h1>
+<h1 align="center">Project 👋</h1>
 
 <p align="center">
-  <em>SIMRS dengan PHP dan database mySQl</em>
+  <strong></strong>
 </p>
 
 <p align="center">
   <a href="https://github.com/antono4/SIMRS"><img alt="GitHub repo" src="https://img.shields.io/badge/GitHub-antono4/SIMRS-blue?logo=github"></a>
-  <img alt="Files" src="https://img.shields.io/badge/Files-64-informational">
-  <img alt="Last commit" src="https://img.shields.io/github/last-commit/antono4/SIMRS">
+  <a href="https://antono4.github.io/SIMRS/"><img alt="Live Demo" src="https://img.shields.io/badge/Live%20Demo-Online-success?logo=githubpages"></a>
+  <img alt="Files" src="https://img.shields.io/badge/Files-67-informational">
+  <img alt="Updated" src="https://img.shields.io/badge/Updated-2026-09-18 08:12:06 WIB-lightgrey">
 </p>
 
 ---
 
 ## 📖 Tentang
 
-Repository **`SIMRS`** adalah proyek PHP yang dibangun dengan HTML, CSS, JavaScript, PHP.
-GitHub Pages belum diaktifkan untuk repository ini.
+Repository **`SIMRS`** adalah situs web pribadi / portofolio yang diterbitkan melalui **GitHub Pages**. Situs utama berada di [`https://antono4.github.io/SIMRS/`](https://antono4.github.io/SIMRS/).
 
 ## 🗂️ Struktur Proyek
 
 ```
 SIMRS/
-.github/
-  workflows/
-.htaccess
-AGENTS.md
-assets/
-  adminlte/
-  bootstrap/
-  chartjs/
-  icons/
-  overlayscrollbars/
-config.php
-database/
-  sik.sql
-html/
-  admin.html
-  akun.html
-  dokter.html
-  index.html
-  kamarinap.html
-  kasir.html
-  laporan.html
-  login.html
-  pasien.html
-  pengaturan.html
-  penjab.html
-  perawatan.html
-  poliklinik.html
-  registrasi.html
-  tindakan.html
-  users.html
-includes/
-  auth.php
-  authz.php
-  db.php
-  footer.php
-  header.php
-  helpers.php
-  kunjungan.php
-  settings.php
-index.php
-info.php
-pages/
-  403.php
-  404.php
-  admin.php
-  akun.php
-  dashboard.php
-  diagnosa.php
-  diagnostik.php
-  dokter.php
-  install.php
-  kamarinap.php
-  kasir.php
-  laporan.php
-  login.php
-  logout.php
-  pasien.php
-  pengaturan.php
-  penjab.php
-  perawatan.php
-  poliklinik.php
-  registrasi.php
-  resep.php
-  tindakan.php
-  users.php
+├── index.html          # Halaman utama (landing / portofolio)
+├── assets/             # Aset statis (css, js, img, vendor)
+├── forms/               # Form handler (PHP)
+└── html/              # Dashboard | SIMRS Web  ->  https://antono4.github.io/SIMRS/html/
 ```
 
 ## 🌐 Sub-Proyek / Demo
 
-Repository ini juga memuat sub-proyek (masing-masing punya `index.html` tersendiri):
+Situs ini juga memuat beberapa sub-proyek (masing-masing punya `index.html` tersendiri):
 
-| Folder | Keterangan |
-|--------|-----------|
-| [`html`](./html) | Dashboard | SIMRS Web |
+| Folder | Demo Live | Keterangan |
+|--------|-----------|-----------|
+| [`html`](./html) | [https://antono4.github.io/SIMRS/html/](https://antono4.github.io/SIMRS/html/) | Dashboard | SIMRS Web |
 
 ## 🛠️ Teknologi
 
-Berdasarkan ekstensi berkas yang terdeteksi di repository:
+Berdasarkan isi repository, proyek ini menggunakan:
 
 - `HTML`
 - `CSS`
 - `JavaScript`
 - `PHP`
 
-> Total **64 berkas** di repository (di luar `.git`, `node_modules`, `dist`, dan `build`).
+> Total **67 file** terdeteksi di repository.
 
 ## 🚀 Menjalankan Secara Lokal
 
-Butuh PHP dan Composer:
+Karena ini situs statis (HTML/CSS/JS/PHP), cukup buka `index.html` di browser, atau jalankan server lokal:
 
 ```bash
-composer install
-php spark serve
-# atau
-php -S localhost:8000 -t public
+# Tanpa dependency
+python3 -m http.server 8000
+# lalu buka http://localhost:8000
+
+# atau dengan PHP (untuk form handler di forms/)
+php -S localhost:8000
 ```
 
 ## 📬 Kontak
 
 - GitHub: [antono4](https://github.com/antono4)
+- Situs: [https://antono4.github.io/SIMRS/](https://antono4.github.io/SIMRS/)
 
 ## 📄 Lisensi
 
-Proyek ini dilisensikan di bawah MIT License — lihat berkas [`LICENSE`](./LICENSE).
+Lihat berkas [`LICENSE`](./LICENSE) untuk informasi lisensi.
 
 ---
 
-<sub>README ini di-generate otomatis oleh GitHub Actions `.github/workflows/generate-readme.yml`.</sub>
+<sub>README ini di-generate otomatis pada **2026-09-18 08:12:06 WIB** oleh GitHub Actions `.github/workflows/generate-readme.yml`.</sub>
