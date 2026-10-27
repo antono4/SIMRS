@@ -14,7 +14,11 @@ function cek(string $label, bool $ok, string $detail = ''): void
 }
 
 // 1. PHP
-cek('Versi PHP ≥ 8.0', version_compare(PHP_VERSION, '8.0', '>='), PHP_VERSION);
+$phpOk = version_compare(PHP_VERSION, APP_MIN_PHP, '>=');
+$phpDetail = PHP_VERSION . ($phpOk
+    ? (version_compare(PHP_VERSION, APP_TESTED_PHP . '.999', '>') ? ' — di atas versi yang diuji (' . APP_TESTED_PHP . ')' : '')
+    : ' — perlu PHP ' . APP_MIN_PHP . ' atau lebih baru');
+cek('Versi PHP ≥ ' . APP_MIN_PHP, $phpOk, $phpDetail);
 
 // 2. Ekstensi
 foreach (['pdo_mysql', 'session', 'json', 'openssl', 'pcre'] as $ext) {

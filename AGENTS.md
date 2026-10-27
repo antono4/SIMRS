@@ -3,6 +3,9 @@
 Aplikasi web PHP (AdminLTE 4 + MySQL) hasil pengembangan ulang SIMRS (Java).
 
 ## Fakta Penting
+- PHP: minimum **8.2** (`APP_MIN_PHP` di `config.php`), diuji pada **8.2/8.3/8.4/8.5** (`APP_TESTED_PHP`).
+  Kode memakai sintaksis yang sama di rentang itu — naik ke 8.5 tidak perlu ubah kode.
+  PHP 8.0/8.1 sudah EOL. Cek cepat: `?page=diagnostik`.
 - Database: `sik` di MariaDB lokal, user `root` tanpa password, charset `latin1` (skema asli sistem, 1.182 tabel).
 - Skema sumber: `/workspace/simrs-src/sik.sql` (clone SIMRS ada di `/workspace/simrs-src`).
 - Login kompatibel sistem: tabel `admin`/`user`, `AES_DECRYPT(kolom,'nur')`. Akun bawaan: admin/admin.

@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <img alt="PHP" src="https://img.shields.io/badge/PHP-8.1%2B-777BB4?logo=php&logoColor=white">
+  <img alt="PHP" src="https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php&logoColor=white">
   <img alt="MySQL" src="https://img.shields.io/badge/MySQL%20%2F%20MariaDB-8.0%2B%20%7C%2010.4%2B-4479A1?logo=mysql&logoColor=white">
   <img alt="AdminLTE" src="https://img.shields.io/badge/AdminLTE-4-2b8cbe">
   <img alt="Bootstrap" src="https://img.shields.io/badge/Bootstrap-5.3-7952B3?logo=bootstrap&logoColor=white">
@@ -161,9 +161,19 @@ SIMRS/
 
 ### Kebutuhan
 
-- PHP **8.1+** dengan ekstensi `pdo_mysql`, `mbstring`, dan `gd`
-- MySQL **8.0+** atau MariaDB **10.4+**
+- PHP **8.2+** — diuji pada PHP **8.2, 8.3, 8.4, dan 8.5** (terakhir: 8.5.12)
+  - Ekstensi wajib: `pdo_mysql`, `json`, `session`, `openssl`, `pcre`
+  - Ekstensi opsional: `mbstring` (memperbaiki tampilan karakter beraksen; ada
+    fallback `iconv` dan konversi manual bila tidak ada)
+- MySQL **8.0+** atau MariaDB **10.4+** (diuji pada MariaDB 11.8)
 - Web server (Apache/Nginx) atau server bawaan PHP untuk pengembangan
+
+> **Catatan versi PHP.** PHP 8.0 dan 8.1 sudah **habis masa dukungan** (tidak lagi
+> menerima perbaikan keamanan), dan 8.2 berakhir **31 Desember 2026**. Karena itu
+> versi minimum aplikasi ini adalah **8.2**. Kode ini memakai sintaksis yang sama
+> dari 8.2 sampai 8.5, jadi menjalankannya di 8.5 hanya perlu menaikkan versi PHP —
+> tidak ada perubahan kode. Halaman `?page=diagnostik` akan melaporkan bila versi
+> PHP server di bawah minimum.
 
 ### Langkah
 
@@ -225,7 +235,7 @@ dengan pengguna `root` tanpa kata sandi.
 
 ## 🛠️ Teknologi
 
-- **PHP 8.1+** — `declare(strict_types=1)`, PDO *prepared statements*
+- **PHP 8.2+** (diuji 8.2–8.5) — `declare(strict_types=1)`, PDO *prepared statements*
 - **MySQL / MariaDB** — skema `sik` dengan charset `latin1`
 - **AdminLTE 4** + **Bootstrap 5.3** — kerangka antarmuka
 - **Chart.js** — grafik pada dashboard dan laporan
