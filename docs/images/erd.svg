@@ -1,0 +1,213 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1290 1010" width="1290" height="1010" font-family="Sora, 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif">
+<defs>
+<marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#93a6cc"/></marker>
+</defs>
+<rect width="1290" height="1010" fill="#0b1220"/>
+<text x="44" y="48" fill="#e8eefc" font-size="25" font-weight="700">Relasi Inti Basis Data (skema <tspan fill="#41f0c8">sik</tspan>)</text>
+<text x="44" y="74" fill="#93a6cc" font-size="14">17 tabel inti dari 51 tabel &#183; <tspan fill="#ffc466">PK</tspan> primary key &#183; <tspan fill="#5aa9ff">FK</tspan> foreign key</text>
+<rect x="44" y="110" width="224" height="119" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M56,140 h200" stroke="#2c4270" opacity="0.7"/>
+<rect x="45" y="111" width="4" height="28" rx="2" fill="#41f0c8"/>
+<text x="60" y="130" fill="#41f0c8" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">pasien</text>
+<text x="59" y="155" fill="#ffc466" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">PK</text>
+<text x="86" y="155" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no_rkm_medis</text>
+<text x="59" y="175" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="86" y="175" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nm_pasien</text>
+<text x="59" y="195" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="86" y="195" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_pj</text>
+<text x="59" y="215" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="86" y="215" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">tgl_lahir</text>
+<rect x="44" y="259" width="224" height="79" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M56,289 h200" stroke="#2c4270" opacity="0.7"/>
+<rect x="45" y="260" width="4" height="28" rx="2" fill="#41f0c8"/>
+<text x="60" y="279" fill="#41f0c8" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">penjab</text>
+<text x="59" y="304" fill="#ffc466" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">PK</text>
+<text x="86" y="304" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_pj</text>
+<text x="59" y="324" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="86" y="324" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">png_jawab</text>
+<rect x="44" y="368" width="224" height="79" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M56,398 h200" stroke="#2c4270" opacity="0.7"/>
+<rect x="45" y="369" width="4" height="28" rx="2" fill="#41f0c8"/>
+<text x="60" y="388" fill="#41f0c8" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">poliklinik</text>
+<text x="59" y="413" fill="#ffc466" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">PK</text>
+<text x="86" y="413" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_poli</text>
+<text x="59" y="433" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="86" y="433" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">registrasi</text>
+<rect x="44" y="477" width="224" height="99" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M56,507 h200" stroke="#2c4270" opacity="0.7"/>
+<rect x="45" y="478" width="4" height="28" rx="2" fill="#41f0c8"/>
+<text x="60" y="497" fill="#41f0c8" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">dokter</text>
+<text x="59" y="522" fill="#ffc466" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">PK</text>
+<text x="86" y="522" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_dokter</text>
+<text x="59" y="542" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="86" y="542" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nm_dokter</text>
+<text x="59" y="562" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="86" y="562" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_sps</text>
+<rect x="44" y="606" width="224" height="79" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M56,636 h200" stroke="#2c4270" opacity="0.7"/>
+<rect x="45" y="607" width="4" height="28" rx="2" fill="#41f0c8"/>
+<text x="60" y="626" fill="#41f0c8" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">pegawai</text>
+<text x="59" y="651" fill="#ffc466" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">PK</text>
+<text x="86" y="651" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nik</text>
+<text x="59" y="671" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="86" y="671" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nama</text>
+<rect x="350" y="190" width="258" height="239" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M362,220 h234" stroke="#2c4270" opacity="0.7"/>
+<rect x="351" y="191" width="4" height="28" rx="2" fill="#c792ea"/>
+<text x="366" y="210" fill="#c792ea" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">reg_periksa</text>
+<text x="365" y="235" fill="#ffc466" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">PK</text>
+<text x="392" y="235" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no_rawat</text>
+<text x="365" y="255" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="392" y="255" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no_reg</text>
+<text x="365" y="275" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="392" y="275" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">tgl_registrasi</text>
+<text x="365" y="295" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="392" y="295" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no_rkm_medis</text>
+<text x="365" y="315" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="392" y="315" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_dokter</text>
+<text x="365" y="335" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="392" y="335" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_poli</text>
+<text x="365" y="355" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="392" y="355" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_pj</text>
+<text x="365" y="375" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="392" y="375" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">stts_daftar</text>
+<text x="365" y="395" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="392" y="395" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">status_lanjut</text>
+<text x="365" y="415" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="392" y="415" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">status_bayar</text>
+<rect x="676" y="110" width="226" height="139" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M688,140 h202" stroke="#2c4270" opacity="0.7"/>
+<rect x="677" y="111" width="4" height="28" rx="2" fill="#ff8fb1"/>
+<text x="692" y="130" fill="#ff8fb1" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kamar_inap</text>
+<text x="691" y="155" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="718" y="155" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no_rawat</text>
+<text x="691" y="175" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="718" y="175" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_kamar</text>
+<text x="691" y="195" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="718" y="195" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">tgl_masuk</text>
+<text x="691" y="215" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="718" y="215" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">tgl_keluar</text>
+<text x="691" y="235" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="718" y="235" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">ttl_biaya</text>
+<rect x="676" y="279" width="226" height="139" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M688,309 h202" stroke="#2c4270" opacity="0.7"/>
+<rect x="677" y="280" width="4" height="28" rx="2" fill="#ff8fb1"/>
+<text x="692" y="299" fill="#ff8fb1" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">rawat_jl_dr</text>
+<text x="691" y="324" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="718" y="324" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no_rawat</text>
+<text x="691" y="344" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="718" y="344" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_jenis_prw</text>
+<text x="691" y="364" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="718" y="364" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_dokter</text>
+<text x="691" y="384" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="718" y="384" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">biaya_rawat</text>
+<text x="691" y="404" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="718" y="404" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">stts_bayar</text>
+<rect x="676" y="448" width="226" height="99" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M688,478 h202" stroke="#2c4270" opacity="0.7"/>
+<rect x="677" y="449" width="4" height="28" rx="2" fill="#ff8fb1"/>
+<text x="692" y="468" fill="#ff8fb1" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">rawat_jl_pr</text>
+<text x="691" y="493" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="718" y="493" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no_rawat</text>
+<text x="691" y="513" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="718" y="513" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_jenis_prw</text>
+<text x="691" y="533" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="718" y="533" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nip</text>
+<rect x="676" y="577" width="226" height="79" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M688,607 h202" stroke="#2c4270" opacity="0.7"/>
+<rect x="677" y="578" width="4" height="28" rx="2" fill="#ff8fb1"/>
+<text x="692" y="597" fill="#ff8fb1" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">diagnosa_pasien</text>
+<text x="691" y="622" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="718" y="622" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no_rawat</text>
+<text x="691" y="642" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="718" y="642" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_penyakit</text>
+<rect x="676" y="686" width="226" height="99" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M688,716 h202" stroke="#2c4270" opacity="0.7"/>
+<rect x="677" y="687" width="4" height="28" rx="2" fill="#ff8fb1"/>
+<text x="692" y="706" fill="#ff8fb1" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">resep_obat</text>
+<text x="691" y="731" fill="#ffc466" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">PK</text>
+<text x="718" y="731" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no_resep</text>
+<text x="691" y="751" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="718" y="751" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no_rawat</text>
+<text x="691" y="771" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="718" y="771" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_dokter</text>
+<rect x="676" y="815" width="226" height="99" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M688,845 h202" stroke="#2c4270" opacity="0.7"/>
+<rect x="677" y="816" width="4" height="28" rx="2" fill="#ff8fb1"/>
+<text x="692" y="835" fill="#ff8fb1" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nota_jalan</text>
+<text x="691" y="860" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="718" y="860" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no_rawat</text>
+<text x="691" y="880" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="718" y="880" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no_nota</text>
+<text x="691" y="900" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="718" y="900" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">tanggal</text>
+<rect x="974" y="110" width="240" height="99" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M986,140 h216" stroke="#2c4270" opacity="0.7"/>
+<rect x="975" y="111" width="4" height="28" rx="2" fill="#5aa9ff"/>
+<text x="990" y="130" fill="#5aa9ff" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kamar</text>
+<text x="989" y="155" fill="#ffc466" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">PK</text>
+<text x="1016" y="155" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_kamar</text>
+<text x="989" y="175" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="1016" y="175" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_bangsal</text>
+<text x="989" y="195" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="1016" y="195" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">trf_kamar</text>
+<rect x="974" y="239" width="240" height="99" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M986,269 h216" stroke="#2c4270" opacity="0.7"/>
+<rect x="975" y="240" width="4" height="28" rx="2" fill="#5aa9ff"/>
+<text x="990" y="259" fill="#5aa9ff" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">jns_perawatan</text>
+<text x="989" y="284" fill="#ffc466" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">PK</text>
+<text x="1016" y="284" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_jenis_prw</text>
+<text x="989" y="304" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="1016" y="304" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nm_perawatan</text>
+<text x="989" y="324" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="1016" y="324" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_poli</text>
+<rect x="974" y="368" width="240" height="79" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M986,398 h216" stroke="#2c4270" opacity="0.7"/>
+<rect x="975" y="369" width="4" height="28" rx="2" fill="#5aa9ff"/>
+<text x="990" y="388" fill="#5aa9ff" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">petugas</text>
+<text x="989" y="413" fill="#ffc466" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">PK</text>
+<text x="1016" y="413" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nip</text>
+<text x="989" y="433" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="1016" y="433" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_jbtn</text>
+<rect x="974" y="477" width="240" height="79" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M986,507 h216" stroke="#2c4270" opacity="0.7"/>
+<rect x="975" y="478" width="4" height="28" rx="2" fill="#5aa9ff"/>
+<text x="990" y="497" fill="#5aa9ff" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">penyakit</text>
+<text x="989" y="522" fill="#ffc466" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">PK</text>
+<text x="1016" y="522" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_penyakit</text>
+<text x="989" y="542" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="1016" y="542" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nm_penyakit</text>
+<rect x="974" y="586" width="240" height="79" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M986,616 h216" stroke="#2c4270" opacity="0.7"/>
+<rect x="975" y="587" width="4" height="28" rx="2" fill="#5aa9ff"/>
+<text x="990" y="606" fill="#5aa9ff" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">resep_dokter</text>
+<text x="989" y="631" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="1016" y="631" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no_resep</text>
+<text x="989" y="651" fill="#5aa9ff" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">FK</text>
+<text x="1016" y="651" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kode_brng</text>
+<rect x="974" y="695" width="240" height="79" rx="9" fill="#111c33" stroke="#2c4270"/>
+<path d="M986,725 h216" stroke="#2c4270" opacity="0.7"/>
+<rect x="975" y="696" width="4" height="28" rx="2" fill="#5aa9ff"/>
+<text x="990" y="715" fill="#5aa9ff" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">databarang</text>
+<text x="989" y="740" fill="#ffc466" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">PK</text>
+<text x="1016" y="740" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kode_brng</text>
+<text x="989" y="760" fill="#93a6cc" font-size="10.5" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"></text>
+<text x="1016" y="760" fill="#e8eefc" font-size="11.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nama_brng</text>
+<path d="M268,169.5 H309.0 V309.5 H350" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M268,298.5 H309.0 V309.5 H350" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M268,407.5 H309.0 V309.5 H350" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M268,526.5 H309.0 V309.5 H350" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M608,309.5 H642.0 V179.5 H676" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M608,309.5 H642.0 V348.5 H676" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M608,309.5 H642.0 V497.5 H676" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M608,309.5 H642.0 V616.5 H676" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M608,309.5 H642.0 V735.5 H676" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M608,309.5 H642.0 V864.5 H676" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M902,179.5 H938.0 V159.5 H974" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M902,348.5 H938.0 V288.5 H974" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M902,497.5 H938.0 V288.5 H974" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M902,497.5 H938.0 V407.5 H974" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M902,616.5 H938.0 V516.5 H974" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M902,735.5 H938.0 V625.5 H974" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+<path d="M1214,625.5 H1094.0 V734.5 H974" stroke="#93a6cc" stroke-width="1.6" fill="none" marker-end="url(#arw)" opacity="0.8"/>
+</svg>
