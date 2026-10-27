@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700" font-family="Sora, 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif">
+<defs>
+<marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#93a6cc"/></marker>
+</defs>
+<rect width="1200" height="700" fill="#0b1220"/>
+<text x="44" y="54" fill="#e8eefc" font-size="27" font-weight="700">Arsitektur SIMRS Web</text>
+<text x="44" y="82" fill="#93a6cc" font-size="15">Alur permintaan: browser &#8594; front controller &#8594; modul &#8594; PDO &#8594; MySQL</text>
+<rect x="44" y="116" width="300" height="112" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M56,154 h276" stroke="#2c4270" opacity="0.7"/>
+<rect x="45" y="117" width="4" height="36" rx="2" fill="#5aa9ff"/>
+<text x="62" y="142" fill="#5aa9ff" font-size="15" font-weight="700">Browser / Klien</text>
+<text x="62" y="178" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">AdminLTE 4 + Bootstrap 5.3</text>
+<text x="62" y="199" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Chart.js &#183; Bootstrap Icons</text>
+<text x="62" y="220" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Tema siang / malam</text>
+<rect x="430" y="116" width="316" height="158" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M442,154 h292" stroke="#2c4270" opacity="0.7"/>
+<rect x="431" y="117" width="4" height="36" rx="2" fill="#41f0c8"/>
+<text x="448" y="142" fill="#41f0c8" font-size="15" font-weight="700">Front Controller</text>
+<text x="448" y="178" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">index.php?page=&lt;nama&gt;</text>
+<text x="448" y="199" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">&#8226; routing ($routes)</text>
+<text x="448" y="220" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">&#8226; auth_require()</text>
+<text x="448" y="241" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">&#8226; auth_can() &#8594; 403</text>
+<rect x="832" y="116" width="324" height="246" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M844,154 h300" stroke="#2c4270" opacity="0.7"/>
+<rect x="833" y="117" width="4" height="36" rx="2" fill="#ffc466"/>
+<text x="850" y="142" fill="#ffc466" font-size="15" font-weight="700">Modul (pages/*.php)</text>
+<text x="850" y="178" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">dashboard &#183; pasien &#183; dokter</text>
+<text x="850" y="199" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">poliklinik &#183; penjab &#183; perawatan</text>
+<text x="850" y="220" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">registrasi &#183; tindakan &#183; diagnosa</text>
+<text x="850" y="241" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">resep &#183; kamarinap &#183; kasir</text>
+<text x="850" y="262" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">laporan &#183; users &#183; pengaturan</text>
+<rect x="430" y="336" width="316" height="158" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M442,374 h292" stroke="#2c4270" opacity="0.7"/>
+<rect x="431" y="337" width="4" height="36" rx="2" fill="#ff8fb1"/>
+<text x="448" y="362" fill="#ff8fb1" font-size="15" font-weight="700">Lapisan Bersama (includes/)</text>
+<text x="448" y="398" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">db.php &#183; helpers.php</text>
+<text x="448" y="419" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">auth.php &#183; authz.php</text>
+<text x="448" y="440" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kunjungan.php &#183; settings.php</text>
+<text x="448" y="461" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">header.php + footer.php</text>
+<rect x="44" y="552" width="1112" height="112" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M56,590 h1088" stroke="#2c4270" opacity="0.7"/>
+<rect x="45" y="553" width="4" height="36" rx="2" fill="#41f0c8"/>
+<text x="62" y="578" fill="#41f0c8" font-size="16" font-weight="700">Basis Data MySQL / MariaDB</text>
+<text x="62" y="614" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"><tspan fill="#41f0c8">skema sik</tspan> &#183; 51 tabel &#183; latin1 &#183; 54 relasi foreign key</text>
+<text x="62" y="635" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"><tspan fill="#93a6cc">pasien &#183; reg_periksa &#183; rawat_jl_dr &#183; resep_obat &#183; kamar_inap &#183; nota_jalan</tspan></text>
+<text x="62" y="656" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"><tspan fill="#93a6cc">PDO prepared statements (db_all / db_row / db_val / db_exec)</tspan></text>
+<path d="M344,172.0 L430,195.0" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<text x="387.0" y="174.5" fill="#93a6cc" font-size="12" text-anchor="middle">HTTP</text>
+<path d="M746,195.0 L832,239.0" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<text x="789.0" y="208.0" fill="#93a6cc" font-size="12" text-anchor="middle">require</text>
+<path d="M505,274 V336" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<path d="M672,336 V274" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<text x="512" y="310" fill="#93a6cc" font-size="12">helper</text>
+<path d="M994,362 V410 H746" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<text x="1000" y="392" fill="#93a6cc" font-size="12">reuse</text>
+<path d="M588,494 V552" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<text x="596" y="528" fill="#93a6cc" font-size="12">PDO</text>
+<path d="M994,362 V512 H820 V552" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+</svg>
