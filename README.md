@@ -19,6 +19,22 @@
 
 ---
 
+## 🧭 Daftar Isi
+
+- [Tentang](#-tentang)
+- [Fitur Utama](#-fitur-utama)
+- [Tangkapan Layar](#-tangkapan-layar)
+- [Arsitektur](#️-arsitektur)
+- [Model Data](#️-model-data)
+- [Struktur Proyek](#️-struktur-proyek)
+- [Instalasi](#-instalasi)
+- [Daftar Modul](#-daftar-modul)
+- [Teknologi](#️-teknologi)
+- [Pratinjau Statis](#️-pratinjau-statis)
+- [Catatan Repositori](#-catatan-repositori)
+- [Lisensi](#-lisensi)
+- [Kontak](#-kontak)
+
 ## 📖 Tentang
 
 **SIMRS Web** adalah penulisan ulang aplikasi SIMRS (aslinya berbasis Java/desktop) menjadi
@@ -47,46 +63,80 @@ membaca/menulis ke database `sik`. Untuk mencobanya, lihat bagian [Instalasi](#-
 
 ## 📸 Tangkapan Layar
 
-Semua gambar di bawah diambil dari aplikasi yang benar-benar berjalan dengan data contoh.
+Semua gambar di bawah diambil dari aplikasi yang benar-benar berjalan dengan data
+contoh bawaan (`database/sik.sql`) — bukan mockup atau gambar rancangan.
 
-### Login
+### Masuk
 
-<p align="center"><img src="docs/images/login.png" alt="Halaman login" width="720"></p>
+<p align="center"><img src="docs/images/login.png" alt="Halaman masuk" width="720"></p>
 
 ### Dashboard — tema terang dan tema gelap
 
 <p align="center">
-  <img src="docs/images/dashboard.png" alt="Dashboard tema terang" width="440">
-  <img src="docs/images/dashboard_dark.png" alt="Dashboard tema gelap" width="440">
+  <img src="docs/images/dashboard.png" alt="Dashboard tema terang" width="410">
+  <img src="docs/images/dashboard_dark.png" alt="Dashboard tema gelap" width="410">
 </p>
 
-### Modul utama
+### Registrasi & pelayanan
 
 <p align="center">
-  <img src="docs/images/registrasi.png" alt="Registrasi kunjungan" width="440">
-  <img src="docs/images/tindakan.png" alt="Tindakan medis" width="440">
+  <img src="docs/images/registrasi.png" alt="Registrasi kunjungan" width="410">
+  <img src="docs/images/tindakan.png" alt="Tindakan medis" width="410">
 </p>
 
 <p align="center">
-  <img src="docs/images/kamarinap.png" alt="Rawat inap" width="440">
-  <img src="docs/images/kasir.png" alt="Kasir / billing" width="440">
+  <img src="docs/images/kamarinap.png" alt="Rawat inap" width="410">
+  <img src="docs/images/kasir.png" alt="Kasir / pembayaran" width="410">
 </p>
 
-### Data & laporan
+### Data klinis
 
 <p align="center">
-  <img src="docs/images/pasien.png" alt="Data pasien" width="440">
-  <img src="docs/images/laporan.png" alt="Laporan kunjungan" width="440">
+  <img src="docs/images/diagnosa.png" alt="Diagnosa ICD-10 per kunjungan" width="410">
+  <img src="docs/images/resep.png" alt="Resep obat per kunjungan" width="410">
 </p>
 
-### Manajemen pengguna
+### Data master
 
-<p align="center"><img src="docs/images/users.png" alt="Manajemen pengguna" width="720"></p>
+<p align="center">
+  <img src="docs/images/pasien.png" alt="Master data pasien" width="410">
+  <img src="docs/images/dokter.png" alt="Master data dokter" width="410">
+</p>
+
+<p align="center">
+  <img src="docs/images/poliklinik.png" alt="Master poliklinik" width="410">
+  <img src="docs/images/penjab.png" alt="Master penjamin" width="410">
+</p>
+
+<p align="center"><img src="docs/images/perawatan.png" alt="Master tarif perawatan" width="720"></p>
+
+### Laporan
+
+<p align="center"><img src="docs/images/laporan.png" alt="Laporan kunjungan per periode" width="720"></p>
+
+### Administrasi & pengguna
+
+<p align="center">
+  <img src="docs/images/users.png" alt="Manajemen pengguna dan izin modul" width="410">
+  <img src="docs/images/admin.png" alt="Halaman administrator" width="410">
+</p>
+
+<p align="center">
+  <img src="docs/images/akun.png" alt="Profil dan ganti kata sandi" width="410">
+  <img src="docs/images/pengaturan.png" alt="Identitas rumah sakit" width="410">
+</p>
+
+### Pemasangan & diagnostik
+
+<p align="center">
+  <img src="docs/images/install.png" alt="Wizard instalasi" width="410">
+  <img src="docs/images/diagnostik.png" alt="Diagnostik lingkungan" width="410">
+</p>
 
 ## 🏗️ Arsitektur
 
 <p align="center">
-  <img src="docs/images/architecture.svg" alt="Arsitektur SIMRS Web" width="820">
+  <img src="docs/images/architecture.svg" alt="Arsitektur SIMRS Web" width="800">
 </p>
 
 Alur permintaan:
@@ -103,7 +153,7 @@ Alur permintaan:
 ## 🗃️ Model Data
 
 <p align="center">
-  <img src="docs/images/erd.svg" alt="Diagram relasi inti basis data" width="880">
+  <img src="docs/images/erd.svg" alt="Diagram relasi inti basis data" width="820">
 </p>
 
 Skema `sik` berisi **51 tabel** dengan **54 relasi foreign key**. Tabel `reg_periksa`
@@ -235,6 +285,7 @@ dengan pengguna `root` tanpa kata sandi.
 | Pengguna | `?page=users` | Manajemen pengguna dan izin modul |
 | Pengaturan | `?page=pengaturan` | Identitas rumah sakit |
 | Akun | `?page=akun` | Profil dan ganti kata sandi |
+| Administrator | `?page=admin` | Panel admin: statistik basis data, riwayat login, dan daftar superuser |
 | Instalasi | `?page=install` | Wizard instalasi (tanpa login) |
 | Diagnostik | `?page=diagnostik` | Diagnostik lingkungan (tanpa login) |
 
