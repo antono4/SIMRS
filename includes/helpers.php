@@ -98,6 +98,24 @@ function badge_status(string $status): string
     return '<span class="badge ' . $class . '">' . e($status) . '</span>';
 }
 
+/**
+ * Judul halaman + aksi utama (opsional) untuk bilah judul di area konten.
+ * $actions: daftar tombol/link yang sudah berupa HTML (mis. <a class="btn ...">).
+ */
+function page_header(string $title, ?string $subtitle = null, string $actions = ''): string
+{
+    $html = '<div class="d-flex flex-wrap justify-content-between align-items-center gap-2">';
+    $html .= '<div><h3 class="mb-0">' . e($title) . '</h3>';
+    if ($subtitle !== null && $subtitle !== '') {
+        $html .= '<p class="text-body-secondary small mb-0 mt-1">' . e($subtitle) . '</p>';
+    }
+    $html .= '</div>';
+    if ($actions !== '') {
+        $html .= '<div class="d-flex flex-wrap gap-2">' . $actions . '</div>';
+    }
+    return $html . '</div>';
+}
+
 function paginate(int $total, int $perPage, int $current, string $page, array $params = []): string
 {
     $pages = max(1, (int)ceil($total / $perPage));

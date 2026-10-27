@@ -50,100 +50,216 @@ $terakhir = db_all(
 
 $pageScripts = '<script src="assets/chartjs/chart.umd.js"></script>
 <script>
-new Chart(document.getElementById("chartKunjungan"), {
-  type: "line",
-  data: { labels: ' . json_encode($labelsHari) . ',
-    datasets: [{ label: "Kunjungan", data: ' . json_encode($dataHari) . ', borderColor: "#0d6efd", backgroundColor: "rgba(13,110,253,.15)", fill: true, tension: .35 }] },
-  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
-});
-new Chart(document.getElementById("chartPoli"), {
-  type: "bar",
-  data: { labels: ' . json_encode(array_column($perPoli, 'nm_poli')) . ',
-    datasets: [{ label: "Kunjungan", data: ' . json_encode(array_map('intval', array_column($perPoli, 'jml'))) . ', backgroundColor: "#198754" }] },
-  options: { indexAxis: "y", responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { precision: 0 } } } }
-});
+(function () {
+  const css = getComputedStyle(document.documentElement);
+  const v = (n, f) => (css.getPropertyValue(n) || f).trim();
+  const grid = v("--sk-border", "#e2e8f0");
+  const muted = v("--sk-muted", "#64748b");
+  const surface = v("--sk-surface", "#fff");
+  const brand = "#1565c0";
+  const soft = "#00b4d8";
+  const green = "#0f9d58";
+  const amber = "#f59f00";
+
+  Chart.defaults.font.family = v("--sk-font", "Inter, sans-serif");
+  Chart.defaults.font.size = 11;
+  Chart.defaults.color = muted;
+
+  const line = document.getElementById("chartKunjungan");
+  if (line) {
+    const ctx = line.getContext("2d");
+    const fill = ctx.createLinearGradient(0, 0, 0, 240);
+    fill.addColorStop(0, "rgba(21,101,192,.30)");
+    fill.addColorStop(1, "rgba(21,101,192,0)");
+    new Chart(line, {
+      type: "line",
+      data: {
+        labels: ' . json_encode($labelsHari) . ',
+        datasets: [{
+          label: "Kunjungan",
+          data: ' . json_encode($dataHari) . ',
+          borderColor: brand,
+          backgroundColor: fill,
+          borderWidth: 2.5,
+          fill: true,
+          tension: .38,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: brand,
+          pointHoverBorderColor: surface,
+          pointHoverBorderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, border: { display: false } },
+          y: {
+            beginAtZero: true,
+            ticks: { precision: 0, padding: 6 },
+            grid: { color: grid, drawTicks: false },
+            border: { display: false }
+          }
+        }
+      }
+    });
+  }
+
+  const bar = document.getElementById("chartPoli");
+  if (bar) {
+    new Chart(bar, {
+      type: "bar",
+      data: {
+        labels: ' . json_encode(array_column($perPoli, 'nm_poli')) . ',
+        datasets: [{
+          label: "Kunjungan",
+          data: ' . json_encode(array_map('intval', array_column($perPoli, 'jml'))) . ',
+          backgroundColor: soft,
+          hoverBackgroundColor: brand,
+          borderRadius: 6,
+          maxBarThickness: 22
+        }]
+      },
+      options: {
+        indexAxis: "y",
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            beginAtZero: true,
+            ticks: { precision: 0, padding: 6 },
+            grid: { color: grid, drawTicks: false },
+            border: { display: false }
+          },
+          y: { grid: { display: false }, border: { display: false } }
+        }
+      }
+    });
+  }
+
+  const donut = document.getElementById("chartStatus");
+  if (donut) {
+    new Chart(donut, {
+      type: "doughnut",
+      data: {
+        labels: ["Rawat Jalan", "Rawat Inap"],
+        datasets: [{
+          data: [' . (int)$ralanHariIni . ', ' . (int)$ranapHariIni . '],
+          backgroundColor: [brand, amber],
+          borderColor: surface,
+          borderWidth: 3,
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "68%",
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: "circle", padding: 14 }
+          }
+        }
+      }
+    });
+  }
+})();
 </script>';
 
 require_once __DIR__ . '/../includes/header.php';
 ?>
-<div class="row">
-  <div class="col-lg-3 col-6">
-    <div class="small-box text-bg-primary">
-      <div class="inner"><h3><?= number_format($totalPasien) ?></h3><p>Total Pasien</p></div>
-      <i class="small-box-icon bi bi-people"></i>
-      <a href="<?= e(url('pasien')) ?>" class="small-box-footer link-light">Lihat <i class="bi bi-arrow-right-circle"></i></a>
+<div class="row g-3">
+  <?php
+  $kartu = [
+      ['label' => 'Total Pasien', 'nilai' => $totalPasien, 'ikon' => 'bi-people', 'warna' => 'primary', 'tautan' => url('pasien')],
+      ['label' => 'Kunjungan Hari Ini', 'nilai' => $kunjunganHariIni, 'ikon' => 'bi-clipboard2-pulse', 'warna' => 'success', 'tautan' => url('registrasi')],
+      ['label' => 'Dokter Aktif', 'nilai' => $totalDokter, 'ikon' => 'bi-heart-pulse', 'warna' => 'warning', 'tautan' => url('dokter')],
+      ['label' => 'Poliklinik Aktif', 'nilai' => $totalPoli, 'ikon' => 'bi-hospital', 'warna' => 'info', 'tautan' => url('poliklinik')],
+  ];
+  ?>
+  <?php foreach ($kartu as $k): ?>
+    <div class="col-xl-3 col-md-6">
+      <div class="small-box text-bg-<?= e($k['warna']) ?>">
+        <div class="inner">
+          <h3><?= number_format((int)$k['nilai']) ?></h3>
+          <p><?= e($k['label']) ?></p>
+        </div>
+        <i class="small-box-icon bi <?= e($k['ikon']) ?>"></i>
+        <a href="<?= e($k['tautan']) ?>" class="small-box-footer link-<?= $k['warna'] === 'warning' ? 'dark' : 'light' ?> d-flex justify-content-between align-items-center">
+          <span>Lihat detail</span><i class="bi bi-arrow-right-circle"></i>
+        </a>
+      </div>
+    </div>
+  <?php endforeach; ?>
+</div>
+<div class="row g-3">
+  <div class="col-xl-8">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title mb-0"><i class="bi bi-graph-up-arrow me-2 text-primary"></i>Kunjungan 14 Hari Terakhir</h3>
+      </div>
+      <div class="card-body"><div style="height:280px"><canvas id="chartKunjungan"></canvas></div></div>
     </div>
   </div>
-  <div class="col-lg-3 col-6">
-    <div class="small-box text-bg-success">
-      <div class="inner"><h3><?= number_format($kunjunganHariIni) ?></h3><p>Kunjungan Hari Ini</p></div>
-      <i class="small-box-icon bi bi-clipboard2-pulse"></i>
-      <a href="<?= e(url('registrasi')) ?>" class="small-box-footer link-light">Lihat <i class="bi bi-arrow-right-circle"></i></a>
-    </div>
-  </div>
-  <div class="col-lg-3 col-6">
-    <div class="small-box text-bg-warning">
-      <div class="inner"><h3><?= number_format($totalDokter) ?></h3><p>Dokter Aktif</p></div>
-      <i class="small-box-icon bi bi-heart-pulse"></i>
-      <a href="<?= e(url('dokter')) ?>" class="small-box-footer link-dark">Lihat <i class="bi bi-arrow-right-circle"></i></a>
-    </div>
-  </div>
-  <div class="col-lg-3 col-6">
-    <div class="small-box text-bg-danger">
-      <div class="inner"><h3><?= number_format($totalPoli) ?></h3><p>Poliklinik Aktif</p></div>
-      <i class="small-box-icon bi bi-hospital"></i>
-      <a href="<?= e(url('poliklinik')) ?>" class="small-box-footer link-light">Lihat <i class="bi bi-arrow-right-circle"></i></a>
+  <div class="col-xl-4">
+    <div class="card h-100">
+      <div class="card-header">
+        <h3 class="card-title mb-0"><i class="bi bi-pie-chart me-2 text-primary"></i>Komposisi Hari Ini</h3>
+      </div>
+      <div class="card-body">
+        <div style="height:200px"><canvas id="chartStatus"></canvas></div>
+        <hr />
+        <div class="d-flex justify-content-between small">
+          <span class="text-body-secondary">Total kunjungan</span>
+          <strong><?= number_format($kunjunganHariIni) ?></strong>
+        </div>
+        <div class="d-flex justify-content-between small mt-1">
+          <span class="text-body-secondary">Tabel inti <code>sik</code></span>
+          <strong><?= number_format((int)db_val("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='sik'")) ?></strong>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="col-lg-7">
-    <div class="card mb-4">
-      <div class="card-header"><h3 class="card-title">Kunjungan 14 Hari Terakhir</h3></div>
-      <div class="card-body"><canvas id="chartKunjungan" height="120"></canvas></div>
+<div class="row g-3">
+  <div class="col-xl-7">
+    <div class="card h-100">
+      <div class="card-header">
+        <h3 class="card-title mb-0"><i class="bi bi-bar-chart-line me-2 text-primary"></i>Kunjungan per Poli (Bulan Ini)</h3>
+      </div>
+      <div class="card-body"><div style="height:300px"><canvas id="chartPoli"></canvas></div></div>
     </div>
   </div>
-  <div class="col-lg-5">
-    <div class="card mb-4">
-      <div class="card-header"><h3 class="card-title">Kunjungan per Poli (Bulan Ini)</h3></div>
-      <div class="card-body"><canvas id="chartPoli" height="180"></canvas></div>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-lg-8">
-    <div class="card mb-4">
-      <div class="card-header"><h3 class="card-title">Registrasi Terakhir</h3></div>
-      <div class="card-body p-0">
-        <table class="table table-striped mb-0">
-          <thead><tr><th>No. Rawat</th><th>Tanggal</th><th>Pasien</th><th>Poli</th><th>Dokter</th><th>Status</th></tr></thead>
+  <div class="col-xl-5">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Registrasi Terakhir</h3>
+        <a href="<?= e(url('registrasi')) ?>" class="btn btn-sm btn-outline-primary">Semua</a>
+      </div>
+      <div class="card-body p-0 table-responsive">
+        <table class="table table-hover mb-0">
+          <thead><tr><th>Pasien</th><th>Poli</th><th>Status</th></tr></thead>
           <tbody>
-          <?php foreach ($terakhir as $row): ?>
+          <?php foreach (array_slice($terakhir, 0, 6) as $row): ?>
             <tr>
-              <td><?= e($row['no_rawat']) ?></td>
-              <td><?= e(tgl_indo($row['tgl_registrasi'])) ?> <?= e(substr((string)$row['jam_reg'], 0, 5)) ?></td>
-              <td><?= e($row['nm_pasien']) ?></td>
-              <td><?= e($row['nm_poli']) ?></td>
-              <td><?= e($row['nm_dokter']) ?></td>
+              <td>
+                <div class="fw-semibold"><?= e($row['nm_pasien']) ?></div>
+                <div class="small text-body-secondary"><?= e($row['no_rawat']) ?> &middot; <?= e(tgl_indo($row['tgl_registrasi'])) ?> <?= e(substr((string)$row['jam_reg'], 0, 5)) ?></div>
+              </td>
+              <td class="small"><?= e($row['nm_poli']) ?></td>
               <td><?= badge_status($row['stts'] ?? '') ?></td>
             </tr>
           <?php endforeach; ?>
           <?php if (!$terakhir): ?>
-            <tr><td colspan="6" class="text-center text-muted py-4">Belum ada registrasi.</td></tr>
+            <tr><td colspan="3" class="text-center text-body-secondary py-4">Belum ada registrasi.</td></tr>
           <?php endif; ?>
           </tbody>
         </table>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-4">
-    <div class="card text-bg-primary mb-4">
-      <div class="card-header"><h3 class="card-title">Ringkasan Hari Ini</h3></div>
-      <div class="card-body">
-        <p class="mb-1"><i class="bi bi-person-walking me-2"></i>Rawat Jalan: <strong><?= $ralanHariIni ?></strong></p>
-        <p class="mb-1"><i class="bi bi-hospital me-2"></i>Rawat Inap: <strong><?= $ranapHariIni ?></strong></p>
-        <hr />
-        <p class="mb-0 small">Database: <code>sik</code> (<?= number_format((int)db_val("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='sik'")) ?> tabel inti)</p>
       </div>
     </div>
   </div>

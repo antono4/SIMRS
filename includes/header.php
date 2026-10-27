@@ -47,6 +47,7 @@ $namaRs = setting_nama_rs();
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title><?= e($pageTitle ?? $namaRs) ?> | <?= e($namaRs) ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="<?= asset('favicon.svg') ?>" />
   <script>
     // Skin siang/malam — default siang, tersimpan di localStorage
     (function () {
@@ -54,10 +55,15 @@ $namaRs = setting_nama_rs();
       document.documentElement.setAttribute('data-bs-theme', theme);
     })();
   </script>
+  <meta name="theme-color" content="#0b3d91" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)" />
+  <link rel="preload" as="font" type="font/woff2" href="<?= asset('fonts/inter-latin-400-normal.woff2') ?>" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="<?= asset('fonts/inter-latin-600-normal.woff2') ?>" crossorigin />
   <link rel="stylesheet" href="<?= asset('overlayscrollbars/overlayscrollbars.min.css') ?>" />
   <link rel="stylesheet" href="<?= asset('icons/css/bootstrap-icons.min.css') ?>" />
   <link rel="stylesheet" href="<?= asset('bootstrap/css/bootstrap.min.css') ?>" />
   <link rel="stylesheet" href="<?= asset('adminlte/css/adminlte.min.css') ?>" />
+  <link rel="stylesheet" href="<?= asset('css/simrs.css') ?>" />
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
 <div class="app-wrapper">
@@ -107,13 +113,14 @@ $namaRs = setting_nama_rs();
   <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
     <div class="sidebar-brand">
       <a href="<?= e(url('dashboard')) ?>" class="brand-link">
-        <i class="bi bi-hospital fs-4 me-2"></i>
-        <span class="brand-text fw-light"><?= e($namaRs) ?></span>
+        <span class="brand-icon"><i class="bi bi-hospital"></i></span>
+        <span class="brand-text"><?= e($namaRs) ?></span>
       </a>
     </div>
     <div class="sidebar-wrapper">
-      <nav class="mt-2" aria-label="Main navigation">
+      <nav class="mt-2" aria-label="Navigasi utama">
         <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false" id="navigation">
+          <li class="nav-header">MENU UTAMA</li>
           <?php foreach ($menu as $item): ?>
             <?php if (isset($item['children'])): ?>
               <?php $open = in_array($currentPage ?? '', array_column($item['children'], 'page'), true); ?>
@@ -151,18 +158,21 @@ $namaRs = setting_nama_rs();
   <main class="app-main">
     <div class="app-content-header">
       <div class="container-fluid">
-        <div class="row align-items-center">
-          <div class="col-sm-6">
-            <h3 class="mb-0 fw-bold"><?= e($pageTitle ?? '') ?></h3>
-          </div>
-          <div class="col-sm-6">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <div>
+            <h3 class="mb-0"><?= e($pageTitle ?? '') ?></h3>
             <nav aria-label="breadcrumb">
-              <ol class="breadcrumb float-sm-end mb-0 bg-body px-3 py-2 rounded-pill shadow-sm">
+              <ol class="breadcrumb mb-0 bg-transparent p-0">
                 <li class="breadcrumb-item"><a href="<?= e(url('dashboard')) ?>"><i class="bi bi-house-door me-1"></i>Beranda</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><?= e($pageTitle ?? '') ?></li>
+                <?php if (($currentPage ?? 'dashboard') !== 'dashboard'): ?>
+                  <li class="breadcrumb-item active" aria-current="page"><?= e($pageTitle ?? '') ?></li>
+                <?php endif; ?>
               </ol>
             </nav>
           </div>
+          <?php if (!empty($pageActions)): ?>
+            <div class="d-flex flex-wrap gap-2"><?= $pageActions ?></div>
+          <?php endif; ?>
         </div>
       </div>
     </div>

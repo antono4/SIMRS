@@ -250,6 +250,7 @@ $settingSekarang = $dbOk ? (setting_rs() ?? []) : [];
   <link rel="stylesheet" href="<?= asset('icons/css/bootstrap-icons.min.css') ?>" />
   <link rel="stylesheet" href="<?= asset('bootstrap/css/bootstrap.min.css') ?>" />
   <link rel="stylesheet" href="<?= asset('adminlte/css/adminlte.min.css') ?>" />
+  <link rel="stylesheet" href="<?= asset('css/simrs.css') ?>" />
   <style>
     body { background: linear-gradient(135deg, #0b3d91, #1565c0 45%, #00b4d8); min-height: 100vh; }
     .wizard-card { border: 0; border-radius: 1.25rem; box-shadow: 0 20px 60px rgba(15,40,90,.3); }
