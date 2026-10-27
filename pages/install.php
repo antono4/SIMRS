@@ -309,7 +309,7 @@ $settingSekarang = $dbOk ? (setting_rs() ?? []) : [];
             <h5 class="fw-bold">Selamat Datang</h5>
             <p>Wizard ini akan membantu Anda menyiapkan <?= APP_NAME ?> dalam beberapa langkah: memeriksa koneksi database, mengimpor skema, dan membuat akun administrator.</p>
             <ul class="mb-4">
-              <li>PHP 8.x + ekstensi <code>PDO MySQL</code></li>
+              <li>PHP <?= APP_MIN_PHP ?>+ (diuji pada <?= APP_TESTED_PHP ?>) + ekstensi <code>PDO MySQL</code></li>
               <li>Server MySQL/MariaDB yang dapat diakses</li>
               <li>Berkas skema <code>database/sik.sql</code> (sudah disertakan)</li>
             </ul>
@@ -319,7 +319,7 @@ $settingSekarang = $dbOk ? (setting_rs() ?? []) : [];
           <?php elseif ($step === 2): ?>
             <h5 class="fw-bold">Koneksi Database</h5>
             <table class="table table-sm">
-              <tr><td>Versi PHP</td><td class="<?= version_compare(PHP_VERSION, '8.0', '>=') ? 'status-ok' : 'status-bad' ?>"><?= PHP_VERSION ?></td></tr>
+              <tr><td>Versi PHP</td><td class="<?= version_compare(PHP_VERSION, APP_MIN_PHP, '>=') ? 'status-ok' : 'status-bad' ?>"><?= PHP_VERSION ?> <small class="text-muted">(min <?= APP_MIN_PHP ?>, diuji <?= APP_TESTED_PHP ?>)</small></td></tr>
               <tr><td>Ekstensi PDO MySQL</td><td class="<?= extension_loaded('pdo_mysql') ? 'status-ok' : 'status-bad' ?>"><?= extension_loaded('pdo_mysql') ? 'Tersedia' : 'Tidak ada' ?></td></tr>
               <tr><td>Host / Database</td><td><?= e(DB_HOST) ?>:<?= e(DB_PORT) ?> / <code><?= e(DB_NAME) ?></code></td></tr>
               <tr><td>Koneksi</td>

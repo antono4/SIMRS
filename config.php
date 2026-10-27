@@ -21,6 +21,14 @@ define('DB_CHARSET', 'latin1'); // skema asli memakai latin1
 define('APP_NAME', 'SIMRS Web');
 define('APP_VERSION', '2.0.0');
 
+// ---- Prasyarat versi PHP ----
+// APP_MIN_PHP  : versi terendah yang masih didukung (8.2 menerima perbaikan
+//                keamanan sampai 31 Des 2026; 8.0/8.1 sudah habis masa dukungan).
+// APP_TESTED_PHP: cabang versi tertinggi yang sudah diuji. Versi di atas ini
+//                biasanya tetap jalan, tetapi belum diverifikasi.
+define('APP_MIN_PHP', '8.2');
+define('APP_TESTED_PHP', '8.5');
+
 // ---- Base path dinamis: root (/), subfolder XAMPP (/SIMRS), dsb. ----
 $__scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
 define('BASE_PATH', rtrim($__scriptDir, '/') === '' ? '' : rtrim($__scriptDir, '/'));
