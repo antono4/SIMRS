@@ -42,7 +42,7 @@ membaca/menulis ke database `sik`. Untuk mencobanya, lihat bagian [Instalasi](#-
 | **Kasir** | Pembayaran kunjungan, penerbitan nota, dan pembatalan pembayaran |
 | **Laporan** | Laporan kunjungan per periode, per poliklinik, per dokter, per penjamin |
 | **Hak akses** | Izin per modul untuk setiap pengguna (diterapkan di server, bukan hanya di menu) |
-| **Tema siang/malam** | Pilihan tema yang disimpan di browser (`localStorage`) |
+| **Tema siang/malam** | Pilihan tema yang disimpan di browser (`localStorage`), dioptimalkan agar tetap kontras di kedua tema |
 | **Instalasi mandiri** | Wizard instalasi dan halaman diagnostik lingkungan |
 
 ## 📸 Tangkapan Layar
@@ -150,7 +150,12 @@ SIMRS/
 │   ├── settings.php          #   Identitas rumah sakit
 │   ├── header.php            #   Kerangka tampilan atas
 │   └── footer.php            #   Kerangka tampilan bawah
-├── assets/                   # Aset statis (AdminLTE, Bootstrap, ikon, Chart.js)
+├── assets/                   # Aset statis
+│   ├── css/simrs.css         #   Lapisan tema (token warna, komponen, cetak)
+│   ├── fonts/                #   Inter (dilokalkan, tanpa CDN)
+│   ├── adminlte/ · bootstrap/ #  Kerangka antarmuka
+│   ├── icons/ · chartjs/     #   Ikon & grafik
+│   └── favicon.svg           #   Ikon situs
 ├── database/
 │   └── sik.sql               # Skema + data contoh (51 tabel)
 ├── docs/images/              # Gambar dokumentasi (diagram & tangkapan layar)
@@ -228,6 +233,9 @@ dengan pengguna `root` tanpa kata sandi.
 - **PHP 8.1+** — `declare(strict_types=1)`, PDO *prepared statements*
 - **MySQL / MariaDB** — skema `sik` dengan charset `latin1`
 - **AdminLTE 4** + **Bootstrap 5.3** — kerangka antarmuka
+- **Lapisan tema sendiri** (`assets/css/simrs.css`) — token warna, radius,
+  dan bayangan; tema siang/malam dibangun di atas variabel Bootstrap 5.3
+- **Inter** (dilokalkan di `assets/fonts/`) — tipografi, tanpa CDN
 - **Chart.js** — grafik pada dashboard dan laporan
 - **Bootstrap Icons** — ikon antarmuka
 

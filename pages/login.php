@@ -41,6 +41,8 @@ $alamatRs = trim(($rs['alamat_instansi'] ?? '') . ' ' . ($rs['kabupaten'] ?? '')
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>Masuk | <?= e($namaRs) ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b3d91" />
+  <link rel="icon" type="image/svg+xml" href="<?= asset('favicon.svg') ?>" />
   <script>
     (function () {
       const theme = localStorage.getItem('sk-theme') === 'dark' ? 'dark' : 'light';
@@ -50,75 +52,155 @@ $alamatRs = trim(($rs['alamat_instansi'] ?? '') . ' ' . ($rs['kabupaten'] ?? '')
   <link rel="stylesheet" href="<?= asset('icons/css/bootstrap-icons.min.css') ?>" />
   <link rel="stylesheet" href="<?= asset('bootstrap/css/bootstrap.min.css') ?>" />
   <link rel="stylesheet" href="<?= asset('adminlte/css/adminlte.min.css') ?>" />
+  <link rel="stylesheet" href="<?= asset('css/simrs.css') ?>" />
   <style>
+    /* Halaman masuk — panel merek (kiri) + panel formulir (kanan). */
     body.login-split {
       min-height: 100vh;
       margin: 0;
     }
+
+    /* --- Panel merek --- */
     .login-hero {
-      background: linear-gradient(135deg, #0b3d91 0%, #1565c0 45%, #00b4d8 100%);
+      background: var(--sk-gradient);
       position: relative;
       overflow: hidden;
       color: #fff;
+      isolation: isolate;
     }
     .login-hero::before,
     .login-hero::after {
       content: '';
       position: absolute;
       border-radius: 50%;
-      background: rgba(255, 255, 255, .08);
+      z-index: -1;
     }
-    .login-hero::before { width: 420px; height: 420px; top: -140px; right: -120px; }
-    .login-hero::after { width: 300px; height: 300px; bottom: -110px; left: -90px; }
+    .login-hero::before {
+      width: 560px; height: 560px; top: -200px; right: -160px;
+      background: radial-gradient(circle at 32% 32%, rgba(255, 255, 255, .10), rgba(255, 255, 255, 0) 70%);
+    }
+    .login-hero::after {
+      width: 460px; height: 460px; bottom: -190px; left: -140px;
+      background: radial-gradient(circle at 62% 42%, rgba(255, 255, 255, .07), rgba(255, 255, 255, 0) 72%);
+    }
+    .login-hero .hero-grid {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      opacity: .16;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, .7) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .7) 1px, transparent 1px);
+      background-size: 48px 48px;
+      -webkit-mask-image: radial-gradient(circle at 38% 42%, #000 0%, transparent 76%);
+      mask-image: radial-gradient(circle at 38% 42%, #000 0%, transparent 76%);
+    }
     .login-hero .hero-icon {
-      width: 96px; height: 96px;
-      border-radius: 28px;
-      background: rgba(255, 255, 255, .15);
-      backdrop-filter: blur(6px);
+      width: 92px; height: 92px;
+      border-radius: 26px;
+      background: rgba(4, 20, 46, .32);
+      border: 1px solid rgba(255, 255, 255, .28);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
       display: flex; align-items: center; justify-content: center;
-      font-size: 3rem;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, .25);
+      font-size: 2.9rem;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, .28);
     }
-    .hero-feature { display: flex; align-items: center; gap: .6rem; opacity: .92; }
-    .hero-feature i { font-size: 1.1rem; }
+    .login-hero h1 { letter-spacing: -.02em; }
+    .hero-feature {
+      display: flex; align-items: center; gap: .7rem;
+      padding: .62rem .85rem;
+      border-radius: .8rem;
+      background: rgba(4, 20, 46, .22);
+      border: 1px solid rgba(255, 255, 255, .14);
+      font-size: .92rem;
+      line-height: 1.3;
+      transition: background-color .2s ease, transform .2s ease;
+    }
+    .hero-feature:hover {
+      background: rgba(255, 255, 255, .16);
+      transform: translateX(3px);
+    }
+    .hero-feature i { font-size: 1.05rem; flex: 0 0 auto; }
+
+    /* --- Panel formulir --- */
     .login-panel {
       display: flex; align-items: center; justify-content: center;
       padding: 2rem 1rem;
     }
     .login-card-modern {
-      width: 100%; max-width: 420px;
-      border: 0; border-radius: 1.25rem;
-      box-shadow: 0 20px 60px rgba(15, 40, 90, .18);
-      animation: rise .55s ease both;
+      position: relative;
+      width: 100%; max-width: 430px;
+      border: 1px solid var(--sk-border);
+      border-radius: 1.25rem;
+      overflow: hidden;
+      box-shadow: 0 22px 60px rgba(15, 40, 90, .16);
+      animation: rise .55s cubic-bezier(.22, .8, .3, 1) both;
+    }
+    /* garis aksen merek di tepi atas kartu */
+    .login-card-modern::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 5px;
+      background: var(--sk-gradient);
     }
     @keyframes rise {
-      from { opacity: 0; transform: translateY(24px); }
+      from { opacity: 0; transform: translateY(26px); }
       to { opacity: 1; transform: translateY(0); }
     }
     [data-bs-theme="dark"] .login-card-modern {
-      box-shadow: 0 20px 60px rgba(0, 0, 0, .55);
+      box-shadow: 0 22px 60px rgba(0, 0, 0, .6);
+    }
+    .login-badge {
+      width: 76px; height: 76px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 1.4rem;
+      background: var(--sk-gradient);
+      color: #fff;
+      font-size: 2.1rem;
+      box-shadow: 0 12px 26px rgba(21, 101, 192, .38);
     }
     .btn-login {
-      background: linear-gradient(135deg, #1565c0, #00b4d8);
+      background: var(--sk-gradient);
       border: 0;
-      transition: transform .15s ease, box-shadow .15s ease;
+      color: #fff;
+      font-weight: 600;
+      letter-spacing: .01em;
+      transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
     }
-    .btn-login:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(21, 101, 192, .4); }
+    .btn-login:hover,
+    .btn-login:focus {
+      color: #fff;
+      transform: translateY(-1px);
+      filter: brightness(1.06);
+      box-shadow: 0 12px 26px rgba(21, 101, 192, .42);
+    }
     .theme-fab {
       position: fixed; top: 1rem; right: 1rem; z-index: 10;
       width: 44px; height: 44px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
+      background: var(--sk-surface);
+      border: 1px solid var(--sk-border);
+      color: var(--sk-text);
+      box-shadow: var(--sk-shadow-sm);
+    }
+    .theme-fab:hover { color: var(--sk-brand); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .login-card-modern { animation: none; }
     }
   </style>
 </head>
 <body class="login-split">
-<button class="btn btn-outline-secondary theme-fab" id="themeToggle" title="Ganti tema siang/malam" aria-label="Ganti tema siang/malam">
+<button class="btn theme-fab" id="themeToggle" title="Ganti tema siang/malam" aria-label="Ganti tema siang/malam">
   <i class="bi bi-moon-stars" id="themeIcon"></i>
 </button>
 <div class="container-fluid g-0">
   <div class="row g-0 min-vh-100">
     <!-- Panel hero -->
     <div class="col-lg-7 d-none d-lg-flex login-hero align-items-center">
+      <span class="hero-grid" aria-hidden="true"></span>
       <div class="px-5 position-relative" style="z-index:1">
         <div class="hero-icon mb-4"><i class="bi bi-hospital"></i></div>
         <h1 class="display-5 fw-bold mb-2"><?= e($namaRs) ?></h1>
@@ -138,9 +220,7 @@ $alamatRs = trim(($rs['alamat_instansi'] ?? '') . ' ' . ($rs['kabupaten'] ?? '')
       <div class="card login-card-modern">
         <div class="card-body p-4 p-md-5">
           <div class="text-center mb-4">
-            <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary-subtle text-primary mb-3" style="width:72px;height:72px;font-size:2rem">
-              <i class="bi bi-hospital"></i>
-            </div>
+            <div class="login-badge mb-3"><i class="bi bi-hospital"></i></div>
             <h4 class="fw-bold mb-1"><?= e($namaRs) ?></h4>
             <p class="text-body-secondary mb-0">Masuk untuk memulai sesi Anda</p>
           </div>

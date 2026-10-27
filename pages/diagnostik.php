@@ -69,6 +69,8 @@ $semua = array_reduce($hasil, fn($c, $h) => $c && $h[1], true);
   <title>Diagnostik | SIMRS Web</title>
   <link rel="stylesheet" href="<?= asset('bootstrap/css/bootstrap.min.css') ?>" />
   <link rel="stylesheet" href="<?= asset('icons/css/bootstrap-icons.min.css') ?>" />
+  <link rel="stylesheet" href="<?= asset('adminlte/css/adminlte.min.css') ?>" />
+  <link rel="stylesheet" href="<?= asset('css/simrs.css') ?>" />
 </head>
 <body class="bg-body-tertiary">
 <div class="container py-4" style="max-width:760px">
