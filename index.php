@@ -41,6 +41,7 @@ $routes = [
     'resep' => 'resep.php',
     'kamarinap' => 'kamarinap.php',
     'kasir' => 'kasir.php',
+    'billing' => 'billing.php',
     'laporan' => 'laporan.php',
     'users' => 'users.php',
     'pengaturan' => 'pengaturan.php',

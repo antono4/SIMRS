@@ -59,6 +59,7 @@ membaca/menulis ke database `sik`. Untuk mencobanya, lihat bagian [Instalasi](#-
 | **Diagnosa & resep** | Diagnosa ICD-10 dan resep obat per kunjungan |
 | **Rawat inap** | Check-in/check-out kamar, perhitungan lama inap dan biaya |
 | **Kasir** | Pembayaran kunjungan, penerbitan nota, dan pembatalan pembayaran |
+| **Cetak billing** | Nota kunjungan siap cetak: kop instansi, rincian tarif, total, dan terbilang; langsung ke A4 atau PDF |
 | **Laporan** | Laporan kunjungan per periode, per poliklinik, per dokter, per penjamin |
 | **Hak akses** | Izin per modul untuk setiap pengguna (diterapkan di server, bukan hanya di menu) |
 | **Tema siang/malam** | Pilihan tema yang disimpan di browser (`localStorage`), dioptimalkan agar tetap kontras di kedua tema |
@@ -91,6 +92,13 @@ contoh bawaan (`database/sik.sql`) — bukan mockup atau gambar rancangan.
   <img src="docs/images/kamarinap.png" alt="Rawat inap" width="410">
   <img src="docs/images/kasir.png" alt="Kasir / pembayaran" width="410">
 </p>
+
+### Cetak billing
+
+Halaman nota mandiri, terpisah dari tata letak aplikasi, sehingga siap dicetak
+langsung ke kertas A4 atau disimpan sebagai PDF lewat dialog cetak peramban.
+
+<p align="center"><img src="docs/images/billing.png" alt="Cetak billing: nota kunjungan siap cetak A4" width="720"></p>
 
 ### Data klinis
 
@@ -226,6 +234,7 @@ SIMRS/
 │   ├── resep.php             #   Resep obat
 │   ├── kamarinap.php         #   Rawat inap
 │   ├── kasir.php             #   Kasir & pembayaran
+│   ├── billing.php           #   Cetak billing / nota (mandiri, siap cetak A4)
 │   ├── laporan.php           #   Laporan kunjungan
 │   ├── users.php             #   Manajemen pengguna & izin
 │   ├── pengaturan.php        #   Pengaturan identitas rumah sakit
@@ -345,7 +354,8 @@ lalu pilih `database/sik.sql`.
 | Diagnosa | `?page=diagnosa` | Diagnosa ICD-10 per kunjungan |
 | Resep | `?page=resep` | Resep obat per kunjungan |
 | Kamar Inap | `?page=kamarinap` | Masuk/pulang rawat inap |
-| Kasir | `?page=kasir` | Pembayaran dan nota kunjungan |
+| Kasir | `?page=kasir` | Rincian tagihan, proses pembayaran, dan penerbitan nota |
+| Cetak Billing | `?page=billing&no_rawat=...` | Nota kunjungan siap cetak (A4/PDF), memakai perhitungan yang sama dengan Kasir |
 | Laporan | `?page=laporan` | Laporan kunjungan per periode |
 | Pengguna | `?page=users` | Manajemen pengguna dan izin modul |
 | Pengaturan | `?page=pengaturan` | Identitas rumah sakit |

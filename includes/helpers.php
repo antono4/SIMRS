@@ -89,6 +89,56 @@ function umur_dari(?string $tglLahir): array
     return [max(1, (int)$diff->days), 'Hr'];
 }
 
+/**
+ * Angka rupiah menjadi kata, untuk baris "Terbilang" pada nota.
+ * Contoh: 155000 -> "Seratus lima puluh lima ribu rupiah".
+ */
+function terbilang(float $angka): string
+{
+    $n = (int)round(abs($angka));
+    if ($n === 0) {
+        return 'Nol rupiah';
+    }
+
+    $satuan = ['', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan',
+        'sepuluh', 'sebelas'];
+
+    $kata = function (int $x) use (&$kata, $satuan): string {
+        if ($x < 12) {
+            return $satuan[$x];
+        }
+        if ($x < 20) {
+            return $kata($x - 10) . ' belas';
+        }
+        if ($x < 100) {
+            return $kata(intdiv($x, 10)) . ' puluh' . ($x % 10 ? ' ' . $kata($x % 10) : '');
+        }
+        if ($x < 200) {
+            return 'seratus' . ($x % 100 ? ' ' . $kata($x % 100) : '');
+        }
+        if ($x < 1000) {
+            return $kata(intdiv($x, 100)) . ' ratus' . ($x % 100 ? ' ' . $kata($x % 100) : '');
+        }
+        if ($x < 2000) {
+            return 'seribu' . ($x % 1000 ? ' ' . $kata($x % 1000) : '');
+        }
+        if ($x < 1_000_000) {
+            return $kata(intdiv($x, 1000)) . ' ribu' . ($x % 1000 ? ' ' . $kata($x % 1000) : '');
+        }
+        if ($x < 1_000_000_000) {
+            return $kata(intdiv($x, 1_000_000)) . ' juta' . ($x % 1_000_000 ? ' ' . $kata($x % 1_000_000) : '');
+        }
+        if ($x < 1_000_000_000_000) {
+            return $kata(intdiv($x, 1_000_000_000)) . ' miliar' . ($x % 1_000_000_000 ? ' ' . $kata($x % 1_000_000_000) : '');
+        }
+        return $kata(intdiv($x, 1_000_000_000_000)) . ' triliun' . ($x % 1_000_000_000_000 ? ' ' . $kata($x % 1_000_000_000_000) : '');
+    };
+
+    $teks = trim((string)preg_replace('/\s+/', ' ', $kata($n)));
+
+    return ucfirst($teks) . ' rupiah';
+}
+
 function badge_status(string $status): string
 {
     $map = [

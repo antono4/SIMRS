@@ -18,6 +18,65 @@ function kunjungan_load(string $noRawat): ?array
     );
 }
 
+/**
+ * Rincian tagihan satu kunjungan: registrasi, tindakan, obat, dan kamar inap.
+ * Dipakai bersama oleh modul Kasir dan halaman cetak billing supaya angkanya
+ * tidak pernah berbeda antara layar dan kertas.
+ *
+ * @return list<array{uraian: string, jml: float|int, harga: float}>
+ */
+function kunjungan_rincian(array $kunjungan): array
+{
+    $noRawat = (string)$kunjungan['no_rawat'];
+    $baru = ($kunjungan['stts_daftar'] ?? '') === 'Baru';
+
+    $rincian = [[
+        'uraian' => 'Biaya Registrasi (' . ($baru ? 'Pasien Baru' : 'Pasien Lama') . ')',
+        'jml' => 1,
+        'harga' => (float)$kunjungan['biaya_reg'],
+    ]];
+
+    $tindakan = db_all(
+        "SELECT j.nm_perawatan AS uraian, COUNT(*) AS jml, SUM(r.biaya_rawat) AS harga FROM (
+            SELECT kd_jenis_prw, biaya_rawat FROM rawat_jl_dr WHERE no_rawat = ?
+            UNION ALL SELECT kd_jenis_prw, biaya_rawat FROM rawat_jl_pr WHERE no_rawat = ?
+         ) r JOIN jns_perawatan j ON j.kd_jenis_prw = r.kd_jenis_prw
+         GROUP BY j.nm_perawatan ORDER BY j.nm_perawatan",
+        [$noRawat, $noRawat]
+    );
+    foreach ($tindakan as $t) {
+        $rincian[] = ['uraian' => 'Tindakan: ' . $t['uraian'], 'jml' => (int)$t['jml'], 'harga' => (float)$t['harga']];
+    }
+
+    $obat = db_all(
+        'SELECT db.nama_brng, SUM(rd.jml) AS jml, db.ralan FROM resep_dokter rd
+         JOIN resep_obat ro ON ro.no_resep = rd.no_resep
+         JOIN databarang db ON db.kode_brng = rd.kode_brng
+         WHERE ro.no_rawat = ? GROUP BY db.nama_brng, db.ralan ORDER BY db.nama_brng',
+        [$noRawat]
+    );
+    foreach ($obat as $o) {
+        $rincian[] = ['uraian' => 'Obat: ' . $o['nama_brng'], 'jml' => (float)$o['jml'], 'harga' => (float)$o['jml'] * (float)$o['ralan']];
+    }
+
+    $inap = db_all(
+        'SELECT ki.*, k.kelas FROM kamar_inap ki JOIN kamar k ON k.kd_kamar = ki.kd_kamar WHERE ki.no_rawat = ?',
+        [$noRawat]
+    );
+    foreach ($inap as $i) {
+        $lama = (float)$i['lama'] > 0 ? (float)$i['lama'] : 1;
+        $biaya = (float)$i['ttl_biaya'] > 0 ? (float)$i['ttl_biaya'] : $lama * (float)$i['trf_kamar'];
+        $rincian[] = ['uraian' => 'Kamar Inap ' . $i['kd_kamar'] . ' (' . $lama . ' hari)', 'jml' => $lama, 'harga' => $biaya];
+    }
+
+    return $rincian;
+}
+
+function kunjungan_total(array $rincian): float
+{
+    return (float)array_sum(array_column($rincian, 'harga'));
+}
+
 function kunjungan_card(array $v): void
 {
     [$umur, $sttsUmur] = umur_dari($v['tgl_lahir']);
@@ -47,6 +106,7 @@ function kunjungan_card(array $v): void
           <a class="btn btn-sm btn-outline-danger" href="<?= e(url('diagnosa', ['no_rawat' => $v['no_rawat']])) ?>"><i class="bi bi-clipboard2-pulse me-1"></i>Diagnosa</a>
           <a class="btn btn-sm btn-outline-success" href="<?= e(url('resep', ['no_rawat' => $v['no_rawat']])) ?>"><i class="bi bi-capsule me-1"></i>Resep</a>
           <a class="btn btn-sm btn-outline-warning" href="<?= e(url('kasir', ['no_rawat' => $v['no_rawat']])) ?>"><i class="bi bi-cash-coin me-1"></i>Kasir</a>
+          <a class="btn btn-sm btn-outline-primary" href="<?= e(url('billing', ['no_rawat' => $v['no_rawat']])) ?>"><i class="bi bi-printer me-1"></i>Cetak Billing</a>
           <a class="btn btn-sm btn-outline-secondary" href="<?= e(url('registrasi', ['tgl' => $v['tgl_registrasi']])) ?>"><i class="bi bi-arrow-left me-1"></i>Kembali</a>
         </div>
       </div>

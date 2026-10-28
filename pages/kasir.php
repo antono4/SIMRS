@@ -113,43 +113,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $pageTitle = 'Kasir / Billing';
-$rincian = [];
-$rincian[] = ['uraian' => 'Biaya Registrasi (' . ($kunjungan['stts_daftar'] === 'Baru' ? 'Pasien Baru' : 'Pasien Lama') . ')', 'jml' => 1, 'harga' => (float)$kunjungan['biaya_reg']];
-
-$tindakan = db_all(
-    "SELECT j.nm_perawatan AS uraian, COUNT(*) AS jml, SUM(r.biaya_rawat) AS harga FROM (
-        SELECT kd_jenis_prw, biaya_rawat FROM rawat_jl_dr WHERE no_rawat = ?
-        UNION ALL SELECT kd_jenis_prw, biaya_rawat FROM rawat_jl_pr WHERE no_rawat = ?
-     ) r JOIN jns_perawatan j ON j.kd_jenis_prw = r.kd_jenis_prw
-     GROUP BY j.nm_perawatan ORDER BY j.nm_perawatan",
-    [$noRawat, $noRawat]
-);
-foreach ($tindakan as $t) {
-    $rincian[] = ['uraian' => 'Tindakan: ' . $t['uraian'], 'jml' => (int)$t['jml'], 'harga' => (float)$t['harga']];
-}
-
-$obat = db_all(
-    'SELECT db.nama_brng, SUM(rd.jml) AS jml, db.ralan FROM resep_dokter rd
-     JOIN resep_obat ro ON ro.no_resep = rd.no_resep
-     JOIN databarang db ON db.kode_brng = rd.kode_brng
-     WHERE ro.no_rawat = ? GROUP BY db.nama_brng, db.ralan ORDER BY db.nama_brng',
-    [$noRawat]
-);
-foreach ($obat as $o) {
-    $rincian[] = ['uraian' => 'Obat: ' . $o['nama_brng'], 'jml' => (float)$o['jml'], 'harga' => (float)$o['jml'] * (float)$o['ralan']];
-}
-
-$inap = db_all(
-    'SELECT ki.*, k.kelas FROM kamar_inap ki JOIN kamar k ON k.kd_kamar = ki.kd_kamar WHERE ki.no_rawat = ?',
-    [$noRawat]
-);
-foreach ($inap as $i) {
-    $lama = (float)$i['lama'] > 0 ? (float)$i['lama'] : 1;
-    $biaya = (float)$i['ttl_biaya'] > 0 ? (float)$i['ttl_biaya'] : $lama * (float)$i['trf_kamar'];
-    $rincian[] = ['uraian' => 'Kamar Inap ' . $i['kd_kamar'] . ' (' . $lama . ' hari)', 'jml' => $lama, 'harga' => $biaya];
-}
-
-$totalTagihan = array_sum(array_column($rincian, 'harga'));
+$rincian = kunjungan_rincian($kunjungan);
+$totalTagihan = kunjungan_total($rincian);
 $nota = db_row('SELECT * FROM nota_jalan WHERE no_rawat = ?', [$noRawat]);
 $sudahBayar = $kunjungan['status_bayar'] === 'Sudah Bayar';
 
@@ -196,18 +161,21 @@ kunjungan_card($kunjungan);
       </div>
       <div class="card-footer">
         <?php if (!$sudahBayar): ?>
-          <form method="post" action="<?= e(url('kasir')) ?>" onsubmit="return confirm('Proses pembayaran kunjungan ini?')">
+          <form method="post" action="<?= e(url('kasir')) ?>" onsubmit="return confirm('Proses pembayaran kunjungan ini?')" class="mb-2">
             <input type="hidden" name="act" value="bayar" />
             <input type="hidden" name="no_rawat" value="<?= e($noRawat) ?>" />
             <button class="btn btn-success w-100"><i class="bi bi-cash-coin me-1"></i>Proses Pembayaran</button>
           </form>
         <?php else: ?>
-          <form method="post" action="<?= e(url('kasir')) ?>" onsubmit="return confirm('Batalkan status pembayaran?')">
+          <form method="post" action="<?= e(url('kasir')) ?>" onsubmit="return confirm('Batalkan status pembayaran?')" class="mb-2">
             <input type="hidden" name="act" value="batal_bayar" />
             <input type="hidden" name="no_rawat" value="<?= e($noRawat) ?>" />
             <button class="btn btn-outline-danger w-100"><i class="bi bi-arrow-counterclockwise me-1"></i>Batalkan Pembayaran</button>
           </form>
         <?php endif; ?>
+        <a class="btn btn-outline-primary w-100" href="<?= e(url('billing', ['no_rawat' => $noRawat])) ?>">
+          <i class="bi bi-printer me-1"></i>Cetak Billing
+        </a>
       </div>
     </div>
   </div>
