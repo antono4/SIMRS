@@ -62,6 +62,15 @@ if ($step >= 2) {
 // Impor per-pernyataan SQL dengan parser state; tahan "server has gone away" (timeout/packet kecil di XAMPP)
 function import_sql_file(PDO $pdo, string $file): int
 {
+    // XAMPP bawaan memakai max_execution_time=30, sedangkan impor ±19 MB bisa
+    // lebih lama dari itu — terutama di Windows. Tanpa ini, skrip dihentikan
+    // paksa di tengah impor, sebagian tabel tidak terbentuk, dan karena batas
+    // waktu adalah fatal error (bukan exception), blok catch tidak menangkapnya
+    // sehingga wizard tampak "berhasil" padahal skema belum lengkap.
+    @set_time_limit(0);
+    @ini_set('memory_limit', '512M');
+    @ignore_user_abort(true);
+
     // Naikkan batas sesi agar tidak diputus di tengah impor besar (umum di XAMPP bawaan)
     foreach ([
         'SET SESSION wait_timeout = 28800',
@@ -194,7 +203,10 @@ if ($step >= 3 && $aksi === 'user') {
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ?");
             $stmt->execute([DB_NAME]);
             $jumlahTabel = (int)$stmt->fetchColumn();
-            // Verifikasi tabel kritis — bila kurang, impor kemungkinan gagal di tengah
+            // Bandingkan dengan jumlah CREATE TABLE di dump. Bila impor terhenti di
+            // tengah (batas waktu, koneksi putus, pernyataan gagal), tabelnya akan
+            // kurang dari ini — jadi kelengkapan skema bisa dipastikan, bukan ditebak.
+            $jumlahDiharapkan = (int)preg_match_all('/^CREATE TABLE /m', (string)file_get_contents($sqlFile));
             $kritis = ['user', 'admin', 'pasien', 'dokter', 'poliklinik', 'setting'];
             $kurang = [];
             foreach ($kritis as $t) {
@@ -202,9 +214,14 @@ if ($step >= 3 && $aksi === 'user') {
                     $kurang[] = $t;
                 }
             }
-            $importLog = $kurang
-                ? "Impor selesai ($pernyataan pernyataan, $jumlahTabel tabel) tetapi tabel kritis berikut BELUM ada: <strong>" . implode(', ', $kurang) . "</strong>. Silakan klik Impor Database lagi untuk melanjutkan."
-                : "Impor berhasil ($pernyataan pernyataan). Jumlah tabel: $jumlahTabel.";
+            if ($kurang) {
+                $importLog = "Impor belum lengkap ($pernyataan pernyataan, $jumlahTabel dari $jumlahDiharapkan tabel) — tabel kritis berikut BELUM ada: <strong>"
+                    . implode(', ', $kurang) . "</strong>. Klik <em>Impor Database</em> lagi untuk melanjutkan; data yang sudah ada tidak dihapus.";
+            } elseif ($jumlahTabel < $jumlahDiharapkan) {
+                $importLog = "Impor belum lengkap ($pernyataan pernyataan, $jumlahTabel dari $jumlahDiharapkan tabel). Klik <em>Impor Database</em> lagi untuk melanjutkan.";
+            } else {
+                $importLog = "Impor berhasil ($pernyataan pernyataan). Jumlah tabel: $jumlahTabel.";
+            }
         } catch (Throwable $e) {
             $importLog = 'Impor gagal: ' . $e->getMessage();
         }
@@ -360,7 +377,7 @@ $settingSekarang = $dbOk ? (setting_rs() ?? []) : [];
             <?php if ($importLog !== ''): ?>
               <div class="alert <?= str_starts_with($importLog, 'Impor berhasil') ? 'alert-success' : 'alert-warning' ?> py-2"><?= $importLog /* aman: dibangun dari data terkontrol */ ?></div>
             <?php endif; ?>
-            <p class="text-body-secondary">Berkas yang diimpor: <code>database/sik.sql</code> (skema + data contoh, 51 tabel inti).</p>
+            <p class="text-body-secondary">Berkas yang diimpor: <code>database/sik.sql</code> (skema + data contoh, 52 tabel).</p>
             <div class="d-flex gap-2 flex-wrap">
               <a href="index.php?page=install&step=3&aksi=impor" class="btn btn-warning" onclick="return confirm('Impor database/sik.sql? Data yang ada akan ditimpa.')"><i class="bi bi-database-down me-1"></i>Impor Database</a>
               <a href="index.php?page=install&step=3&aksi=user" class="btn btn-outline-warning" onclick="return confirm('Buat ulang tabel user dari dump?')"><i class="bi bi-person-gear me-1"></i>Perbaiki Tabel User</a>
