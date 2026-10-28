@@ -62,6 +62,15 @@ if ($step >= 2) {
 // Impor per-pernyataan SQL dengan parser state; tahan "server has gone away" (timeout/packet kecil di XAMPP)
 function import_sql_file(PDO $pdo, string $file): int
 {
+    // XAMPP bawaan memakai max_execution_time=30, sedangkan impor ±19 MB bisa
+    // lebih lama dari itu — terutama di Windows. Tanpa ini, skrip dihentikan
+    // paksa di tengah impor, sebagian tabel tidak terbentuk, dan karena batas
+    // waktu adalah fatal error (bukan exception), blok catch tidak menangkapnya
+    // sehingga wizard tampak "berhasil" padahal skema belum lengkap.
+    @set_time_limit(0);
+    @ini_set('memory_limit', '512M');
+    @ignore_user_abort(true);
+
     // Naikkan batas sesi agar tidak diputus di tengah impor besar (umum di XAMPP bawaan)
     foreach ([
         'SET SESSION wait_timeout = 28800',
@@ -194,7 +203,10 @@ if ($step >= 3 && $aksi === 'user') {
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ?");
             $stmt->execute([DB_NAME]);
             $jumlahTabel = (int)$stmt->fetchColumn();
-            // Verifikasi tabel kritis — bila kurang, impor kemungkinan gagal di tengah
+            // Bandingkan dengan jumlah CREATE TABLE di dump. Bila impor terhenti di
+            // tengah (batas waktu, koneksi putus, pernyataan gagal), tabelnya akan
+            // kurang dari ini — jadi kelengkapan skema bisa dipastikan, bukan ditebak.
+            $jumlahDiharapkan = (int)preg_match_all('/^CREATE TABLE /m', (string)file_get_contents($sqlFile));
             $kritis = ['user', 'admin', 'pasien', 'dokter', 'poliklinik', 'setting'];
             $kurang = [];
             foreach ($kritis as $t) {
@@ -202,9 +214,14 @@ if ($step >= 3 && $aksi === 'user') {
                     $kurang[] = $t;
                 }
             }
-            $importLog = $kurang
-                ? "Impor selesai ($pernyataan pernyataan, $jumlahTabel tabel) tetapi tabel kritis berikut BELUM ada: <strong>" . implode(', ', $kurang) . "</strong>. Silakan klik Impor Database lagi untuk melanjutkan."
-                : "Impor berhasil ($pernyataan pernyataan). Jumlah tabel: $jumlahTabel.";
+            if ($kurang) {
+                $importLog = "Impor belum lengkap ($pernyataan pernyataan, $jumlahTabel dari $jumlahDiharapkan tabel) — tabel kritis berikut BELUM ada: <strong>"
+                    . implode(', ', $kurang) . "</strong>. Klik <em>Impor Database</em> lagi untuk melanjutkan; data yang sudah ada tidak dihapus.";
+            } elseif ($jumlahTabel < $jumlahDiharapkan) {
+                $importLog = "Impor belum lengkap ($pernyataan pernyataan, $jumlahTabel dari $jumlahDiharapkan tabel). Klik <em>Impor Database</em> lagi untuk melanjutkan.";
+            } else {
+                $importLog = "Impor berhasil ($pernyataan pernyataan). Jumlah tabel: $jumlahTabel.";
+            }
         } catch (Throwable $e) {
             $importLog = 'Impor gagal: ' . $e->getMessage();
         }
