@@ -23,6 +23,10 @@ if ($page === 'diagnostik') {
     require_once __DIR__ . '/pages/diagnostik.php';
     return;
 }
+if ($page === 'update') {
+    require_once __DIR__ . '/pages/update.php';
+    return;
+}
 
 $routes = [
     'login' => 'login.php',

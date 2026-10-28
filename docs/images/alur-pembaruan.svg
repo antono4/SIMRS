@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700" font-family="Sora, 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif">
+<defs>
+<marker id="arwBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5aa9ff"/></marker>
+<marker id="arwGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#41f0c8"/></marker>
+</defs>
+<rect width="1200" height="700" fill="#0b1220"/>
+<text x="48" y="52" fill="#e8eefc" font-size="26" font-weight="700">Alur Pembaruan SIMRS Web</text>
+<text x="48" y="80" fill="#93a6cc" font-size="14">Tombol di halaman login &#8594; unduh skrip &#8594; jalankan di Windows (XAMPP). Tidak ada impor ulang database.</text>
+
+<!-- ============ Panel kiri: di peramban ============ -->
+<rect x="48" y="108" width="520" height="468" rx="16" fill="#111c33" stroke="#2c4270"/>
+<text x="72" y="142" fill="#5aa9ff" font-size="15" font-weight="700">Di peramban (server Anda)</text>
+
+<rect x="72" y="162" width="472" height="62" rx="12" fill="#0f1729" stroke="#2c4270"/>
+<circle cx="98" cy="193" r="13" fill="#5aa9ff"/>
+<text x="98" y="198" fill="#0b1220" font-size="13" font-weight="700" text-anchor="middle">1</text>
+<text x="122" y="187" fill="#e8eefc" font-size="14" font-weight="700">Halaman login</text>
+<text x="122" y="207" fill="#93a6cc" font-size="12">Tombol Perbarui aplikasi membuka index.php?page=update</text>
+
+<rect x="72" y="236" width="472" height="62" rx="12" fill="#0f1729" stroke="#2c4270"/>
+<circle cx="98" cy="267" r="13" fill="#5aa9ff"/>
+<text x="98" y="272" fill="#0b1220" font-size="13" font-weight="700" text-anchor="middle">2</text>
+<text x="122" y="261" fill="#e8eefc" font-size="14" font-weight="700">Halaman pembaru</text>
+<text x="122" y="281" fill="#93a6cc" font-size="12">Klik Unduh update-simrs.bat</text>
+
+<rect x="72" y="310" width="472" height="62" rx="12" fill="#0f1729" stroke="#2c4270"/>
+<circle cx="98" cy="341" r="13" fill="#5aa9ff"/>
+<text x="98" y="346" fill="#0b1220" font-size="13" font-weight="700" text-anchor="middle">3</text>
+<text x="122" y="335" fill="#e8eefc" font-size="14" font-weight="700">Simpan berkasnya</text>
+<text x="122" y="355" fill="#93a6cc" font-size="12">Letakkan di folder aplikasi, mis. C:\xampp\htdocs\SIMRS</text>
+
+<rect x="72" y="392" width="472" height="160" rx="12" fill="#0f1729" stroke="#7f1d1d"/>
+<text x="96" y="420" fill="#ffc466" font-size="13" font-weight="700">Halaman ini tidak mengubah apa pun</text>
+<text x="96" y="446" fill="#93a6cc" font-size="12">?page=update hanya menyajikan berkas .bat untuk diunduh,</text>
+<text x="96" y="466" fill="#93a6cc" font-size="12">seperti ?page=install dan ?page=diagnostik.</text>
+<text x="96" y="492" fill="#93a6cc" font-size="12">Pembaruan baru berjalan setelah Anda mengklik dua kali</text>
+<text x="96" y="512" fill="#93a6cc" font-size="12">berkas .bat itu di komputer Windows Anda.</text>
+<text x="96" y="538" fill="#93a6cc" font-size="12">Pengguna Linux/macOS cukup menjalankan git pull.</text>
+
+<!-- panah antar panel -->
+<path d="M576,342 L624,342" stroke="#41f0c8" stroke-width="2" marker-end="url(#arwGreen)"/>
+
+<!-- ============ Panel kanan: di Windows ============ -->
+<rect x="632" y="108" width="520" height="468" rx="16" fill="#111c33" stroke="#2c4270"/>
+<text x="656" y="142" fill="#41f0c8" font-size="15" font-weight="700">update-simrs.bat (menu 1)</text>
+
+<rect x="656" y="158" width="472" height="58" rx="12" fill="#0f1729" stroke="#2c4270"/>
+<circle cx="682" cy="187" r="13" fill="#41f0c8"/>
+<text x="682" y="192" fill="#0b1220" font-size="13" font-weight="700" text-anchor="middle">1</text>
+<text x="706" y="181" fill="#e8eefc" font-size="14" font-weight="700">Periksa prasyarat</text>
+<text x="706" y="201" fill="#93a6cc" font-size="12">PowerShell, php.exe, dan folder aplikasi</text>
+
+<rect x="656" y="224" width="472" height="58" rx="12" fill="#0f1729" stroke="#7f1d1d"/>
+<circle cx="682" cy="253" r="13" fill="#ffc466"/>
+<text x="682" y="258" fill="#0b1220" font-size="13" font-weight="700" text-anchor="middle">2</text>
+<text x="706" y="247" fill="#e8eefc" font-size="14" font-weight="700">Cadangkan dulu</text>
+<text x="706" y="267" fill="#93a6cc" font-size="12">Seluruh berkas lama disalin ke backup\&lt;tanggal-jam&gt;</text>
+
+<rect x="656" y="290" width="472" height="58" rx="12" fill="#0f1729" stroke="#2c4270"/>
+<circle cx="682" cy="319" r="13" fill="#41f0c8"/>
+<text x="682" y="324" fill="#0b1220" font-size="13" font-weight="700" text-anchor="middle">3</text>
+<text x="706" y="313" fill="#e8eefc" font-size="14" font-weight="700">Unduh versi terbaru</text>
+<text x="706" y="333" fill="#93a6cc" font-size="12">Arsip cabang main dari github.com/antono4/SIMRS</text>
+
+<rect x="656" y="356" width="472" height="58" rx="12" fill="#0f1729" stroke="#2c4270"/>
+<circle cx="682" cy="385" r="13" fill="#41f0c8"/>
+<text x="682" y="390" fill="#0b1220" font-size="13" font-weight="700" text-anchor="middle">4</text>
+<text x="706" y="379" fill="#e8eefc" font-size="14" font-weight="700">Gabungkan kredensial</text>
+<text x="706" y="399" fill="#93a6cc" font-size="12">tools/merge-config.php memindahkannya ke config.php baru</text>
+
+<rect x="656" y="422" width="472" height="58" rx="12" fill="#0f1729" stroke="#2c4270"/>
+<circle cx="682" cy="451" r="13" fill="#41f0c8"/>
+<text x="682" y="456" fill="#0b1220" font-size="13" font-weight="700" text-anchor="middle">5</text>
+<text x="706" y="445" fill="#e8eefc" font-size="14" font-weight="700">Timpa berkas aplikasi</text>
+<text x="706" y="465" fill="#93a6cc" font-size="12">Kecuali config.php, database\, backup\, dan .git\</text>
+
+<rect x="656" y="488" width="472" height="58" rx="12" fill="#0f1729" stroke="#2c4270"/>
+<circle cx="682" cy="517" r="13" fill="#41f0c8"/>
+<text x="682" y="522" fill="#0b1220" font-size="13" font-weight="700" text-anchor="middle">6</text>
+<text x="706" y="511" fill="#e8eefc" font-size="14" font-weight="700">Verifikasi dan lapor</text>
+<text x="706" y="531" fill="#93a6cc" font-size="12">Cek berkas inti + config, lalu tawarkan menu pulihkan</text>
+
+<!-- ============ Legenda bawah ============ -->
+<rect x="48" y="596" width="1104" height="76" rx="16" fill="#111c33" stroke="#2c4270"/>
+<rect x="72" y="616" width="8" height="36" rx="4" fill="#ffc466"/>
+<text x="94" y="632" fill="#ffc466" font-size="13" font-weight="700">DIPERTAHANKAN</text>
+<text x="94" y="652" fill="#93a6cc" font-size="12">config.php (kredensial database) &#183; database\ &#183; backup\ &#183; .git\</text>
+
+<rect x="628" y="616" width="8" height="36" rx="4" fill="#41f0c8"/>
+<text x="650" y="632" fill="#41f0c8" font-size="13" font-weight="700">DIPERBARUI DARI GITHUB</text>
+<text x="650" y="652" fill="#93a6cc" font-size="12">Seluruh berkas aplikasi lainnya, termasuk VERSION dan halaman ini</text>
+</svg>

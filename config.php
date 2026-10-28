@@ -19,7 +19,14 @@ define('DB_CHARSET', 'latin1'); // skema asli memakai latin1
 
 // ---- Identitas Aplikasi ----
 define('APP_NAME', 'SIMRS Web');
-define('APP_VERSION', '2.0.0');
+
+// Nomor versi dibaca dari berkas VERSION, bukan ditulis di sini. Alasannya:
+// config.php memuat kredensial database dan karena itu tidak pernah ditimpa
+// oleh update-simrs.bat, sedangkan nomor versi justru harus ikut diperbarui.
+$__versiFile = __DIR__ . '/VERSION';
+$__versi = is_file($__versiFile) ? trim((string)file_get_contents($__versiFile)) : '';
+define('APP_VERSION', preg_match('/^\d+(\.\d+){1,3}$/', $__versi) === 1 ? $__versi : '0.0.0');
+unset($__versiFile, $__versi);
 
 // ---- Prasyarat versi PHP ----
 // APP_MIN_PHP  : versi terendah yang masih didukung (8.2 menerima perbaikan

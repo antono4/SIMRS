@@ -251,9 +251,17 @@ $alamatRs = trim(($rs['alamat_instansi'] ?? '') . ' ' . ($rs['kabupaten'] ?? '')
             </div>
           </form>
           <hr class="my-4" />
-          <p class="text-center text-body-secondary small mb-0">
+          <p class="text-center text-body-secondary small mb-3">
             Akun bawaan <code>admin</code> / <code>admin</code><br />
             Kompatibel tabel <code>admin</code> &amp; <code>user</code> sistem
+          </p>
+          <div class="d-grid">
+            <a href="<?= e(url('update')) ?>" class="btn btn-outline-secondary btn-sm">
+              <i class="bi bi-arrow-repeat me-1"></i>Perbarui aplikasi
+            </a>
+          </div>
+          <p class="text-center text-body-secondary mb-0 mt-2" style="font-size:.75rem">
+            <?= e(APP_NAME) ?> v<?= e(APP_VERSION) ?> &middot; unduh pembaru dari GitHub
           </p>
         </div>
       </div>
