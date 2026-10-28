@@ -20,6 +20,7 @@ const PAGE_PERMISSIONS = [
     'resep' => 'resep_obat',
     'kamarinap' => 'kamar_inap',
     'kasir' => 'kasir_ralan',
+    'billing' => 'kasir_ralan',   // cetak billing: izin sama dengan Kasir
     'laporan' => 'kunjungan_ralan',
     'users' => 'pegawai_user',
     'pengaturan' => 'pegawai_admin',

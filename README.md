@@ -54,11 +54,13 @@ membaca/menulis ke database `sik`. Untuk mencobanya, lihat bagian [Instalasi](#-
 | **Master data** | Pasien, dokter, poliklinik, penjamin, dan tarif perawatan |
 | **Registrasi kunjungan** | Pendaftaran rawat jalan & rawat inap, nomor rekam medis otomatis |
 | **Antrian poliklinik** | Nomor antrian otomatis per poliklinik saat registrasi, pemanggilan, dan pemantauan status |
+| **Pemisah antrian** | Satu warna tetap + huruf awalan per poliklinik, sama di modul Antrian dan layar display |
 | **Layar display** | Layar TV ruang tunggu (tanpa login) dengan nomor dipanggil, bel, dan pengumuman suara |
 | **Tindakan medis** | Pencatatan tindakan dokter dan petugas dengan tarif otomatis |
 | **Diagnosa & resep** | Diagnosa ICD-10 dan resep obat per kunjungan |
 | **Rawat inap** | Check-in/check-out kamar, perhitungan lama inap dan biaya |
 | **Kasir** | Pembayaran kunjungan, penerbitan nota, dan pembatalan pembayaran |
+| **Cetak billing** | Nota kunjungan siap cetak: kop instansi, rincian tarif, total, dan terbilang; langsung ke A4 atau PDF |
 | **Laporan** | Laporan kunjungan per periode, per poliklinik, per dokter, per penjamin |
 | **Hak akses** | Izin per modul untuk setiap pengguna (diterapkan di server, bukan hanya di menu) |
 | **Tema siang/malam** | Pilihan tema yang disimpan di browser (`localStorage`), dioptimalkan agar tetap kontras di kedua tema |
@@ -91,6 +93,13 @@ contoh bawaan (`database/sik.sql`) — bukan mockup atau gambar rancangan.
   <img src="docs/images/kamarinap.png" alt="Rawat inap" width="410">
   <img src="docs/images/kasir.png" alt="Kasir / pembayaran" width="410">
 </p>
+
+### Cetak billing
+
+Halaman nota mandiri, terpisah dari tata letak aplikasi, sehingga siap dicetak
+langsung ke kertas A4 atau disimpan sebagai PDF lewat dialog cetak peramban.
+
+<p align="center"><img src="docs/images/billing.png" alt="Cetak billing: nota kunjungan siap cetak A4" width="720"></p>
 
 ### Data klinis
 
@@ -148,6 +157,10 @@ contoh bawaan (`database/sik.sql`) — bukan mockup atau gambar rancangan.
 Nomor antrian dibuat **otomatis** saat registrasi kunjungan, jadi petugas loket tidak perlu
 mengambil nomor terpisah. Nomor berjalan per poliklinik, per hari, mulai dari `001`.
 
+<p align="center">
+  <img src="docs/images/alur-antrian.svg" alt="Alur antrian: nomor dibuat saat registrasi, dipanggil petugas, tampil di layar TV" width="820">
+</p>
+
 Modul `?page=antrian` dipakai petugas untuk memanggil dan memantau:
 
 | Aksi | Kegunaan |
@@ -165,9 +178,23 @@ tampil penuh satu layar, dan menyegarkan dirinya setiap 3 detik:
 - bel dan pengumuman suara Bahasa Indonesia (`SpeechSynthesis`), yang aktif setelah
   tombol **Suara** ditekan — peramban memblokir audio sebelum ada interaksi pengguna.
 
+### Pemisah antrian per poliklinik
+
+Setiap poliklinik punya satu **warna tetap** dan **huruf awalan** yang tampil sama di
+seluruh aplikasi: kartu grup di modul Antrian, tiap baris antrian, kartu informasi
+kunjungan, dan kartu poliklinik di layar display. Jadi pasien bisa mencocokkan warna
+pada kartu antriannya dengan kartu poliklinik di layar tanpa harus membaca nama poli.
+
+Warna diberikan berdasarkan urutan `kd_poli`, sehingga selama jumlah poliklinik tidak
+melebihi jumlah warna (36), tidak ada dua poliklinik yang berbagi warna — termasuk
+poliklinik nonaktif yang masih tersimpan di basis data. Palet disusun dengan algoritma
+jarak warna terbesar memakai jarak persepsi CIELAB, supaya warna yang berdampingan di
+layar selalu terlihat jelas berbeda, dan semua warna diuji kontras ≥ 4,6 terhadap teks
+putih (WCAG AA).
+
 > **Privasi.** Layar display bersifat publik, jadi halaman ini **hanya** mengirim nomor
-> antrian dan nama poliklinik. Nama pasien dan No. Rekam Medis tidak pernah dikirim ke
-> peramban, baik di HTML maupun di respons JSON.
+> antrian, nama poliklinik, warna, dan huruf awalan. Nama pasien dan No. Rekam Medis
+> tidak pernah dikirim ke peramban, baik di HTML maupun di respons JSON.
 
 ### Menjalankan layar display
 
@@ -202,7 +229,18 @@ menjadi pusat data: setiap kunjungan mengacu ke satu pasien, satu dokter, satu
 poliklinik, dan satu penjamin. Data klinis dan keuangan (tindakan, diagnosa, resep,
 kamar inap, nota) menggantung pada `no_rawat` kunjungan tersebut.
 
+Diagram berikut merangkum perjalanan satu kunjungan, dari pendaftaran sampai nota
+siap cetak, supaya jelas modul mana yang menulis data ke mana:
+
+<p align="center">
+  <img src="docs/images/alur-kunjungan.svg" alt="Siklus satu kunjungan pasien: registrasi, pelayanan, kasir, nota" width="820">
+</p>
+
 ## 🗂️ Struktur Proyek
+
+<p align="center">
+  <img src="docs/images/struktur-proyek.svg" alt="Struktur berkas: akar proyek, pages/, includes/, dan berkas lain" width="820">
+</p>
 
 ```
 SIMRS/
@@ -226,6 +264,7 @@ SIMRS/
 │   ├── resep.php             #   Resep obat
 │   ├── kamarinap.php         #   Rawat inap
 │   ├── kasir.php             #   Kasir & pembayaran
+│   ├── billing.php           #   Cetak billing / nota (mandiri, siap cetak A4)
 │   ├── laporan.php           #   Laporan kunjungan
 │   ├── users.php             #   Manajemen pengguna & izin
 │   ├── pengaturan.php        #   Pengaturan identitas rumah sakit
@@ -362,6 +401,28 @@ di bagian atas berkas. Alternatif tanpa berkas ini: buka phpMyAdmin, pilih tab
 | Administrator | `admin` | `admin` | Tabel `admin` |
 | Pengguna/petugas | — | — | Tabel `user` |
 
+Akun `admin` adalah superuser: semua modul terbuka. Akun dari tabel `user` dibatasi
+oleh izin per modul, yang diatur di `?page=users` dan diperiksa di server (bukan
+hanya disembunyikan dari menu). Izin disimpan di sesi saat login, jadi perubahan izin
+baru berlaku setelah pengguna login ulang.
+
+| Izin di `?page=users` | Membuka modul |
+|-----------------------|---------------|
+| Master Pasien | Pasien |
+| Master Dokter | Dokter |
+| Registrasi, Poliklinik & Penjab | Registrasi, Poliklinik, Penanggung Jawab, Antrian |
+| Tarif Perawatan | Tarif Perawatan |
+| Tindakan / Perawatan | Tindakan |
+| Diagnosa ICD-10 | Diagnosa |
+| Resep Obat | Resep |
+| Kamar Inap | Kamar Inap |
+| Kasir / Billing | Kasir, Cetak Billing |
+| Laporan Kunjungan | Laporan |
+| Manajemen Pengguna | Pengguna |
+
+Halaman yang tidak butuh izin khusus: Dashboard, Akun Saya, dan layar display
+(publik). Panel Administrator hanya terbuka untuk peran `admin`.
+
 > **Penting untuk produksi:** ganti kredensial bawaan, gunakan pengguna database
 > dengan hak minimum, aktifkan HTTPS, dan hapus `info.php` (menampilkan `phpinfo()`)
 > serta `pages/diagnostik.php` sebelum dipublikasikan.
@@ -384,7 +445,8 @@ di bagian atas berkas. Alternatif tanpa berkas ini: buka phpMyAdmin, pilih tab
 | Diagnosa | `?page=diagnosa` | Diagnosa ICD-10 per kunjungan |
 | Resep | `?page=resep` | Resep obat per kunjungan |
 | Kamar Inap | `?page=kamarinap` | Masuk/pulang rawat inap |
-| Kasir | `?page=kasir` | Pembayaran dan nota kunjungan |
+| Kasir | `?page=kasir` | Rincian tagihan, proses pembayaran, dan penerbitan nota |
+| Cetak Billing | `?page=billing&no_rawat=...` | Nota kunjungan siap cetak (A4/PDF), memakai perhitungan yang sama dengan Kasir |
 | Laporan | `?page=laporan` | Laporan kunjungan per periode |
 | Pengguna | `?page=users` | Manajemen pengguna dan izin modul |
 | Pengaturan | `?page=pengaturan` | Identitas rumah sakit |

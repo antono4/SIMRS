@@ -71,6 +71,7 @@ $rows = antrian_daftar($tgl, $poliFilter, $statusFilter);
 $perPoli = [];
 foreach ($rows as $r) {
     $perPoli[$r['kd_poli']]['nama'] = $r['nm_poli'] ?? $r['kd_poli'];
+    $perPoli[$r['kd_poli']]['warna'] = poli_warna((string)$r['kd_poli']);
     $perPoli[$r['kd_poli']]['baris'][] = $r;
 }
 
@@ -186,9 +187,13 @@ require_once __DIR__ . '/../includes/header.php';
 <?php endif; ?>
 
 <?php foreach ($perPoli as $kdPoli => $grup): ?>
-  <div class="card mb-3">
+  <div class="card mb-3 sk-poli-card" style="--sk-poli: <?= e($grup['warna']) ?>">
     <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
-      <h3 class="card-title mb-0"><i class="bi bi-hospital me-1"></i><?= e($grup['nama']) ?> <span class="badge text-bg-secondary"><?= count($grup['baris']) ?></span></h3>
+      <h3 class="card-title mb-0 sk-poli-nama">
+        <?= poli_penanda($grup['nama'], (string)$kdPoli) ?>
+        <?= e($grup['nama']) ?>
+        <span class="badge text-bg-secondary"><?= count($grup['baris']) ?></span>
+      </h3>
       <form method="post" action="<?= e(url('antrian')) ?>" class="d-inline">
         <input type="hidden" name="act" value="berikutnya" />
         <input type="hidden" name="tgl" value="<?= e($tgl) ?>" />
@@ -216,10 +221,15 @@ require_once __DIR__ . '/../includes/header.php';
             <tr>
               <td><span class="fs-5 fw-semibold"><?= e(antrian_nomor_tampil((int)$r['nomor'])) ?></span></td>
               <td>
-                <?= e($r['nm_pasien'] ?? '-') ?>
-                <?php if (!empty($r['no_rkm_medis'])): ?>
-                  <br /><small class="text-body-secondary"><?= e($r['no_rkm_medis']) ?></small>
-                <?php endif; ?>
+                <span class="sk-poli-nama">
+                  <?= poli_penanda((string)($r['nm_poli'] ?? $kdPoli), (string)$kdPoli) ?>
+                  <span>
+                    <?= e($r['nm_pasien'] ?? '-') ?>
+                    <?php if (!empty($r['no_rkm_medis'])): ?>
+                      <br /><small class="text-body-secondary"><?= e($r['no_rkm_medis']) ?></small>
+                    <?php endif; ?>
+                  </span>
+                </span>
               </td>
               <td class="d-none d-md-table-cell"><code><?= e($r['no_rawat'] ?? '-') ?></code></td>
               <td><?= antrian_badge((string)$r['status']) ?></td>

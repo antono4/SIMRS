@@ -41,7 +41,7 @@
 <path d="M56,590 h1088" stroke="#2c4270" opacity="0.7"/>
 <rect x="45" y="553" width="4" height="36" rx="2" fill="#41f0c8"/>
 <text x="62" y="578" fill="#41f0c8" font-size="16" font-weight="700">Basis Data MySQL / MariaDB</text>
-<text x="62" y="614" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"><tspan fill="#41f0c8">skema sik</tspan> &#183; 51 tabel &#183; latin1 &#183; 54 relasi foreign key</text>
+<text x="62" y="614" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"><tspan fill="#41f0c8">skema sik</tspan> &#183; 52 tabel &#183; latin1 &#183; 55 relasi foreign key</text>
 <text x="62" y="635" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"><tspan fill="#93a6cc">pasien &#183; reg_periksa &#183; rawat_jl_dr &#183; resep_obat &#183; kamar_inap &#183; nota_jalan</tspan></text>
 <text x="62" y="656" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace"><tspan fill="#93a6cc">PDO prepared statements (db_all / db_row / db_val / db_exec)</tspan></text>
 <path d="M344,172.0 L430,195.0" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
