@@ -72,10 +72,31 @@ $currentPage = $page;
 try {
     require_once __DIR__ . '/pages/' . $routes[$page];
 } catch (Throwable $e) {
+    error_log(sprintf('[SIMRS] %s: %s di %s:%d', $e::class, $e->getMessage(), $e->getFile(), $e->getLine()));
+
+    // Jangan pernah mengalihkan ke halaman lain di sini: HTTP_REFERER pada
+    // pemuatan halaman biasa adalah halaman itu sendiri, sehingga galat apa pun
+    // berubah menjadi pengalihan tanpa henti (ERR_TOO_MANY_REDIRECTS) sekaligus
+    // menyembunyikan pesan aslinya. Tampilkan halaman galat 500 secara langsung.
     if (PHP_SAPI !== 'cli' && !headers_sent()) {
-        flash_set('danger', 'Terjadi kesalahan: ' . $e->getMessage());
-        $back = $_SERVER['HTTP_REFERER'] ?? url('dashboard');
-        redirect($back);
+        $galatKelas = $e::class;
+        $galatPesan = $e->getMessage();
+        $galatBerkas = $e->getFile();
+        $galatBaris = $e->getLine();
+        require __DIR__ . '/pages/galat.php';
+        exit;
     }
+
+    if (PHP_SAPI !== 'cli') {
+        // Header sudah terkirim (galat muncul setelah keluaran). Tidak bisa lagi
+        // mengubah status/redirect — tampilkan peringatan di ujung halaman.
+        echo '<div style="position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#b91c1c;color:#fff;'
+            . 'padding:.75rem 1rem;font:14px/1.4 system-ui,sans-serif">'
+            . '<strong>Terjadi kesalahan:</strong> '
+            . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8')
+            . '</div>';
+        exit;
+    }
+
     throw $e;
 }
