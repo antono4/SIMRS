@@ -305,6 +305,10 @@ dengan pengguna `root` tanpa kata sandi.
 (`upload_max_filesize = 2M`), sehingga phpMyAdmin menolak berkas itu — sering tanpa
 pesan yang jelas, dan **database tetap kosong**.
 
+<p align="center">
+  <img src="docs/images/import-database.svg" alt="Perbandingan impor database/sik.sql (gagal) dan database/sik.sql.gz (berhasil) di phpMyAdmin" width="880">
+</p>
+
 Karena itu tersedia `database/sik.sql.gz` (**1,3 MB**, isinya identik). Caranya:
 
 1. Buka <http://localhost/phpmyadmin>.
