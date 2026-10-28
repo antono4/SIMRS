@@ -13,7 +13,7 @@
 <text x="62" y="172" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">?page=registrasi</text>
 <text x="62" y="196" fill="#93a6cc" font-size="12">Simpan kunjungan &#8594; nomor</text>
 <text x="62" y="215" fill="#93a6cc" font-size="12">antrian dibuat otomatis</text>
-<text x="62" y="240" fill="#41f0c8" font-size="12" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">001, 002, 003, ...</text>
+<text x="62" y="240" fill="#41f0c8" font-size="12" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">INT-001, U9-001, ...</text>
 
 <rect x="44" y="336" width="256" height="150" rx="12" fill="#111c33" stroke="#2c4270"/>
 <path d="M56,374 h232" stroke="#2c4270" opacity="0.7"/>
@@ -57,8 +57,9 @@
 <text x="898" y="259" fill="#93a6cc" font-size="12">antrian hari itu yang tampil.</text>
 <path d="M892,278 h252" stroke="#2c4270" opacity="0.7"/>
 <text x="898" y="302" fill="#e8eefc" font-size="12">Dikirim ke peramban:</text>
-<text x="898" y="326" fill="#41f0c8" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nomor &#183; nama poliklinik</text>
-<text x="898" y="348" fill="#41f0c8" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">warna &#183; huruf awalan</text>
+<text x="898" y="326" fill="#41f0c8" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nomor (kode poli + urut)</text>
+<text x="898" y="348" fill="#41f0c8" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nama poliklinik &#183; warna</text>
+
 <path d="M892,368 h252" stroke="#2c4270" opacity="0.7"/>
 <text x="898" y="392" fill="#ff8fb1" font-size="12">TIDAK PERNAH dikirim:</text>
 <text x="898" y="416" fill="#93a6cc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nama pasien</text>

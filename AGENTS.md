@@ -24,9 +24,15 @@ Aplikasi web PHP (AdminLTE 4 + MySQL) hasil pengembangan ulang SIMRS (Java).
   (`kunjungan_load` + `kunjungan_card`) dan diakses lewat `?page=<modul>&no_rawat=<no>`.
 - Antrian: tabel `antrian` **tidak ada di skema asli** — dibuat oleh
   `antrian_bootstrap()` (`CREATE TABLE IF NOT EXISTS`), jadi instalasi lama naik versi sendiri;
-  DDL-nya juga ditambahkan ke `database/sik.sql` untuk instalasi baru. Nomor per hari per
+  DDL-nya juga ditambahkan ke `database/sik.sql` untuk instalasi baru. Nomor urut per hari per
   poliklinik mulai dari 001, dialokasikan dalam transaksi + `SELECT ... FOR UPDATE` pada baris
   `poliklinik` (unique key `uq_antrian_hari_poli_nomor` sebagai jaring pengaman).
+  **Yang ditampilkan selalu kode poli + nomor urut** (`INT-007`, `U9-007`) lewat
+  `antrian_nomor_tampil($nomor, $kdPoli)` — karena nomor urut diulang di tiap poli, tanpa kode
+  itu nomor dua poliklinik terlihat sama. Kode diambil dari `kd_poli` (`poli_kode()`, nol depan
+  dibuang: `U0001` -> `U1`), **bukan** huruf pertama nama poli, yang bertabrakan
+  ("Poliklinik Kandungan" dan "Poliklinik Kulit & Kelamin" sama-sama K). Selalu kirim `kd_poli`
+  sebagai argumen kedua; sel kolom Nomor di `pages/antrian.php` memakai `text-nowrap`.
   Logika di `includes/antrian.php`; halaman `pages/antrian.php` (izin `registrasi`).
   Nomor dibuat otomatis di `pages/registrasi.php` saat registrasi disimpan.
 - Layar display `pages/display.php` **publik** (ada di `$publicPages`, tanpa login) dan tidak

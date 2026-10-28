@@ -54,7 +54,7 @@ membaca/menulis ke database `sik`. Untuk mencobanya, lihat bagian [Instalasi](#-
 | **Grafik kunjungan** | Tren kunjungan 14 hari terakhir dan kunjungan per poliklinik (Chart.js) |
 | **Master data** | Pasien, dokter, poliklinik, penjamin, dan tarif perawatan |
 | **Registrasi kunjungan** | Pendaftaran rawat jalan & rawat inap, nomor rekam medis otomatis |
-| **Antrian poliklinik** | Nomor antrian otomatis per poliklinik saat registrasi, pemanggilan, dan pemantauan status |
+| **Antrian poliklinik** | Nomor antrian otomatis per poliklinik saat registrasi, pemanggilan, dan pemantauan status — nomor memuat kode poli, mis. `INT-007` |
 | **Pemisah antrian** | Satu warna tetap + huruf awalan per poliklinik, sama di modul Antrian dan layar display |
 | **Layar display** | Layar TV ruang tunggu (tanpa login) dengan nomor dipanggil, bel, dan pengumuman suara |
 | **Tindakan medis** | Pencatatan tindakan dokter dan petugas dengan tarif otomatis |
@@ -157,7 +157,21 @@ langsung ke kertas A4 atau disimpan sebagai PDF lewat dialog cetak peramban.
 ## 🎫 Antrian & Layar Display
 
 Nomor antrian dibuat **otomatis** saat registrasi kunjungan, jadi petugas loket tidak perlu
-mengambil nomor terpisah. Nomor berjalan per poliklinik, per hari, mulai dari `001`.
+mengambil nomor terpisah. Nomor urut berjalan per poliklinik, per hari, mulai dari `001`.
+
+Setiap nomor diberi awalan **kode poliklinik**, jadi yang ditampilkan adalah `INT-007` —
+bukan `007` saja. Awalan ini perlu karena nomor urut diulang di setiap poliklinik: tanpa
+kode, nomor 007 di Poli Penyakit Dalam dan di Poliklinik Umum akan terlihat sama, baik di
+layar TV maupun di tiket yang dipegang pasien.
+
+<p align="center">
+  <img src="docs/images/kode-nomor-antrian.svg" alt="Perbandingan nomor antrian tanpa kode poli (007 di dua poliklinik terlihat sama) dan dengan kode poli (INT-007, U9-007) yang jelas, beserta pemetaan kd_poli ke kode" width="820">
+</p>
+
+Kode diambil dari `kd_poli` (dengan angka nol di depan dibuang, `U0009` menjadi `U9`),
+**bukan** dari huruf pertama nama poliklinik — "Poliklinik Kandungan" dan "Poliklinik Kulit
+& Kelamin" sama-sama berawalan K, sehingga awalan dari nama justru membuat nomor dua
+poliklinik tampak identik. Nomor urut tetap tiga digit: `001`, `002`, `003`, dan seterusnya.
 
 <p align="center">
   <img src="docs/images/alur-antrian.svg" alt="Alur antrian: nomor dibuat saat registrasi, dipanggil petugas, tampil di layar TV" width="820">
@@ -186,6 +200,10 @@ Setiap poliklinik punya satu **warna tetap** dan **huruf awalan** yang tampil sa
 seluruh aplikasi: kartu grup di modul Antrian, tiap baris antrian, kartu informasi
 kunjungan, dan kartu poliklinik di layar display. Jadi pasien bisa mencocokkan warna
 pada kartu antriannya dengan kartu poliklinik di layar tanpa harus membaca nama poli.
+
+Kode nomor antrian dan huruf awalan lingkaran dipakai untuk keperluan berbeda: kode nomor
+(`U9`) berasal dari `kd_poli` dan selalu unik, sedangkan huruf di dalam lingkaran warna
+(`U`) hanya penanda visual dan boleh sama antar-poliklinik.
 
 Warna diberikan berdasarkan urutan `kd_poli`, sehingga selama jumlah poliklinik tidak
 melebihi jumlah warna (36), tidak ada dua poliklinik yang berbagi warna — termasuk

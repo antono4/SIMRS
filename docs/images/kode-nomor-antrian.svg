@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 452" width="1040" height="452" role="img" aria-labelledby="j d">
+<title id="j">Mengapa nomor antrian memuat kode poliklinik</title>
+<desc id="d">Perbandingan nomor antrian tanpa kode poliklinik yang ambigu dengan nomor berkode poliklinik yang jelas.</desc>
+<rect width="1040" height="452" fill="#0b1220"/>
+<text x="40" y="48" fill="#e8eefc" font-size="24" font-weight="700">Mengapa nomor antrian memuat kode poliklinik</text>
+<text x="40" y="76" fill="#93a6cc" font-size="14">Nomor urut diulang dari 1 di setiap poliklinik, jadi angkanya saja tidak cukup</text>
+<rect x="40" y="104" width="460" height="168" rx="12" fill="#111c33" stroke="#7a3350"/>
+<rect x="41" y="105" width="4" height="34" rx="2" fill="#ff8fb1"/>
+<text x="60" y="132" fill="#ff8fb1" font-size="15" font-weight="700">Tanpa kode poli — ambigu</text>
+<path d="M56,146 h428" stroke="#2c4270" opacity="0.7"/>
+<text x="64" y="178" fill="#e8eefc" font-size="13">Poli Penyakit Dalam</text>
+<text x="470" y="178" fill="#ff8fb1" font-size="18" font-weight="700" text-anchor="end" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">007</text>
+<text x="64" y="212" fill="#e8eefc" font-size="13">Poliklinik Umum</text>
+<text x="470" y="212" fill="#ff8fb1" font-size="18" font-weight="700" text-anchor="end" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">007</text>
+<text x="64" y="250" fill="#93a6cc" font-size="12">Dua poliklinik berbeda, nomor terlihat sama</text>
+<rect x="540" y="104" width="460" height="168" rx="12" fill="#111c33" stroke="#1f6b5c"/>
+<rect x="541" y="105" width="4" height="34" rx="2" fill="#41f0c8"/>
+<text x="560" y="132" fill="#41f0c8" font-size="15" font-weight="700">Dengan kode poli — jelas</text>
+<path d="M556,146 h428" stroke="#2c4270" opacity="0.7"/>
+<text x="564" y="178" fill="#e8eefc" font-size="13">Poli Penyakit Dalam</text>
+<text x="970" y="178" fill="#41f0c8" font-size="18" font-weight="700" text-anchor="end" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">INT-007</text>
+<text x="564" y="212" fill="#e8eefc" font-size="13">Poliklinik Umum</text>
+<text x="970" y="212" fill="#41f0c8" font-size="18" font-weight="700" text-anchor="end" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">U9-007</text>
+<text x="564" y="250" fill="#93a6cc" font-size="12">Tiap nomor menunjuk satu poliklinik</text>
+<rect x="40" y="300" width="960" height="118" rx="12" fill="#111c33" stroke="#2c4270"/>
+<rect x="41" y="301" width="4" height="34" rx="2" fill="#5aa9ff"/>
+<text x="60" y="328" fill="#5aa9ff" font-size="15" font-weight="700">Kode diambil dari kd_poli, nol di depan dibuang</text>
+<path d="M56,342 h928" stroke="#2c4270" opacity="0.7"/>
+<text x="64" y="378" fill="#93a6cc" font-size="14" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">U0001</text>
+<text x="140" y="378" fill="#5aa9ff" font-size="14">&#8594;</text>
+<text x="164" y="378" fill="#41f0c8" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">U1</text>
+<text x="248" y="378" fill="#93a6cc" font-size="14" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">U0009</text>
+<text x="324" y="378" fill="#5aa9ff" font-size="14">&#8594;</text>
+<text x="348" y="378" fill="#41f0c8" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">U9</text>
+<text x="432" y="378" fill="#93a6cc" font-size="14" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">U0010</text>
+<text x="508" y="378" fill="#5aa9ff" font-size="14">&#8594;</text>
+<text x="532" y="378" fill="#41f0c8" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">U10</text>
+<text x="616" y="378" fill="#93a6cc" font-size="14" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">INT</text>
+<text x="692" y="378" fill="#5aa9ff" font-size="14">&#8594;</text>
+<text x="716" y="378" fill="#41f0c8" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">INT</text>
+<text x="800" y="378" fill="#93a6cc" font-size="14" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">IGDK</text>
+<text x="876" y="378" fill="#5aa9ff" font-size="14">&#8594;</text>
+<text x="900" y="378" fill="#41f0c8" font-size="14" font-weight="700" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">IGDK</text>
+<text x="64" y="404" fill="#93a6cc" font-size="12">Nomor urut tetap 3 digit: 001, 002, 003, ...</text>
+</svg>

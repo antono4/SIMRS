@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $pesan = "Registrasi berhasil. No. Rawat: $noRawat (No. Urut $noReg, pasien $sttsDaftar, biaya Rp " . number_format($biaya, 0, ',', '.') . ')';
         if ($nomorAntrian !== null) {
-            $pesan .= ' Nomor antrian: ' . antrian_nomor_tampil($nomorAntrian) . ' (' . $poli['nm_poli'] . ').';
+            $pesan .= ' Nomor antrian: ' . antrian_nomor_tampil($nomorAntrian, $kdPoli) . ' (' . $poli['nm_poli'] . ').';
         }
         flash_set('success', $pesan);
         redirect(url('registrasi', ['tgl' => $tgl]));
