@@ -22,6 +22,19 @@ Aplikasi web PHP (AdminLTE 4 + MySQL) hasil pengembangan ulang SIMRS (Java).
 - Tabel `pasien` punya FK ke `penjab.kd_pj` — kd_pj harus valid.
 - Modul klinis per kunjungan (tindakan, diagnosa, resep, kasir) memakai `includes/kunjungan.php`
   (`kunjungan_load` + `kunjungan_card`) dan diakses lewat `?page=<modul>&no_rawat=<no>`.
+- Antrian: tabel `antrian` **tidak ada di skema asli** — dibuat oleh
+  `antrian_bootstrap()` (`CREATE TABLE IF NOT EXISTS`), jadi instalasi lama naik versi sendiri;
+  DDL-nya juga ditambahkan ke `database/sik.sql` untuk instalasi baru. Nomor per hari per
+  poliklinik mulai dari 001, dialokasikan dalam transaksi + `SELECT ... FOR UPDATE` pada baris
+  `poliklinik` (unique key `uq_antrian_hari_poli_nomor` sebagai jaring pengaman).
+  Logika di `includes/antrian.php`; halaman `pages/antrian.php` (izin `registrasi`).
+  Nomor dibuat otomatis di `pages/registrasi.php` saat registrasi disimpan.
+- Layar display `pages/display.php` **publik** (ada di `$publicPages`, tanpa login) dan tidak
+  memakai `includes/header.php` — tampil penuh satu layar untuk TV, polling JSON tiap 3 detik
+  (`?page=display&format=json`, `&format=panggil`). **Jangan pernah** kirim nama pasien atau
+  No. RM ke halaman ini; hanya nomor antrian + nama poliklinik. Hanya poliklinik yang punya
+  antrian hari itu yang ditampilkan (`antrian_ringkasan_aktif`), dan daftar itu harus disaring
+  di jalur JSON juga, bukan hanya di HTML awal.
 - Tindakan: tarif diambil dari `jns_perawatan` difilter kd_poli & kd_pj kunjungan (fallback semua aktif);
   simpan ke `rawat_jl_dr` (dokter) / `rawat_jl_pr` (petugas) dengan `stts_bayar='Belum'`.
 - Kamar inap: masuk → kamar ISI + reg_periksa Ranap/Dirawat; pulang → lama & ttl_biaya dihitung,

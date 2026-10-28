@@ -51,7 +51,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $biaya, 'Belum', $sttsDaftar, $lanjut, $kdPj, $umur, $sttsUmur, 'Belum Bayar', $statusPoli,
             ]
         );
-        flash_set('success', "Registrasi berhasil. No. Rawat: $noRawat (No. Urut $noReg, pasien $sttsDaftar, biaya Rp " . number_format($biaya, 0, ',', '.') . ')');
+        // Nomor antrian dibuat sekalian agar pasien langsung mendapat urutan poli.
+        // Bila pembuatan nomor gagal, registrasi tetap tersimpan (antrian bisa
+        // diberi nomor menyusul dari modul Antrian).
+        $nomorAntrian = null;
+        try {
+            $a = antrian_ambil_nomor($tgl, $kdPoli, $noRawat, (string)(auth_user()['username'] ?? ''));
+            $nomorAntrian = (int)$a['nomor'];
+        } catch (Throwable $e) {
+            // abaikan: bukan bagian kritis dari registrasi
+        }
+
+        $pesan = "Registrasi berhasil. No. Rawat: $noRawat (No. Urut $noReg, pasien $sttsDaftar, biaya Rp " . number_format($biaya, 0, ',', '.') . ')';
+        if ($nomorAntrian !== null) {
+            $pesan .= ' Nomor antrian: ' . antrian_nomor_tampil($nomorAntrian) . ' (' . $poli['nm_poli'] . ').';
+        }
+        flash_set('success', $pesan);
         redirect(url('registrasi', ['tgl' => $tgl]));
     }
 

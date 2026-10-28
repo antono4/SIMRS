@@ -25,6 +25,35 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `sik` /*!40100 DEFAULT CHARACTER SET la
 USE `sik`;
 
 --
+-- Table structure for table `antrian`
+-- Antrian poliklinik (tambahan SIMRS Web, tidak ada di skema asli).
+-- Aplikasi juga membuat tabel ini sendiri saat pertama dipakai, jadi
+-- instalasi lama tidak perlu menjalankan ulang wizard instalasi.
+--
+
+DROP TABLE IF EXISTS `antrian`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `antrian` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tgl` date NOT NULL,
+  `kd_poli` char(5) NOT NULL,
+  `nomor` int(11) NOT NULL,
+  `no_rawat` varchar(17) DEFAULT NULL,
+  `status` enum('Menunggu','Dipanggil','Terlewat','Selesai','Batal') NOT NULL DEFAULT 'Menunggu',
+  `dibuat_pada` datetime NOT NULL DEFAULT current_timestamp(),
+  `dipanggil_pada` datetime DEFAULT NULL,
+  `dipanggil_oleh` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_antrian_hari_poli_nomor` (`tgl`,`kd_poli`,`nomor`),
+  KEY `idx_antrian_urut` (`tgl`,`kd_poli`,`status`,`nomor`),
+  KEY `idx_antrian_panggil` (`tgl`,`status`,`dipanggil_pada`),
+  KEY `no_rawat` (`no_rawat`),
+  CONSTRAINT `antrian_ibfk_1` FOREIGN KEY (`no_rawat`) REFERENCES `reg_periksa` (`no_rawat`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `admin`
 --
 

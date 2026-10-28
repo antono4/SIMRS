@@ -18,6 +18,7 @@ $menu = [
         ],
     ],
     ['page' => 'registrasi', 'label' => 'Registrasi', 'icon' => 'bi-clipboard2-plus'],
+    ['page' => 'antrian', 'label' => 'Antrian', 'icon' => 'bi-ticket-perforated'],
     ['page' => 'kamarinap', 'label' => 'Kamar Inap', 'icon' => 'bi-hospital'],
     ['page' => 'kasir', 'label' => 'Kasir / Billing', 'icon' => 'bi-cash-coin'],
     ['page' => 'laporan', 'label' => 'Laporan Kunjungan', 'icon' => 'bi-bar-chart'],

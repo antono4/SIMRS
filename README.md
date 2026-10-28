@@ -24,6 +24,7 @@
 - [Tentang](#-tentang)
 - [Fitur Utama](#-fitur-utama)
 - [Tangkapan Layar](#-tangkapan-layar)
+- [Antrian & Layar Display](#-antrian--layar-display)
 - [Arsitektur](#️-arsitektur)
 - [Model Data](#️-model-data)
 - [Struktur Proyek](#️-struktur-proyek)
@@ -52,6 +53,8 @@ membaca/menulis ke database `sik`. Untuk mencobanya, lihat bagian [Instalasi](#-
 | **Grafik kunjungan** | Tren kunjungan 14 hari terakhir dan kunjungan per poliklinik (Chart.js) |
 | **Master data** | Pasien, dokter, poliklinik, penjamin, dan tarif perawatan |
 | **Registrasi kunjungan** | Pendaftaran rawat jalan & rawat inap, nomor rekam medis otomatis |
+| **Antrian poliklinik** | Nomor antrian otomatis per poliklinik saat registrasi, pemanggilan, dan pemantauan status |
+| **Layar display** | Layar TV ruang tunggu (tanpa login) dengan nomor dipanggil, bel, dan pengumuman suara |
 | **Tindakan medis** | Pencatatan tindakan dokter dan petugas dengan tarif otomatis |
 | **Diagnosa & resep** | Diagnosa ICD-10 dan resep obat per kunjungan |
 | **Rawat inap** | Check-in/check-out kamar, perhitungan lama inap dan biaya |
@@ -133,6 +136,44 @@ contoh bawaan (`database/sik.sql`) — bukan mockup atau gambar rancangan.
   <img src="docs/images/diagnostik.png" alt="Diagnostik lingkungan" width="410">
 </p>
 
+### Antrian & layar display
+
+<p align="center">
+  <img src="docs/images/antrian.png" alt="Modul antrian poliklinik" width="410">
+  <img src="docs/images/display.png" alt="Layar display antrian ruang tunggu" width="410">
+</p>
+
+## 🎫 Antrian & Layar Display
+
+Nomor antrian dibuat **otomatis** saat registrasi kunjungan, jadi petugas loket tidak perlu
+mengambil nomor terpisah. Nomor berjalan per poliklinik, per hari, mulai dari `001`.
+
+Modul `?page=antrian` dipakai petugas untuk memanggil dan memantau:
+
+| Aksi | Kegunaan |
+|------|----------|
+| **Panggil Berikutnya** | Memanggil nomor `Menunggu` terkecil pada satu poliklinik |
+| **Panggil** | Memanggil satu nomor tertentu |
+| **Panggil ulang** | Memanggil lagi nomor yang sama (pasien belum hadir) |
+| **Selesai / Lewati / Batal** | Menutup antrian tanpa memanggil |
+
+Halaman `?page=display` adalah layar untuk TV ruang tunggu. Halaman ini **tanpa login**,
+tampil penuh satu layar, dan menyegarkan dirinya setiap 3 detik:
+
+- nomor yang sedang dipanggil dalam ukuran besar, beserta poliklinik tujuan;
+- ringkasan per poliklinik: nomor terakhir dipanggil dan nomor berikutnya;
+- bel dan pengumuman suara Bahasa Indonesia (`SpeechSynthesis`), yang aktif setelah
+  tombol **Suara** ditekan — peramban memblokir audio sebelum ada interaksi pengguna.
+
+> **Privasi.** Layar display bersifat publik, jadi halaman ini **hanya** mengirim nomor
+> antrian dan nama poliklinik. Nama pasien dan No. Rekam Medis tidak pernah dikirim ke
+> peramban, baik di HTML maupun di respons JSON.
+
+### Menjalankan layar display
+
+Buka `?page=display` di peramban TV, lalu tekan tombol **Suara** sekali. Untuk mode
+kios, jalankan peramban dengan `--kiosk` dan arahkan ke URL tersebut.
+
 ## 🏗️ Arsitektur
 
 <p align="center">
@@ -177,6 +218,8 @@ SIMRS/
 │   ├── penjab.php            #   Master penjamin
 │   ├── perawatan.php         #   Master tarif perawatan
 │   ├── registrasi.php        #   Registrasi kunjungan
+│   ├── antrian.php           #   Antrian poliklinik (panggil & pantau)
+│   ├── display.php           #   Layar display antrian (publik)
 │   ├── tindakan.php          #   Tindakan dokter & petugas
 │   ├── diagnosa.php          #   Diagnosa ICD-10
 │   ├── resep.php             #   Resep obat
@@ -197,6 +240,7 @@ SIMRS/
 │   ├── authz.php             #   Otorisasi per modul
 │   ├── helpers.php           #   Fungsi bantu (url, flash, redirect)
 │   ├── kunjungan.php         #   Komponen data kunjungan
+│   ├── antrian.php           #   Logika antrian (nomor, panggil, ringkasan)
 │   ├── settings.php          #   Identitas rumah sakit
 │   ├── header.php            #   Kerangka tampilan atas
 │   └── footer.php            #   Kerangka tampilan bawah
@@ -276,6 +320,8 @@ dengan pengguna `root` tanpa kata sandi.
 | Penanggung Jawab | `?page=penjab` | Master penjamin (umum/asuransi) |
 | Tarif Perawatan | `?page=perawatan` | Master tarif tindakan |
 | Registrasi | `?page=registrasi` | Pendaftaran kunjungan rawat jalan/inap |
+| Antrian | `?page=antrian` | Nomor antrian per poliklinik, pemanggilan, dan pemantauan |
+| Display Antrian | `?page=display` | Layar TV ruang tunggu (tanpa login) |
 | Tindakan | `?page=tindakan` | Tindakan dokter dan petugas |
 | Diagnosa | `?page=diagnosa` | Diagnosa ICD-10 per kunjungan |
 | Resep | `?page=resep` | Resep obat per kunjungan |
