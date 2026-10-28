@@ -10,6 +10,7 @@ require_once __DIR__ . '/includes/helpers.php';
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/authz.php';
 require_once __DIR__ . '/includes/settings.php';
+require_once __DIR__ . '/includes/antrian.php';
 
 $page = preg_replace('/[^a-z0-9_]/i', '', $_GET['page'] ?? 'dashboard');
 
@@ -33,6 +34,8 @@ $routes = [
     'penjab' => 'penjab.php',
     'perawatan' => 'perawatan.php',
     'registrasi' => 'registrasi.php',
+    'antrian' => 'antrian.php',
+    'display' => 'display.php',
     'tindakan' => 'tindakan.php',
     'diagnosa' => 'diagnosa.php',
     'resep' => 'resep.php',
@@ -52,7 +55,9 @@ if (!isset($routes[$page])) {
 }
 
 // Halaman yang tidak memerlukan login
-$publicPages = ['login', '404', '403'];
+// 'display' publik: layar TV ruang tunggu tidak punya sesi login.
+// Halamannya sengaja tidak menampilkan identitas pasien.
+$publicPages = ['login', '404', '403', 'display'];
 
 if (!in_array($page, $publicPages, true)) {
     auth_require();
