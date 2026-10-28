@@ -197,7 +197,7 @@ Alur permintaan:
   <img src="docs/images/erd.svg" alt="Diagram relasi inti basis data" width="820">
 </p>
 
-Skema `sik` berisi **51 tabel** dengan **54 relasi foreign key**. Tabel `reg_periksa`
+Skema `sik` berisi **52 tabel** dengan **55 relasi foreign key**. Tabel `reg_periksa`
 menjadi pusat data: setiap kunjungan mengacu ke satu pasien, satu dokter, satu
 poliklinik, dan satu penjamin. Data klinis dan keuangan (tindakan, diagnosa, resep,
 kamar inap, nota) menggantung pada `no_rawat` kunjungan tersebut.
@@ -252,7 +252,8 @@ SIMRS/
 │   ├── icons/ · chartjs/     #   Ikon & grafik
 │   └── favicon.svg           #   Ikon situs
 ├── database/
-│   └── sik.sql               # Skema + data contoh (51 tabel)
+│   ├── sik.sql               # Skema + data contoh (52 tabel, 18 MB)
+│   └── sik.sql.gz            # Versi terkompresi untuk impor via phpMyAdmin (1,3 MB)
 ├── docs/images/              # Gambar dokumentasi (diagram & tangkapan layar)
 └── html/                     # Pratinjau statis (mockup tanpa backend)
 ```
@@ -298,6 +299,39 @@ php -S localhost:8000
 Konfigurasi bawaan di `config.php` mengarah ke database `sik` pada `127.0.0.1:3306`
 dengan pengguna `root` tanpa kata sandi.
 
+### ⚠️ Impor lewat phpMyAdmin: pakai `sik.sql.gz`, bukan `sik.sql`
+
+`database/sik.sql` berukuran **18,4 MB**. Batas unggah bawaan XAMPP adalah **2 MB**
+(`upload_max_filesize = 2M`), sehingga phpMyAdmin menolak berkas itu — sering tanpa
+pesan yang jelas, dan **database tetap kosong**.
+
+Karena itu tersedia `database/sik.sql.gz` (**1,3 MB**, isinya identik). Caranya:
+
+1. Buka <http://localhost/phpmyadmin>.
+2. Tab **Import** (bila ingin membuat database baru: tab **Databases** → isi nama
+   `sik` → **Create**).
+3. **Choose File** → pilih `database/sik.sql.gz`.
+4. **Import**.
+
+Biarkan **Charset of the file** pada bawaannya; dump sudah memuat `SET NAMES latin1`
+sendiri, jadi hasilnya sama saja. phpMyAdmin membaca `.gz` lewat ekstensi `zlib`
+yang selalu tersedia — tidak perlu ekstensi `zip` tambahan.
+
+Berkas `.gz` dibuat dengan `gzip -9 -n database/sik.sql > database/sik.sql.gz`,
+sehingga hasilnya dapat direproduksi.
+
+**Alternatif tanpa mengubah berkas:** naikkan batas unggah di
+`C:\xampp\php\php.ini`, lalu *restart* Apache.
+
+```ini
+upload_max_filesize = 32M
+post_max_size = 32M
+max_execution_time = 300
+memory_limit = 512M
+```
+
+Cara termudah tetap memakai `database/sik.sql.gz`.
+
 ### Pemasangan di XAMPP (Windows)
 
 Pengguna Windows tidak perlu mengetik perintah SQL. Klik dua kali
@@ -310,11 +344,12 @@ Pengguna Windows tidak perlu mengetik perintah SQL. Klik dua kali
 4. Memverifikasi hasilnya: jumlah tabel (harus 52) dan baris `poliklinik`.
 5. Menawarkan membuka phpMyAdmin setelah selesai.
 
-Aman dijalankan berulang kali: setiap tabel didahului `DROP TABLE IF EXISTS`,
-jadi impor yang tadinya terhenti di tengah bisa dilanjutkan cukup dengan
-menjalankannya lagi. Bila XAMPP dipasang di lokasi lain, ubah `MYSQL` di bagian
-atas berkas. Alternatif tanpa berkas ini: buka phpMyAdmin, pilih tab **Import**,
-lalu pilih `database/sik.sql`.
+Berkas ini mengimpor langsung lewat `mysql.exe`, jadi **tidak terkena batas unggah
+phpMyAdmin**. Aman dijalankan berulang kali: setiap tabel didahului
+`DROP TABLE IF EXISTS`, jadi impor yang tadinya terhenti di tengah bisa dilanjutkan
+cukup dengan menjalankannya lagi. Bila XAMPP dipasang di lokasi lain, ubah `MYSQL`
+di bagian atas berkas. Alternatif tanpa berkas ini: buka phpMyAdmin, pilih tab
+**Import**, lalu pilih `database/sik.sql.gz` (lihat bagian di atas).
 
 ### Akun contoh
 
