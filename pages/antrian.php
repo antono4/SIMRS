@@ -24,12 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', 'Kunjungan atau poliklinik tidak ditemukan.');
         } else {
             $a = antrian_ambil_nomor((string)$v['tgl_registrasi'], $kdPoli, $noRawat, $oleh);
-            flash_set('success', 'Nomor ' . antrian_nomor_tampil((int)$a['nomor']) . ' diberikan kepada ' . $v['nm_pasien'] . ' (' . ($a['nm_poli'] ?? $kdPoli) . ').');
+            flash_set('success', 'Nomor ' . antrian_nomor_tampil((int)$a['nomor'], (string)($a['kd_poli'] ?? '')) . ' diberikan kepada ' . $v['nm_pasien'] . ' (' . ($a['nm_poli'] ?? $kdPoli) . ').');
         }
     } elseif ($act === 'panggil') {
         $a = antrian_panggil((int)($_POST['id'] ?? 0), $oleh);
         if ($a !== null) {
-            flash_set('success', 'Memanggil nomor ' . antrian_nomor_tampil((int)$a['nomor']) . ' — ' . ($a['nm_poli'] ?? '-') . '.');
+            flash_set('success', 'Memanggil nomor ' . antrian_nomor_tampil((int)$a['nomor'], (string)($a['kd_poli'] ?? '')) . ' — ' . ($a['nm_poli'] ?? '-') . '.');
         } else {
             flash_set('danger', 'Data antrian tidak ditemukan.');
         }
@@ -37,14 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $kdPoli = trim($_POST['kd_poli'] ?? '');
         $a = antrian_panggil_berikutnya($tgl, $kdPoli, $oleh);
         if ($a !== null) {
-            flash_set('success', 'Memanggil nomor berikutnya ' . antrian_nomor_tampil((int)$a['nomor']) . ' — ' . ($a['nm_poli'] ?? $kdPoli) . '.');
+            flash_set('success', 'Memanggil nomor berikutnya ' . antrian_nomor_tampil((int)$a['nomor'], (string)($a['kd_poli'] ?? '')) . ' — ' . ($a['nm_poli'] ?? $kdPoli) . '.');
         } else {
             flash_set('warning', 'Tidak ada pasien menunggu pada poliklinik tersebut.');
         }
     } elseif ($act === 'ulang') {
         $a = antrian_panggil_ulang((int)($_POST['id'] ?? 0), $oleh);
         if ($a !== null) {
-            flash_set('success', 'Memanggil ulang nomor ' . antrian_nomor_tampil((int)$a['nomor']) . '.');
+            flash_set('success', 'Memanggil ulang nomor ' . antrian_nomor_tampil((int)$a['nomor'], (string)($a['kd_poli'] ?? '')) . '.');
         } else {
             flash_set('danger', 'Data antrian tidak ditemukan.');
         }
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', 'Data antrian tidak ditemukan.');
         } else {
             antrian_set_status($id, $st);
-            flash_set('success', 'Nomor ' . antrian_nomor_tampil((int)$a['nomor']) . ' ditandai ' . e($st) . '.');
+            flash_set('success', 'Nomor ' . antrian_nomor_tampil((int)$a['nomor'], (string)($a['kd_poli'] ?? '')) . ' ditandai ' . e($st) . '.');
         }
     }
     redirect(url('antrian', ['tgl' => $tgl, 'poli' => $poliFilter, 'status' => $statusFilter]));
@@ -208,7 +208,7 @@ require_once __DIR__ . '/../includes/header.php';
         <table class="table table-hover align-middle mb-0">
           <thead>
             <tr>
-              <th style="width:5rem">Nomor</th>
+              <th style="width:9rem">Nomor</th>
               <th>Pasien</th>
               <th class="d-none d-md-table-cell">No. Rawat</th>
               <th>Status</th>
@@ -219,7 +219,7 @@ require_once __DIR__ . '/../includes/header.php';
           <tbody>
           <?php foreach ($grup['baris'] as $r): ?>
             <tr>
-              <td><span class="fs-5 fw-semibold"><?= e(antrian_nomor_tampil((int)$r['nomor'])) ?></span></td>
+              <td class="text-nowrap"><span class="fs-5 fw-semibold"><?= e(antrian_nomor_tampil((int)$r['nomor'], (string)($r['kd_poli'] ?? ''))) ?></span></td>
               <td>
                 <span class="sk-poli-nama">
                   <?= poli_penanda((string)($r['nm_poli'] ?? $kdPoli), (string)$kdPoli) ?>

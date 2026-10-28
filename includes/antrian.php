@@ -8,6 +8,8 @@
  */
 declare(strict_types=1);
 
+require_once __DIR__ . '/helpers.php';
+
 const ANTRIAN_STATUS = ['Menunggu', 'Dipanggil', 'Terlewat', 'Selesai', 'Batal'];
 
 function antrian_bootstrap(): void
@@ -60,9 +62,18 @@ function antrian_bootstrap(): void
     }
 }
 
-function antrian_nomor_tampil(int $nomor): string
+/**
+ * Nomor antrian siap tampil: kode poliklinik + nomor urut, mis. "INT-007".
+ *
+ * Kode poli ikut ditampilkan karena nomor urut diulang dari 1 di setiap
+ * poliklinik — tanpa kode itu, nomor 007 di dua poli berbeda terlihat sama.
+ * Bila kode poli kosong, hanya nomornya yang ditampilkan.
+ */
+function antrian_nomor_tampil(int $nomor, string $kdPoli = ''): string
 {
-    return str_pad((string)$nomor, 3, '0', STR_PAD_LEFT);
+    $angka = str_pad((string)$nomor, 3, '0', STR_PAD_LEFT);
+    $kode = $kdPoli !== '' ? poli_kode($kdPoli) : '';
+    return $kode === '' ? $angka : $kode . '-' . $angka;
 }
 
 function antrian_badge(string $status): string

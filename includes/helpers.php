@@ -215,6 +215,34 @@ function poli_awalan(string $nmPoli, string $kdPoli): string
     return strtoupper(substr(trim($kdPoli) !== '' ? trim($kdPoli) : '-', 0, 1));
 }
 
+/**
+ * Kode poliklinik untuk awalan nomor antrian.
+ *
+ * Nomor antrian diulang dari 1 di setiap poliklinik, jadi "007" saja tidak
+ * menunjukkan poli mana yang dimaksud. Dengan kode ini nomor yang ditampilkan
+ * menjadi "INT-007" dan "U9-007" — dua poli boleh sama-sama punya nomor 007
+ * tanpa tertukar.
+ *
+ * Sumbernya `kd_poli`, BUKAN huruf pertama nama poliklinik: "Poliklinik
+ * Kandungan" dan "Poliklinik Kulit & Kelamin" sama-sama berawalan K, jadi
+ * awalan dari nama justru membuat nomor dua poli tampak identik.
+ *
+ * `kd_poli` dinormalkan supaya kode internal seperti "U0001" menjadi "U1";
+ * memakai `kd_poli` mentah akan membuat tiket sepanjang "U0001-007".
+ */
+function poli_kode(string $kdPoli): string
+{
+    $kode = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $kdPoli) ?? '');
+    if ($kode === '') {
+        return '';
+    }
+    // "U0001" -> "U1". Kode tanpa angka ("INT", "IGDK", "UMU") dibiarkan utuh.
+    if (preg_match('/^([A-Z]+)0*(\d+)$/', $kode, $m) === 1) {
+        return $m[1] . $m[2];
+    }
+    return $kode;
+}
+
 /** HTML lingkaran warna + huruf awalan poliklinik. */
 function poli_penanda(string $nmPoli, string $kdPoli, string $kelas = ''): string
 {

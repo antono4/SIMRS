@@ -24,7 +24,7 @@ if ($format === 'panggil' || $format === 'json') {
         // Ringkas: hanya panggilan terakhir, untuk memicu bel + suara di peramban.
         $p = antrian_panggilan_terakhir($tgl);
         echo json_encode([
-            'nomor' => $p !== null ? antrian_nomor_tampil((int)$p['nomor']) : null,
+            'nomor' => $p !== null ? antrian_nomor_tampil((int)$p['nomor'], (string)($p['kd_poli'] ?? '')) : null,
             'poli' => $p['nm_poli'] ?? null,
             'pada' => $p['dipanggil_pada'] ?? null,
         ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
@@ -38,15 +38,15 @@ if ($format === 'panggil' || $format === 'json') {
             'poli' => to_utf8($p['nm_poli']),
             'warna' => poli_warna((string)$p['kd_poli']),
             'awalan' => poli_awalan((string)$p['nm_poli'], (string)$p['kd_poli']),
-            'dipanggil' => $p['nomor_dipanggil'] !== null ? antrian_nomor_tampil((int)$p['nomor_dipanggil']) : null,
-            'berikutnya' => array_map(fn($n) => antrian_nomor_tampil((int)$n), $p['berikutnya']),
+            'dipanggil' => $p['nomor_dipanggil'] !== null ? antrian_nomor_tampil((int)$p['nomor_dipanggil'], (string)$p['kd_poli']) : null,
+            'berikutnya' => array_map(fn($n) => antrian_nomor_tampil((int)$n, (string)$p['kd_poli']), $p['berikutnya']),
             'menunggu' => (int)$p['menunggu'],
         ];
     }
     echo json_encode([
         'tgl' => $tgl,
         'panggilan' => $panggilan !== null ? [
-            'nomor' => antrian_nomor_tampil((int)$panggilan['nomor']),
+            'nomor' => antrian_nomor_tampil((int)$panggilan['nomor'], (string)($panggilan['kd_poli'] ?? '')),
             'poli' => to_utf8($panggilan['nm_poli']),
             'pada' => $panggilan['dipanggil_pada'],
         ] : null,
@@ -61,7 +61,7 @@ $panggilan = antrian_panggilan_terakhir($tgl);
 // 22 kartu kosong membuat layar sulit dibaca dari jauh.
 $ringkasan = antrian_ringkasan_aktif($tgl);
 $adaAntrian = $ringkasan !== [];
-$nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['nomor']) : null;
+$nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['nomor'], (string)($panggilan['kd_poli'] ?? '')) : null;
 ?>
 <!doctype html>
 <html lang="id" data-bs-theme="dark">
@@ -129,7 +129,9 @@ $nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['no
     }
     .disp-now .label { color: var(--disp-accent); letter-spacing: .28em; text-transform: uppercase; font-size: clamp(.65rem, 1.1vw, 1rem); font-weight: 600; }
     .disp-now .nomor {
-      font-size: clamp(5rem, 19vw, 15rem); font-weight: 800; line-height: .95;
+      /* Nomor kini memuat kode poliklinik ("INT-007"), jadi ukurannya lebih kecil
+         dari sebelumnya supaya tetap muat satu baris di layar TV. */
+      font-size: clamp(2.6rem, 10.5vw, 9.5rem); font-weight: 800; line-height: 1;
       font-variant-numeric: tabular-nums;
       color: #fff; text-shadow: 0 0 42px rgba(0, 209, 255, .55);
       margin: .1em 0;
@@ -220,7 +222,7 @@ $nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['no
             <div class="nm"><span class="sk-poli-mark sk-poli-mark-lg"><?= e(poli_awalan((string)$r['nm_poli'], (string)$r['kd_poli'])) ?></span><?= e($r['nm_poli']) ?></div>
             <div class="baris">
               <?php if ($dipanggil !== null): ?>
-                <span class="angka"><?= e(antrian_nomor_tampil((int)$dipanggil)) ?></span>
+                <span class="angka"><?= e(antrian_nomor_tampil((int)$dipanggil, (string)$r['kd_poli'])) ?></span>
               <?php else: ?>
                 <span class="angka kosong">&mdash;</span>
               <?php endif; ?>
@@ -229,7 +231,7 @@ $nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['no
             <div class="next">
               Berikutnya:
               <?php if ($r['berikutnya']): ?>
-                <?php foreach ($r['berikutnya'] as $i => $n): ?><?= $i > 0 ? ', ' : '' ?><b><?= e(antrian_nomor_tampil((int)$n)) ?></b><?php endforeach; ?>
+                <?php foreach ($r['berikutnya'] as $i => $n): ?><?= $i > 0 ? ', ' : '' ?><b><?= e(antrian_nomor_tampil((int)$n, (string)$r['kd_poli'])) ?></b><?php endforeach; ?>
               <?php else: ?>
                 &mdash;
               <?php endif; ?>
@@ -310,7 +312,14 @@ $nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['no
   function ucapkan(nomor, poli) {
     try {
       if (!('speechSynthesis' in window)) return;
-      const teks = 'Nomor antrian ' + nomor.split('').join(' ') + ', silakan menuju ' + poli;
+      // Nomor tampil sebagai "INT-007" (kode poli + nomor urut). Mesin TTS akan
+      // membacanya sebagai satu kata yang aneh, jadi pisahkan: kodenya dibaca
+      // sebagai kata, angkanya dieja angka.
+      const pisah = String(nomor).match(/^([A-Za-z0-9]+)-(.*)$/);
+      const teksNomor = pisah
+        ? pisah[1] + ' nomor ' + pisah[2].split('').join(' ')
+        : String(nomor).split('').join(' ');
+      const teks = 'Nomor antrian ' + teksNomor + ', silakan menuju ' + poli;
       const u = new SpeechSynthesisUtterance(teks);
       u.lang = 'id-ID';
       u.rate = 0.95;
