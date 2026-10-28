@@ -93,7 +93,10 @@ function kunjungan_card(array $v): void
             <small class="text-muted">No. Rawat</small><br /><strong><?= e($v['no_rawat']) ?></strong>
           </div>
           <div class="col-md-3">
-            <small class="text-muted"><?= e($v['nm_poli']) ?> &middot; <?= e($v['nm_dokter']) ?></small><br />
+            <small class="text-muted sk-poli-nama">
+              <?= poli_penanda((string)$v['nm_poli'], (string)$v['kd_poli']) ?>
+              <span><?= e($v['nm_poli']) ?> &middot; <?= e($v['nm_dokter']) ?></span>
+            </small><br />
             <small class="text-muted"><?= e(tgl_indo($v['tgl_registrasi'])) ?> <?= e(substr((string)$v['jam_reg'], 0, 5)) ?> &middot; <?= e($v['png_jawab'] ?? '-') ?></small>
           </div>
           <div class="col-md-2 text-md-end">

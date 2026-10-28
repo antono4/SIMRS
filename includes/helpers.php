@@ -139,7 +139,91 @@ function terbilang(float $angka): string
     return ucfirst($teks) . ' rupiah';
 }
 
-function badge_status(string $status): string
+/**
+ * Pemisah visual antrian per poliklinik.
+ *
+ * Tiap poliklinik mendapat satu warna tetap (murni dari kd_poli, jadi tidak
+ * berubah antar hari) plus huruf awalan, supaya tiket yang dipegang pasien bisa
+ * dicocokkan warnanya dengan kartu poliklinik di layar.
+ *
+ * Warna disusun dengan algoritma "jarak warna terbesar" memakai jarak persepsi
+ * CIELAB, sehingga dua poliklinik yang berdampingan di daftar selalu terlihat
+ * jelas berbeda. Semua warna sudah diuji kontras >= 4.6 terhadap teks putih
+ * (WCAG AA), karena huruf awalan dicetak putih di atasnya.
+ */
+const SK_POLI_WARNA = [
+    '#4a044e', '#4d7c0f', '#dc2626', '#7c3aed', '#0e7490', '#422006',
+    '#db2777', '#a16207', '#1e40af', '#047857', '#a21caf', '#831843',
+    '#334155', '#365314', '#7f1d1d', '#581c87', '#15803d', '#0369a1',
+    '#c2410c', '#1e3a8a', '#2563eb', '#78350f', '#14532d', '#0f766e',
+    '#701a75', '#c026d3', '#4f46e5', '#b45309', '#b91c1c', '#164e63',
+    '#9d174d', '#166534', '#3f6212', '#1d4ed8', '#475569', '#9333ea',
+];
+
+/**
+ * Peta warna per poliklinik.
+ *
+ * Warna diberikan berdasarkan urutan `kd_poli`, bukan hasil hash, supaya
+ * selama jumlah poliklinik tidak melebihi jumlah warna, setiap poliklinik
+ * benar-benar mendapat warna yang berbeda. Karena urutan ini sama dengan
+ * urutan tampil daftar antrian, poliklinik yang berdampingan di layar selalu
+ * mendapat warna yang berjauhan di palet.
+ */
+function poli_warna_peta(): array
+{
+    static $peta = null;
+    if ($peta !== null) {
+        return $peta;
+    }
+    $peta = [];
+    if (!function_exists('db_all')) {
+        return $peta;
+    }
+    try {
+        foreach (array_values(db_all('SELECT kd_poli FROM poliklinik ORDER BY kd_poli')) as $i => $r) {
+            $peta[(string)$r['kd_poli']] = SK_POLI_WARNA[$i % count(SK_POLI_WARNA)];
+        }
+    } catch (Throwable) {
+        // Poliklinik belum ada (mis. saat wizard instalasi) — pakai cadangan hash.
+        $peta = [];
+    }
+    return $peta;
+}
+
+/** Warna tetap untuk sebuah poliklinik. */
+function poli_warna(string $kdPoli): string
+{
+    $peta = poli_warna_peta();
+    if (isset($peta[$kdPoli])) {
+        return $peta[$kdPoli];
+    }
+    // Poliklinik di luar daftar (mis. sudah dinonaktifkan) tetap butuh warna.
+    return SK_POLI_WARNA[abs(crc32($kdPoli)) % count(SK_POLI_WARNA)];
+}
+
+/** Huruf awalan poliklinik untuk ditampilkan di lingkaran warna. */
+function poli_awalan(string $nmPoli, string $kdPoli): string
+{
+    // Lewati kata umum supaya awalannya bermakna ("Poli Gigi" -> "G", bukan "P").
+    $umum = ['poli', 'poliklinik', 'klinik', 'unit', 'instalasi', 'ruang'];
+    foreach (preg_split('/\s+/', trim($nmPoli)) ?: [] as $kata) {
+        $bersih = strtolower(preg_replace('/[^A-Za-z]/', '', $kata) ?? '');
+        if ($bersih !== '' && !in_array($bersih, $umum, true)) {
+            return strtoupper(substr($bersih, 0, 1));
+        }
+    }
+    return strtoupper(substr(trim($kdPoli) !== '' ? trim($kdPoli) : '-', 0, 1));
+}
+
+/** HTML lingkaran warna + huruf awalan poliklinik. */
+function poli_penanda(string $nmPoli, string $kdPoli, string $kelas = ''): string
+{
+    return '<span class="sk-poli-mark ' . e($kelas) . '" style="--sk-poli:' . e(poli_warna($kdPoli)) . '" aria-hidden="true">'
+        . e(poli_awalan($nmPoli, $kdPoli)) . '</span>';
+}
+
+/** Kelas warna badge untuk sebuah status (dipakai PHP dan dikirim ke JS saat perbarui data). */
+function badge_kelas(string $status): string
 {
     $map = [
         'Belum' => 'text-bg-warning',
@@ -151,8 +235,12 @@ function badge_status(string $status): string
         'Dirawat' => 'text-bg-secondary',
         'Pulang Paksa' => 'text-bg-danger',
     ];
-    $class = $map[$status] ?? 'text-bg-secondary';
-    return '<span class="badge ' . $class . '">' . e($status) . '</span>';
+    return $map[$status] ?? 'text-bg-secondary';
+}
+
+function badge_status(string $status): string
+{
+    return '<span class="badge ' . badge_kelas($status) . '">' . e($status) . '</span>';
 }
 
 /**

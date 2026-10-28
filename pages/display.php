@@ -36,6 +36,8 @@ if ($format === 'panggil' || $format === 'json') {
     foreach (antrian_ringkasan_aktif($tgl) as $p) {
         $daftar[] = [
             'poli' => to_utf8($p['nm_poli']),
+            'warna' => poli_warna((string)$p['kd_poli']),
+            'awalan' => poli_awalan((string)$p['nm_poli'], (string)$p['kd_poli']),
             'dipanggil' => $p['nomor_dipanggil'] !== null ? antrian_nomor_tampil((int)$p['nomor_dipanggil']) : null,
             'berikutnya' => array_map(fn($n) => antrian_nomor_tampil((int)$n), $p['berikutnya']),
             'menunggu' => (int)$p['menunggu'],
@@ -145,7 +147,16 @@ $nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['no
       padding: .65rem .85rem;
     }
     .disp-card.aktif { border-color: rgba(255, 194, 51, .6); background: rgba(255, 194, 51, .12); }
-    .disp-card .nm { font-weight: 600; font-size: clamp(.85rem, 1.3vw, 1.15rem); margin-bottom: .25rem; }
+    .disp-card .nm { display: flex; align-items: center; gap: .6rem; font-weight: 600; font-size: clamp(.85rem, 1.3vw, 1.15rem); margin-bottom: .25rem; }
+    /* Pemisah warna per poliklinik — disalin dari simrs.css karena halaman ini
+       sengaja tidak memuat CSS aplikasi. Warna tetap sama dengan modul Antrian. */
+    .sk-poli-mark {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2.6rem; height: 2.6rem; flex: none; border-radius: 999px;
+      background: var(--sk-poli, #0e7490); color: #fff;
+      font-size: 1.15rem; font-weight: 700; line-height: 1;
+    }
+    .disp-card.aktif .sk-poli-mark { box-shadow: 0 0 0 3px rgba(255, 194, 51, .55); }
     .disp-card .baris { display: flex; align-items: baseline; gap: .55rem; }
     .disp-card .angka { font-size: clamp(1.5rem, 2.8vw, 2.4rem); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
     .disp-card .angka.kosong { color: var(--disp-muted); font-size: 1.4rem; }
@@ -205,8 +216,8 @@ $nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['no
       <div class="disp-cards" id="daftarPoli">
         <?php foreach ($ringkasan as $r): ?>
           <?php $dipanggil = $r['nomor_dipanggil']; ?>
-          <article class="disp-card<?= $dipanggil !== null ? ' aktif' : '' ?>">
-            <div class="nm"><?= e($r['nm_poli']) ?></div>
+          <article class="disp-card<?= $dipanggil !== null ? ' aktif' : '' ?>" style="--sk-poli: <?= e(poli_warna((string)$r['kd_poli'])) ?>">
+            <div class="nm"><span class="sk-poli-mark sk-poli-mark-lg"><?= e(poli_awalan((string)$r['nm_poli'], (string)$r['kd_poli'])) ?></span><?= e($r['nm_poli']) ?></div>
             <div class="baris">
               <?php if ($dipanggil !== null): ?>
                 <span class="angka"><?= e(antrian_nomor_tampil((int)$dipanggil)) ?></span>
@@ -337,19 +348,28 @@ $nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['no
       const next = (r.berikutnya && r.berikutnya.length)
         ? r.berikutnya.map(function (n) { return '<b>' + n + '</b>'; }).join(', ')
         : '&mdash;';
-      return '<article class="disp-card' + aktif + '">' +
-             '<div class="nm"></div>' +
+      // Warna hanya dipakai bila benar-benar heksadesimal, supaya tidak bisa
+      // menyelipkan CSS/HTML lewat kolom poliklinik.
+      const warna = /^#[0-9a-f]{6}$/i.test(r.warna || '') ? r.warna : '#0e7490';
+      return '<article class="disp-card' + aktif + '" style="--sk-poli: ' + warna + '">' +
+             '<div class="nm"><span class="sk-poli-mark sk-poli-mark-lg"></span><span class="nm-teks"></span></div>' +
              '<div class="baris">' + angka + '<span class="kecil">' + r.menunggu + ' menunggu</span></div>' +
              '<div class="next">Berikutnya: ' + next + '</div></article>';
     });
     // Hari tanpa antrian: tetap tampilkan keterangan, jangan biarkan layar kosong.
     elDaftar.innerHTML = kartu.length
       ? kartu.join('')
-      : '<div class="disp-card"><div class="nm">Belum ada antrian hari ini</div>' +
+      : '<div class="disp-card"><div class="nm"><span class="nm-teks"></span></div>' +
         '<div class="next">Nomor dibuat otomatis saat registrasi kunjungan.</div></div>';
-    // Nama poliklinik diisi lewat textContent agar tidak bisa disalahgunakan sebagai HTML.
-    const nodes = elDaftar.querySelectorAll('.disp-card .nm');
-    (data.daftar || []).forEach(function (r, i) { if (nodes[i]) nodes[i].textContent = r.poli || ''; });
+    // Nama poliklinik dan huruf awalan diisi lewat textContent agar tidak bisa
+    // disalahgunakan sebagai HTML.
+    const nodes = elDaftar.querySelectorAll('.disp-card .nm-teks');
+    const marks = elDaftar.querySelectorAll('.disp-card .sk-poli-mark');
+    (data.daftar || []).forEach(function (r, i) {
+      if (nodes[i]) nodes[i].textContent = r.poli || '';
+      if (marks[i]) marks[i].textContent = r.awalan || '';
+    });
+    if (!kartu.length && nodes[0]) nodes[0].textContent = 'Belum ada antrian hari ini';
   }
 
   async function muat() {

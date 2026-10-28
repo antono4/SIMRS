@@ -54,6 +54,7 @@ membaca/menulis ke database `sik`. Untuk mencobanya, lihat bagian [Instalasi](#-
 | **Master data** | Pasien, dokter, poliklinik, penjamin, dan tarif perawatan |
 | **Registrasi kunjungan** | Pendaftaran rawat jalan & rawat inap, nomor rekam medis otomatis |
 | **Antrian poliklinik** | Nomor antrian otomatis per poliklinik saat registrasi, pemanggilan, dan pemantauan status |
+| **Pemisah antrian** | Satu warna tetap + huruf awalan per poliklinik, sama di modul Antrian dan layar display |
 | **Layar display** | Layar TV ruang tunggu (tanpa login) dengan nomor dipanggil, bel, dan pengumuman suara |
 | **Tindakan medis** | Pencatatan tindakan dokter dan petugas dengan tarif otomatis |
 | **Diagnosa & resep** | Diagnosa ICD-10 dan resep obat per kunjungan |
@@ -173,9 +174,23 @@ tampil penuh satu layar, dan menyegarkan dirinya setiap 3 detik:
 - bel dan pengumuman suara Bahasa Indonesia (`SpeechSynthesis`), yang aktif setelah
   tombol **Suara** ditekan — peramban memblokir audio sebelum ada interaksi pengguna.
 
+### Pemisah antrian per poliklinik
+
+Setiap poliklinik punya satu **warna tetap** dan **huruf awalan** yang tampil sama di
+seluruh aplikasi: kartu grup di modul Antrian, tiap baris antrian, kartu informasi
+kunjungan, dan kartu poliklinik di layar display. Jadi pasien bisa mencocokkan warna
+pada kartu antriannya dengan kartu poliklinik di layar tanpa harus membaca nama poli.
+
+Warna diberikan berdasarkan urutan `kd_poli`, sehingga selama jumlah poliklinik tidak
+melebihi jumlah warna (36), tidak ada dua poliklinik yang berbagi warna — termasuk
+poliklinik nonaktif yang masih tersimpan di basis data. Palet disusun dengan algoritma
+jarak warna terbesar memakai jarak persepsi CIELAB, supaya warna yang berdampingan di
+layar selalu terlihat jelas berbeda, dan semua warna diuji kontras ≥ 4,6 terhadap teks
+putih (WCAG AA).
+
 > **Privasi.** Layar display bersifat publik, jadi halaman ini **hanya** mengirim nomor
-> antrian dan nama poliklinik. Nama pasien dan No. Rekam Medis tidak pernah dikirim ke
-> peramban, baik di HTML maupun di respons JSON.
+> antrian, nama poliklinik, warna, dan huruf awalan. Nama pasien dan No. Rekam Medis
+> tidak pernah dikirim ke peramban, baik di HTML maupun di respons JSON.
 
 ### Menjalankan layar display
 

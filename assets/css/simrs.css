@@ -718,7 +718,61 @@ hr {
 }
 
 /* ============================================================
-   5. CETAK
+   5. PEMISAH ANTRIAN PER POLIKLINIK
+   Satu warna tetap per poliklinik. Dipakai di modul Antrian, kartu
+   informasi kunjungan, dan layar display, sehingga tiket yang dipegang
+   pasien bisa dicocokkan warnanya dengan kartu poliklinik di layar.
+   ============================================================ */
+.sk-poli-mark {
+  --sk-poli: #1d4ed8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  flex: none;
+  border-radius: 999px;
+  background: var(--sk-poli);
+  color: #fff;
+  font-size: .78rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .02em;
+  vertical-align: -.35rem;
+}
+
+.sk-poli-mark-lg {
+  width: 2.6rem;
+  height: 2.6rem;
+  font-size: 1.15rem;
+  vertical-align: middle;
+}
+
+/* Kartu grup poliklinik: garis warna di kiri + judul bertinta warna. */
+.sk-poli-card {
+  border-left: 5px solid var(--sk-poli);
+}
+
+.sk-poli-card > .card-header {
+  background: rgba(148, 163, 184, .12);
+}
+
+/* Tinta header hanya bila peramban mendukung color-mix; tanpa itu tetap
+   terbaca karena latar abu-abu di atas sudah netral di kedua tema. */
+@supports (background: color-mix(in srgb, red 10%, transparent)) {
+  .sk-poli-card > .card-header {
+    background: color-mix(in srgb, var(--sk-poli) 10%, transparent);
+  }
+}
+
+.sk-poli-nama {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+/* ============================================================
+   6. CETAK
    ============================================================ */
 @media print {
   .app-sidebar,
