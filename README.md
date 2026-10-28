@@ -29,6 +29,7 @@
 - [Model Data](#️-model-data)
 - [Struktur Proyek](#️-struktur-proyek)
 - [Instalasi](#-instalasi)
+- [Memperbarui Aplikasi](#-memperbarui-aplikasi)
 - [Daftar Modul](#-daftar-modul)
 - [Teknologi](#️-teknologi)
 - [Pratinjau Statis](#️-pratinjau-statis)
@@ -65,6 +66,7 @@ membaca/menulis ke database `sik`. Untuk mencobanya, lihat bagian [Instalasi](#-
 | **Hak akses** | Izin per modul untuk setiap pengguna (diterapkan di server, bukan hanya di menu) |
 | **Tema siang/malam** | Pilihan tema yang disimpan di browser (`localStorage`), dioptimalkan agar tetap kontras di kedua tema |
 | **Instalasi mandiri** | Wizard instalasi dan halaman diagnostik lingkungan |
+| **Pembaruan mandiri** | Tombol **Perbarui aplikasi** di halaman login: unduh `update-simrs.bat`, jalankan, dan versi terbaru terpasang tanpa menyentuh kredensial database |
 
 ## 📸 Tangkapan Layar
 
@@ -246,7 +248,9 @@ siap cetak, supaya jelas modul mana yang menulis data ke mana:
 SIMRS/
 ├── index.php                 # Front controller: routing, autentikasi, otorisasi
 ├── config.php                # Konfigurasi database, sesi, dan identitas aplikasi
+├── VERSION                   # Nomor versi aplikasi (dibaca config.php)
 ├── install-database.bat      # Pemasang database untuk Windows/XAMPP (klik dua kali)
+├── update-simrs.bat          # Pembaru aplikasi untuk Windows/XAMPP (unduh dari login)
 ├── .htaccess                 # Aturan server
 ├── pages/                    # Modul halaman (satu berkas per halaman)
 │   ├── dashboard.php         #   Ringkasan statistik & grafik
@@ -272,6 +276,7 @@ SIMRS/
 │   ├── install.php           #   Wizard instalasi
 │   ├── diagnostik.php        #   Diagnostik lingkungan
 │   ├── admin.php             #   Halaman administrator
+│   ├── update.php            #   Halaman pembaru (publik, unduh .bat)
 │   ├── logout.php            #   Keluar
 │   ├── 403.php · 404.php     #   Halaman galat
 ├── includes/                 # Kode bersama
@@ -293,7 +298,10 @@ SIMRS/
 ├── database/
 │   ├── sik.sql               # Skema + data contoh (52 tabel, 18 MB)
 │   └── sik.sql.gz            # Versi terkompresi untuk impor via phpMyAdmin (1,3 MB)
+├── tools/
+│   └── merge-config.php      # Memindahkan kredensial ke config.php baru saat update
 ├── docs/images/              # Gambar dokumentasi (diagram & tangkapan layar)
+├── backup/                   # Cadangan otomatis update-simrs.bat (dibuat saat dipakai)
 └── html/                     # Pratinjau statis (mockup tanpa backend)
 ```
 
@@ -424,8 +432,80 @@ Halaman yang tidak butuh izin khusus: Dashboard, Akun Saya, dan layar display
 (publik). Panel Administrator hanya terbuka untuk peran `admin`.
 
 > **Penting untuk produksi:** ganti kredensial bawaan, gunakan pengguna database
-> dengan hak minimum, aktifkan HTTPS, dan hapus `info.php` (menampilkan `phpinfo()`)
-> serta `pages/diagnostik.php` sebelum dipublikasikan.
+> dengan hak minimum, aktifkan HTTPS, dan hapus `info.php` (menampilkan `phpinfo()`),
+> `pages/diagnostik.php`, serta `pages/update.php` + `update-simrs.bat` sebelum
+> dipublikasikan.
+
+## 🔄 Memperbarui Aplikasi
+
+<p align="center">
+  <img src="docs/images/alur-pembaruan.svg" alt="Alur pembaruan: tombol di halaman login, unduh update-simrs.bat, lalu jalankan di Windows" width="900">
+</p>
+
+Halaman login punya tombol **Perbarui aplikasi** yang membuka
+`index.php?page=update`. Dari situ Anda mengunduh `update-simrs.bat`, lalu
+menjalankannya untuk mengambil versi terbaru dari GitHub.
+
+### Memperbarui Aplikasi (Windows)
+
+1. Buka <http://localhost/SIMRS/index.php?page=update> (atau klik **Perbarui
+   aplikasi** di halaman login).
+2. Klik **Unduh update-simrs.bat**, lalu simpan berkas itu di dalam folder
+   aplikasi (folder yang berisi `index.php`, misalnya `C:\xampp\htdocs\SIMRS`).
+3. Klik dua kali `update-simrs.bat` dan pilih menu **1**.
+4. Tunggu sampai muncul tulisan `PEMBARUAN SELESAI`.
+5. Muat ulang aplikasi di peramban dengan <kbd>Ctrl</kbd>+<kbd>F5</kbd>.
+
+### Halaman pembaru
+
+<p align="center">
+  <img src="docs/images/update.png" alt="Halaman pembaru SIMRS Web" width="820">
+</p>
+
+### Tombol di halaman login
+
+<p align="center">
+  <img src="docs/images/login.png" alt="Halaman login dengan tombol Perbarui aplikasi" width="820">
+</p>
+
+Skrip itu melakukan enam hal: memeriksa prasyarat, mencadangkan seluruh berkas
+lama ke `backup\`, mengunduh arsip cabang `main`, **menggabungkan** kredensial
+database Anda ke `config.php` yang baru, menimpa berkas aplikasi, lalu
+memverifikasi hasilnya.
+
+| Perlakuan | Berkas |
+|-----------|--------|
+| Digabungkan (kredensial Anda dipertahankan) | `config.php` — `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS`, `DB_CHARSET`, `AES_KEY` |
+| Tidak pernah diganggu | `database\`, `backup\`, `.git\` |
+| Diperbarui dari GitHub | seluruh berkas aplikasi lainnya |
+
+Pembaruan memakai `tools/merge-config.php` untuk memindahkan kredensial Anda,
+sehingga pembaruan kebijakan di `config.php` (misalnya `APP_MIN_PHP`) tetap ikut
+terpasang tanpa menimpa kata sandi database.
+
+**Bila hasilnya bermasalah**, jalankan `update-simrs.bat` lagi dan pilih menu
+**2** untuk memulihkan. Setiap cadangan disimpan di `backup\<tanggal-jam>`, dan
+pemulihan pun mencadangkan kondisi saat itu lebih dulu, jadi selalu bisa dibalik.
+
+Nomor versi disimpan di berkas `VERSION` (bukan di `config.php`), justru supaya
+ikut diperbarui tanpa menyentuh kredensial. Versi yang terpasang dapat dilihat di
+halaman login, footer, dan `?page=diagnostik`.
+
+> **Catatan keamanan.** Halaman `?page=update` sengaja terbuka tanpa login,
+> seperti `?page=install` dan `?page=diagnostik`. Halaman ini hanya mengunduh
+> berkas `.bat` — tidak mengubah apa pun di server. Bila server Anda dapat
+> diakses publik, hapus `pages/update.php` dan `update-simrs.bat`.
+
+### Pengguna Linux/macOS
+
+Tidak perlu berkas `.bat`; gunakan git langsung:
+
+```bash
+git pull
+```
+
+Perubahan struktur database diterapkan otomatis saat halaman terkait dibuka
+(lihat `antrian_bootstrap()`), jadi tidak ada impor ulang yang diperlukan.
 
 ## 🧩 Daftar Modul
 
