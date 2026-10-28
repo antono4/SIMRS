@@ -208,6 +208,7 @@ kamar inap, nota) menggantung pada `no_rawat` kunjungan tersebut.
 SIMRS/
 ├── index.php                 # Front controller: routing, autentikasi, otorisasi
 ├── config.php                # Konfigurasi database, sesi, dan identitas aplikasi
+├── install-database.bat      # Pemasang database untuk Windows/XAMPP (klik dua kali)
 ├── .htaccess                 # Aturan server
 ├── pages/                    # Modul halaman (satu berkas per halaman)
 │   ├── dashboard.php         #   Ringkasan statistik & grafik
@@ -296,6 +297,24 @@ php -S localhost:8000
 
 Konfigurasi bawaan di `config.php` mengarah ke database `sik` pada `127.0.0.1:3306`
 dengan pengguna `root` tanpa kata sandi.
+
+### Pemasangan di XAMPP (Windows)
+
+Pengguna Windows tidak perlu mengetik perintah SQL. Klik dua kali
+`install-database.bat` di folder aplikasi:
+
+1. Mencari `mysql.exe` di `C:\xampp\mysql\bin` (atau lokasi XAMPP lain).
+2. Meminta kata sandi MySQL (kosongkan bila bawaan).
+3. Mengimpor `database\sik.sql` sehingga database `sik` muncul di
+   <http://localhost/phpmyadmin>.
+4. Memverifikasi hasilnya: jumlah tabel (harus 52) dan baris `poliklinik`.
+5. Menawarkan membuka phpMyAdmin setelah selesai.
+
+Aman dijalankan berulang kali: setiap tabel didahului `DROP TABLE IF EXISTS`,
+jadi impor yang tadinya terhenti di tengah bisa dilanjutkan cukup dengan
+menjalankannya lagi. Bila XAMPP dipasang di lokasi lain, ubah `MYSQL` di bagian
+atas berkas. Alternatif tanpa berkas ini: buka phpMyAdmin, pilih tab **Import**,
+lalu pilih `database/sik.sql`.
 
 ### Akun contoh
 
