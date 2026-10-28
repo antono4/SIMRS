@@ -4,7 +4,7 @@
 </defs>
 <rect width="1290" height="1010" fill="#0b1220"/>
 <text x="44" y="48" fill="#e8eefc" font-size="25" font-weight="700">Relasi Inti Basis Data (skema <tspan fill="#41f0c8">sik</tspan>)</text>
-<text x="44" y="74" fill="#93a6cc" font-size="14">17 tabel inti dari 51 tabel &#183; <tspan fill="#ffc466">PK</tspan> primary key &#183; <tspan fill="#5aa9ff">FK</tspan> foreign key</text>
+<text x="44" y="74" fill="#93a6cc" font-size="14">17 tabel inti dari 52 tabel &#183; <tspan fill="#ffc466">PK</tspan> primary key &#183; <tspan fill="#5aa9ff">FK</tspan> foreign key</text>
 <rect x="44" y="110" width="224" height="119" rx="9" fill="#111c33" stroke="#2c4270"/>
 <path d="M56,140 h200" stroke="#2c4270" opacity="0.7"/>
 <rect x="45" y="111" width="4" height="28" rx="2" fill="#41f0c8"/>

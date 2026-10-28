@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700" font-family="Sora, 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif">
+<defs>
+<marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#93a6cc"/></marker>
+</defs>
+<rect width="1200" height="700" fill="#0b1220"/>
+<text x="44" y="54" fill="#e8eefc" font-size="27" font-weight="700">Siklus Satu Kunjungan Pasien</text>
+<text x="44" y="82" fill="#93a6cc" font-size="15">Semua data klinis dan tagihan menggantung pada satu <tspan fill="#41f0c8" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no_rawat</tspan></text>
+
+<rect x="44" y="116" width="264" height="152" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M56,154 h240" stroke="#2c4270" opacity="0.7"/>
+<rect x="45" y="117" width="4" height="36" rx="2" fill="#5aa9ff"/>
+<text x="62" y="142" fill="#5aa9ff" font-size="15" font-weight="700">1. Registrasi</text>
+<text x="62" y="172" fill="#e8eefc" font-size="12" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">?page=registrasi</text>
+<text x="62" y="196" fill="#93a6cc" font-size="12">no_rawat yyyy/mm/dd/NNNNNN</text>
+<text x="62" y="216" fill="#93a6cc" font-size="12">no_reg urut per dokter/hari</text>
+<text x="62" y="240" fill="#ffc466" font-size="12">nomor antrian dibuat otomatis</text>
+<text x="62" y="259" fill="#93a6cc" font-size="12">biaya dari tarif poliklinik</text>
+
+<rect x="336" y="116" width="264" height="152" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M348,154 h240" stroke="#2c4270" opacity="0.7"/>
+<rect x="337" y="117" width="4" height="36" rx="2" fill="#41f0c8"/>
+<text x="354" y="142" fill="#41f0c8" font-size="15" font-weight="700">2. Pelayanan Poliklinik</text>
+<text x="354" y="172" fill="#e8eefc" font-size="12" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">tindakan &#183; diagnosa &#183; resep</text>
+<text x="354" y="196" fill="#93a6cc" font-size="12">tarif difilter kd_poli + kd_pj</text>
+<text x="354" y="216" fill="#93a6cc" font-size="12">simpan ke rawat_jl_dr (dokter)</text>
+<text x="354" y="236" fill="#93a6cc" font-size="12">dan rawat_jl_pr (petugas)</text>
+<text x="354" y="259" fill="#ffc466" font-size="12">stts_bayar = Belum</text>
+
+<rect x="628" y="116" width="264" height="152" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M640,154 h240" stroke="#2c4270" opacity="0.7"/>
+<rect x="629" y="117" width="4" height="36" rx="2" fill="#ffc466"/>
+<text x="646" y="142" fill="#ffc466" font-size="15" font-weight="700">3. Kasir</text>
+<text x="646" y="172" fill="#e8eefc" font-size="12" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">?page=kasir</text>
+<text x="646" y="196" fill="#93a6cc" font-size="12">jumlahkan tindakan + kamar</text>
+<text x="646" y="216" fill="#93a6cc" font-size="12">Bayar / Batalkan bayar</text>
+<text x="646" y="240" fill="#41f0c8" font-size="12">Bayar &#8594; status_bayar</text>
+<text x="646" y="259" fill="#41f0c8" font-size="12">= Sudah Bayar</text>
+
+<rect x="920" y="116" width="236" height="152" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M932,154 h212" stroke="#2c4270" opacity="0.7"/>
+<rect x="921" y="117" width="4" height="36" rx="2" fill="#ff8fb1"/>
+<text x="938" y="142" fill="#ff8fb1" font-size="15" font-weight="700">4. Nota</text>
+<text x="938" y="172" fill="#e8eefc" font-size="12" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">?page=billing</text>
+<text x="938" y="196" fill="#93a6cc" font-size="12">siap cetak A4 / simpan PDF</text>
+<text x="938" y="216" fill="#93a6cc" font-size="12">terbilang otomatis</text>
+<text x="938" y="240" fill="#93a6cc" font-size="12">LUNAS / BELUM DIBAYAR</text>
+<text x="938" y="259" fill="#93a6cc" font-size="12">hitung sama dengan Kasir</text>
+
+<rect x="44" y="336" width="352" height="150" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M56,374 h328" stroke="#2c4270" opacity="0.7"/>
+<rect x="45" y="337" width="4" height="36" rx="2" fill="#5aa9ff"/>
+<text x="62" y="362" fill="#5aa9ff" font-size="15" font-weight="700">Status kunjungan (stts)</text>
+<text x="62" y="392" fill="#93a6cc" font-size="12">penanda badge di daftar kunjungan</text>
+<text x="62" y="420" fill="#ffc466" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Belum</text>
+<text x="140" y="420" fill="#93a6cc" font-size="12">terdaftar, belum dilayani</text>
+<text x="62" y="442" fill="#41f0c8" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Sudah</text>
+<text x="140" y="442" fill="#93a6cc" font-size="12">kunjungan selesai</text>
+<text x="62" y="464" fill="#93a6cc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Dirawat</text>
+<text x="140" y="464" fill="#93a6cc" font-size="12">sedang rawat inap</text>
+<text x="260" y="464" fill="#ff8fb1" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Dirujuk</text>
+
+<rect x="428" y="336" width="352" height="150" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M440,374 h328" stroke="#2c4270" opacity="0.7"/>
+<rect x="429" y="337" width="4" height="36" rx="2" fill="#ffc466"/>
+<text x="446" y="362" fill="#ffc466" font-size="15" font-weight="700">Status pembayaran</text>
+<text x="446" y="392" fill="#93a6cc" font-size="12">kolom <tspan fill="#41f0c8" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">status_bayar</tspan> pada reg_periksa</text>
+<text x="446" y="420" fill="#ffc466" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Belum Bayar</text>
+<text x="560" y="420" fill="#93a6cc" font-size="12">nota bertanda BELUM DIBAYAR</text>
+<text x="446" y="448" fill="#41f0c8" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Sudah Bayar</text>
+<text x="560" y="448" fill="#93a6cc" font-size="12">nota bertanda LUNAS</text>
+<text x="446" y="472" fill="#93a6cc" font-size="12">tindakan ikut jadi <tspan fill="#e8eefc">stts_bayar = Sudah</tspan></text>
+
+<rect x="812" y="336" width="344" height="150" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M824,374 h320" stroke="#2c4270" opacity="0.7"/>
+<rect x="813" y="337" width="4" height="36" rx="2" fill="#ff8fb1"/>
+<text x="830" y="362" fill="#ff8fb1" font-size="15" font-weight="700">Jalur rawat inap</text>
+<text x="830" y="392" fill="#93a6cc" font-size="12">?page=kamarinap, hanya bila <tspan fill="#e8eefc">status_lanjut = Ranap</tspan></text>
+<text x="830" y="420" fill="#41f0c8" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Masuk kamar</text>
+<text x="938" y="420" fill="#93a6cc" font-size="12">kamar ISI &#183; stts Dirawat</text>
+<text x="830" y="448" fill="#ffc466" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Pulang</text>
+<text x="938" y="448" fill="#93a6cc" font-size="12">lama &amp; biaya dihitung</text>
+<text x="830" y="470" fill="#93a6cc" font-size="12">kamar jadi <tspan fill="#e8eefc">DIBERSIHKAN</tspan> &#183; stts Sudah</text>
+
+<rect x="44" y="552" width="1112" height="112" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M56,590 h1088" stroke="#2c4270" opacity="0.7"/>
+<rect x="45" y="553" width="4" height="36" rx="2" fill="#41f0c8"/>
+<text x="62" y="578" fill="#41f0c8" font-size="16" font-weight="700">Penanda yang tidak boleh terlewat</text>
+<text x="62" y="608" fill="#e8eefc" font-size="12.5">Kunjungan rawat inap yang masih aktif ditandai <tspan fill="#ffc466" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">tgl_keluar = '0000-00-00'</tspan>. Nota dan halaman billing memakai</text>
+<text x="62" y="628" fill="#e8eefc" font-size="12.5">perhitungan yang sama, jadi angka pada layar Kasir, berkas PDF, dan kertas cetak selalu identik.</text>
+<text x="62" y="650" fill="#93a6cc" font-size="12">Akses data pasien selalu lewat <tspan fill="#41f0c8" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">?page=&lt;modul&gt;&amp;no_rawat=&lt;no&gt;</tspan> dan dijaga oleh izin modul di server.</text>
+
+<path d="M308,192 H336" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<path d="M600,192 H628" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<path d="M892,192 H920" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<path d="M760,268 V336" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<text x="768" y="308" fill="#93a6cc" font-size="12">bayar</text>
+<path d="M604,486 V552" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<path d="M984,486 V552" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+</svg>

@@ -157,6 +157,10 @@ langsung ke kertas A4 atau disimpan sebagai PDF lewat dialog cetak peramban.
 Nomor antrian dibuat **otomatis** saat registrasi kunjungan, jadi petugas loket tidak perlu
 mengambil nomor terpisah. Nomor berjalan per poliklinik, per hari, mulai dari `001`.
 
+<p align="center">
+  <img src="docs/images/alur-antrian.svg" alt="Alur antrian: nomor dibuat saat registrasi, dipanggil petugas, tampil di layar TV" width="820">
+</p>
+
 Modul `?page=antrian` dipakai petugas untuk memanggil dan memantau:
 
 | Aksi | Kegunaan |
@@ -220,12 +224,23 @@ Alur permintaan:
   <img src="docs/images/erd.svg" alt="Diagram relasi inti basis data" width="820">
 </p>
 
-Skema `sik` berisi **51 tabel** dengan **54 relasi foreign key**. Tabel `reg_periksa`
+Skema `sik` berisi **52 tabel** dengan **55 relasi foreign key**. Tabel `reg_periksa`
 menjadi pusat data: setiap kunjungan mengacu ke satu pasien, satu dokter, satu
 poliklinik, dan satu penjamin. Data klinis dan keuangan (tindakan, diagnosa, resep,
 kamar inap, nota) menggantung pada `no_rawat` kunjungan tersebut.
 
+Diagram berikut merangkum perjalanan satu kunjungan, dari pendaftaran sampai nota
+siap cetak, supaya jelas modul mana yang menulis data ke mana:
+
+<p align="center">
+  <img src="docs/images/alur-kunjungan.svg" alt="Siklus satu kunjungan pasien: registrasi, pelayanan, kasir, nota" width="820">
+</p>
+
 ## 🗂️ Struktur Proyek
+
+<p align="center">
+  <img src="docs/images/struktur-proyek.svg" alt="Struktur berkas: akar proyek, pages/, includes/, dan berkas lain" width="820">
+</p>
 
 ```
 SIMRS/
@@ -276,7 +291,7 @@ SIMRS/
 │   ├── icons/ · chartjs/     #   Ikon & grafik
 │   └── favicon.svg           #   Ikon situs
 ├── database/
-│   └── sik.sql               # Skema + data contoh (51 tabel)
+│   └── sik.sql               # Skema + data contoh (52 tabel)
 ├── docs/images/              # Gambar dokumentasi (diagram & tangkapan layar)
 └── html/                     # Pratinjau statis (mockup tanpa backend)
 ```
@@ -346,6 +361,28 @@ lalu pilih `database/sik.sql`.
 |-------|----------|-----------|--------|
 | Administrator | `admin` | `admin` | Tabel `admin` |
 | Pengguna/petugas | — | — | Tabel `user` |
+
+Akun `admin` adalah superuser: semua modul terbuka. Akun dari tabel `user` dibatasi
+oleh izin per modul, yang diatur di `?page=users` dan diperiksa di server (bukan
+hanya disembunyikan dari menu). Izin disimpan di sesi saat login, jadi perubahan izin
+baru berlaku setelah pengguna login ulang.
+
+| Izin di `?page=users` | Membuka modul |
+|-----------------------|---------------|
+| Master Pasien | Pasien |
+| Master Dokter | Dokter |
+| Registrasi, Poliklinik & Penjab | Registrasi, Poliklinik, Penanggung Jawab, Antrian |
+| Tarif Perawatan | Tarif Perawatan |
+| Tindakan / Perawatan | Tindakan |
+| Diagnosa ICD-10 | Diagnosa |
+| Resep Obat | Resep |
+| Kamar Inap | Kamar Inap |
+| Kasir / Billing | Kasir, Cetak Billing |
+| Laporan Kunjungan | Laporan |
+| Manajemen Pengguna | Pengguna |
+
+Halaman yang tidak butuh izin khusus: Dashboard, Akun Saya, dan layar display
+(publik). Panel Administrator hanya terbuka untuk peran `admin`.
 
 > **Penting untuk produksi:** ganti kredensial bawaan, gunakan pengguna database
 > dengan hak minimum, aktifkan HTTPS, dan hapus `info.php` (menampilkan `phpinfo()`)

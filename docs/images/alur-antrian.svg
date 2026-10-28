@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700" font-family="Sora, 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif">
+<defs>
+<marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#93a6cc"/></marker>
+</defs>
+<rect width="1200" height="700" fill="#0b1220"/>
+<text x="44" y="54" fill="#e8eefc" font-size="27" font-weight="700">Alur Antrian &amp; Layar Display</text>
+<text x="44" y="82" fill="#93a6cc" font-size="15">Nomor dibuat otomatis saat registrasi &#8594; dipanggil petugas &#8594; tampil di TV ruang tunggu</text>
+
+<rect x="44" y="116" width="256" height="150" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M56,154 h232" stroke="#2c4270" opacity="0.7"/>
+<rect x="45" y="117" width="4" height="36" rx="2" fill="#5aa9ff"/>
+<text x="62" y="142" fill="#5aa9ff" font-size="15" font-weight="700">1. Registrasi</text>
+<text x="62" y="172" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">?page=registrasi</text>
+<text x="62" y="196" fill="#93a6cc" font-size="12">Simpan kunjungan &#8594; nomor</text>
+<text x="62" y="215" fill="#93a6cc" font-size="12">antrian dibuat otomatis</text>
+<text x="62" y="240" fill="#41f0c8" font-size="12" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">001, 002, 003, ...</text>
+
+<rect x="44" y="336" width="256" height="150" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M56,374 h232" stroke="#2c4270" opacity="0.7"/>
+<rect x="45" y="337" width="4" height="36" rx="2" fill="#ffc466"/>
+<text x="62" y="362" fill="#ffc466" font-size="15" font-weight="700">2. Petugas Memanggil</text>
+<text x="62" y="392" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">?page=antrian</text>
+<text x="62" y="416" fill="#93a6cc" font-size="12">Panggil berikutnya, panggil</text>
+<text x="62" y="435" fill="#93a6cc" font-size="12">ulang, selesai, lewati, batal</text>
+<text x="62" y="460" fill="#ffc466" font-size="12" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">izin: registrasi</text>
+
+<rect x="472" y="116" width="300" height="370" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M484,154 h276" stroke="#2c4270" opacity="0.7"/>
+<rect x="473" y="117" width="4" height="36" rx="2" fill="#41f0c8"/>
+<text x="490" y="142" fill="#41f0c8" font-size="15" font-weight="700">Tabel antrian</text>
+<text x="490" y="170" fill="#93a6cc" font-size="12">dibuat otomatis bila belum ada</text>
+<text x="490" y="196" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">tgl &#183; kd_poli &#183; nomor</text>
+<text x="490" y="218" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">status &#183; no_rawat</text>
+<text x="490" y="244" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">dipanggil_pada &#183; oleh</text>
+<path d="M486,262 h272" stroke="#2c4270" opacity="0.7"/>
+<text x="490" y="286" fill="#93a6cc" font-size="12">Status:</text>
+<text x="490" y="310" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Menunggu</text>
+<text x="600" y="310" fill="#5aa9ff" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Dipanggil</text>
+<text x="700" y="310" fill="#ff8fb1" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Terlewat</text>
+<text x="490" y="332" fill="#41f0c8" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Selesai</text>
+<text x="600" y="332" fill="#ffc466" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">Batal</text>
+<path d="M486,352 h272" stroke="#2c4270" opacity="0.7"/>
+<text x="490" y="376" fill="#93a6cc" font-size="12">Kunci unik:</text>
+<text x="490" y="400" fill="#e8eefc" font-size="12" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">uq_antrian_hari_poli_nomor</text>
+<text x="490" y="426" fill="#93a6cc" font-size="12">Nomor dialokasikan dalam</text>
+<text x="490" y="445" fill="#93a6cc" font-size="12">transaksi + SELECT ... FOR UPDATE</text>
+<text x="490" y="466" fill="#93a6cc" font-size="12">pada baris poliklinik</text>
+
+<rect x="880" y="116" width="276" height="370" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M892,154 h252" stroke="#2c4270" opacity="0.7"/>
+<rect x="881" y="117" width="4" height="36" rx="2" fill="#ff8fb1"/>
+<text x="898" y="142" fill="#ff8fb1" font-size="15" font-weight="700">3. Layar TV (publik)</text>
+<text x="898" y="170" fill="#e8eefc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">?page=display</text>
+<text x="898" y="196" fill="#93a6cc" font-size="12">Tanpa login, penuh satu layar,</text>
+<text x="898" y="215" fill="#93a6cc" font-size="12">menyegarkan tiap 3 detik.</text>
+<text x="898" y="240" fill="#93a6cc" font-size="12">Hanya poliklinik yang punya</text>
+<text x="898" y="259" fill="#93a6cc" font-size="12">antrian hari itu yang tampil.</text>
+<path d="M892,278 h252" stroke="#2c4270" opacity="0.7"/>
+<text x="898" y="302" fill="#e8eefc" font-size="12">Dikirim ke peramban:</text>
+<text x="898" y="326" fill="#41f0c8" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nomor &#183; nama poliklinik</text>
+<text x="898" y="348" fill="#41f0c8" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">warna &#183; huruf awalan</text>
+<path d="M892,368 h252" stroke="#2c4270" opacity="0.7"/>
+<text x="898" y="392" fill="#ff8fb1" font-size="12">TIDAK PERNAH dikirim:</text>
+<text x="898" y="416" fill="#93a6cc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">nama pasien</text>
+<text x="898" y="438" fill="#93a6cc" font-size="12.5" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">no. rekam medis</text>
+<text x="898" y="466" fill="#93a6cc" font-size="12">(halaman ini terbuka untuk umum)</text>
+
+<rect x="44" y="552" width="1112" height="112" rx="12" fill="#111c33" stroke="#2c4270"/>
+<path d="M56,590 h1088" stroke="#2c4270" opacity="0.7"/>
+<rect x="45" y="553" width="4" height="36" rx="2" fill="#ffc466"/>
+<text x="62" y="578" fill="#ffc466" font-size="16" font-weight="700">Pemisah warna per poliklinik</text>
+<text x="62" y="608" fill="#e8eefc" font-size="12.5">Tiap poliklinik punya satu warna tetap dan huruf awalan, sama di modul Antrian, kartu</text>
+<text x="62" y="628" fill="#e8eefc" font-size="12.5">kunjungan, dan layar display. Warna diberi urut <tspan fill="#41f0c8" font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace">kd_poli</tspan>, jadi selama poliklinik tidak lebih dari 36</text>
+<text x="62" y="648" fill="#e8eefc" font-size="12.5">warna, tidak ada yang berbagi warna. Palet diuji kontras &#8805; 4,6 terhadap teks putih (WCAG AA).</text>
+
+<path d="M172,266 V336" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<text x="180" y="306" fill="#93a6cc" font-size="12">nomor tersimpan</text>
+<path d="M300,411 H472" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<text x="386" y="403" fill="#93a6cc" font-size="12" text-anchor="middle">ubah status</text>
+<path d="M772,301 H880" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<text x="826" y="293" fill="#93a6cc" font-size="12" text-anchor="middle">JSON</text>
+<path d="M1018,486 V552" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+<path d="M172,486 V552" stroke="#93a6cc" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+</svg>
