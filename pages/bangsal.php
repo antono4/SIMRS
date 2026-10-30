@@ -23,6 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', $pesan);
         } else {
             $galat = db_coba(fn() => db_exec('DELETE FROM bangsal WHERE kd_bangsal = ?', [$kd]));
+            if ($galat === null) {
+                audit_catat('bangsal', 'delete', 'bangsal', $kd);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Bangsal $kd dihapus.");
         }
         redirect(url('bangsal'));
@@ -43,9 +46,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = $_POST['status'] ?? '1';
         if ($isEdit) {
             $galat = db_coba(fn() => db_exec('UPDATE bangsal SET nm_bangsal=?, status=? WHERE kd_bangsal=?', [$nama, $status, $kd]));
+            if ($galat === null) {
+                audit_catat('bangsal', 'save', 'bangsal', $kd, $nama);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Bangsal $kd diperbarui.");
         } else {
             $galat = db_coba(fn() => db_exec('INSERT INTO bangsal (kd_bangsal, nm_bangsal, status) VALUES (?,?,?)', [$kd, $nama, $status]));
+            if ($galat === null) {
+                audit_catat('bangsal', 'create', 'bangsal', $kd, $nama);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Bangsal $kd ditambahkan.");
         }
         redirect(url('bangsal'));

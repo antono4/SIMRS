@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', "Tarif $kd tidak dapat dihapus karena dipakai di $dipakai tindakan.");
         } else {
             db_exec('DELETE FROM jns_perawatan WHERE kd_jenis_prw = ?', [$kd]);
+            audit_catat('perawatan', 'delete', 'jns_perawatan', $kd);
             flash_set('success', "Tarif $kd dihapus.");
         }
         redirect(url('perawatan'));
@@ -51,12 +52,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
             $data['kd_jenis_prw'] = $kd;
             $galat = db_coba(fn() => db_exec("UPDATE jns_perawatan SET $set WHERE kd_jenis_prw = :kd_jenis_prw", $data));
+            if ($galat === null) {
+                audit_catat('perawatan', 'save', 'jns_perawatan', $kd, $data['nm_perawatan']);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Tarif $kd diperbarui.");
         } else {
             $data['kd_jenis_prw'] = $kd;
             $cols = implode(', ', array_keys($data));
             $marks = ':' . implode(', :', array_keys($data));
             $galat = db_coba(fn() => db_exec("INSERT INTO jns_perawatan ($cols) VALUES ($marks)", $data));
+            if ($galat === null) {
+                audit_catat('perawatan', 'create', 'jns_perawatan', $kd, $data['nm_perawatan']);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Tarif $kd ditambahkan.");
         }
         redirect(url('perawatan'));

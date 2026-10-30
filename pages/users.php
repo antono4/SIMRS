@@ -73,6 +73,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $params[] = $key;
             $params[] = $original;
             $galat = db_coba(fn() => db_exec($sql, $params));
+            if ($galat === null) {
+                audit_catat('users', 'save', 'user', $username, 'Hak akses: ' . count($granted));
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Pengguna $username diperbarui.");
         } else {
             if ($password === '') {
@@ -96,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $sql = 'INSERT INTO user (id_user, password, ' . implode(', ', $flags) . ')
                     VALUES (AES_ENCRYPT(?, ?), AES_ENCRYPT(?, ?), ' . implode(', ', $marks) . ')';
             db_exec($sql, array_merge([$username, $key, $password, $key], $params));
+            audit_catat('users', 'create', 'user', $username, 'Hak akses: ' . count($granted));
             flash_set('success', "Pengguna $username ditambahkan dengan " . count($granted) . ' hak akses.');
         }
         redirect(url('users'));
@@ -107,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', 'Tidak dapat menghapus akun yang sedang digunakan.');
         } else {
             db_exec('DELETE FROM user WHERE CAST(AES_DECRYPT(id_user, ?) AS CHAR) = ?', [$key, $username]);
+            audit_catat('users', 'delete', 'user', $username);
             flash_set('success', "Pengguna $username dihapus.");
         }
         redirect(url('users'));

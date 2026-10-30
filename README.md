@@ -68,7 +68,7 @@ membaca/menulis ke database `sik`. Untuk mencobanya, lihat bagian [Instalasi](#-
 | **Cetak billing** | Nota kunjungan siap cetak: kop instansi, rincian tarif, total, dan terbilang; langsung ke A4 atau PDF |
 | **Ekspor CSV** | Unduh daftar pasien, dokter, pegawai, petugas, obat, penyakit, tarif perawatan, kamar, registrasi, log aktivitas, dan tiap laporan; mengikuti filter yang sedang aktif dan aman dari injeksi formula |
 | **Laporan** | Lima laporan: kunjungan per poli/dokter/penjamin, tindakan & tarif, diagnosa/morbiditas, rawat inap, serta resep & obat |
-| **Log aktivitas** | Jejak audit perubahan data (siapa, kapan, modul apa) — hanya untuk administrator |
+| **Log aktivitas** | Jejak audit tambah/ubah/hapus data dari **seluruh modul** (pasien, dokter, pegawai, petugas, poliklinik, penjab, perawatan, penyakit, obat, bangsal, kamar, data referensi, registrasi, tindakan, diagnosa, resep, rekam medis, pengguna) plus pencetakan dokumen dan ekspor CSV — siapa, kapan, modul apa, dari IP mana; hanya untuk administrator |
 | **Hak akses** | Izin per modul untuk setiap pengguna (diterapkan di server, bukan hanya di menu) |
 | **Tema siang/malam** | Pilihan tema yang disimpan di browser (`localStorage`), dioptimalkan agar tetap kontras di kedua tema |
 | **Instalasi mandiri** | Wizard instalasi dan halaman diagnostik lingkungan |
@@ -171,7 +171,7 @@ sebagai PDF.
 
 <p align="center"><img src="docs/images/laporan.png" alt="Laporan kunjungan, tindakan, diagnosa, rawat inap, dan obat" width="720"></p>
 
-<p align="center">Tiap daftar dan laporan punya tombol <strong>Ekspor CSV</strong> yang mengikuti filter yang sedang aktif, sehingga berkas yang diunduh sama persis dengan yang tampil di layar.</p>
+<p align="center">Daftar pasien, dokter, pegawai, petugas, obat, penyakit, tarif perawatan, kamar, registrasi, log aktivitas, dan tiap laporan punya tombol <strong>Ekspor CSV</strong> yang mengikuti filter yang sedang aktif, sehingga berkas yang diunduh sama persis dengan yang tampil di layar.</p>
 
 ### Administrasi & pengguna
 

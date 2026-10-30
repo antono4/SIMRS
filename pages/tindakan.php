@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                  (float)$prw['kso'], (float)$prw['menejemen'], (float)$prw['total_byrpr'], 'Belum']
             );
         }
+        audit_catat('tindakan', 'create', 'rawat_jl_' . $jenis, $noRawat, $prw['nm_perawatan']);
         flash_set('success', 'Tindakan "' . $prw['nm_perawatan'] . '" ditambahkan.');
         redirect(url('tindakan', ['no_rawat' => $noRawat]));
     }
@@ -56,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             db_exec('DELETE FROM rawat_jl_pr WHERE no_rawat=? AND kd_jenis_prw=? AND nip=? AND tgl_perawatan=? AND jam_rawat=?',
                 [$noRawat, $_POST['kd_jenis_prw'], $_POST['pelaksana'], $_POST['tgl'], $_POST['jam']]);
         }
+        audit_catat('tindakan', 'delete', 'rawat_jl_' . $jenis, $noRawat, (string)($_POST['kd_jenis_prw'] ?? ''));
         flash_set('success', 'Tindakan dihapus.');
         redirect(url('tindakan', ['no_rawat' => $noRawat]));
     }

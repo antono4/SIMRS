@@ -71,6 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', referensi_pesan_rujukan($def['label'], $rujukan));
         } else {
             $galat = db_coba(fn() => db_exec("DELETE FROM `{$def['tabel']}` WHERE `$pk` = ?", [$nilai]));
+            if ($galat === null) {
+                audit_catat('referensi', 'delete', $def['tabel'], (string)$nilai, $def['label']);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "{$def['label']} $nilai dihapus.");
         }
         redirect(url('referensi', $urlDasar));
@@ -122,6 +125,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $params = array_values($data);
             $params[] = $nilaiPk;
             $galat = db_coba(fn() => db_exec("UPDATE `{$def['tabel']}` SET $set WHERE `$pk` = ?", $params));
+            if ($galat === null) {
+                audit_catat('referensi', 'save', $def['tabel'], (string)$nilaiPk, $def['label']);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "{$def['label']} $nilaiPk diperbarui.");
         } else {
             if (!$namaKolom) {
@@ -137,6 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     array_unshift($params, $nilaiPk);
                 }
                 $galat = db_coba(fn() => db_exec($sql, $params));
+            }
+            if ($galat === null) {
+                audit_catat('referensi', 'create', $def['tabel'], (string)$nilaiPk, $def['label']);
             }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "{$def['label']} ditambahkan.");
         }

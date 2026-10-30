@@ -20,6 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', "Kamar $kd tidak dapat dihapus karena memiliki $inap riwayat rawat inap. Nonaktifkan kamar bila sudah tidak dipakai.");
         } else {
             $galat = db_coba(fn() => db_exec('DELETE FROM kamar WHERE kd_kamar = ?', [$kd]));
+            if ($galat === null) {
+                audit_catat('kamar', 'delete', 'kamar', $kd);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Kamar $kd dihapus.");
         }
         redirect(url('kamar'));
@@ -54,12 +57,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'UPDATE kamar SET kd_bangsal=?, trf_kamar=?, status=?, kelas=?, statusdata=? WHERE kd_kamar=?',
                 [$kdBangsal, $trf, $status, $kelas, $statusdata, $kd]
             ));
+            if ($galat === null) {
+                audit_catat('kamar', 'save', 'kamar', $kd, $kdBangsal);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Kamar $kd diperbarui.");
         } else {
             $galat = db_coba(fn() => db_exec(
                 'INSERT INTO kamar (kd_kamar, kd_bangsal, trf_kamar, status, kelas, statusdata) VALUES (?,?,?,?,?,?)',
                 [$kd, $kdBangsal, $trf, $status, $kelas, $statusdata]
             ));
+            if ($galat === null) {
+                audit_catat('kamar', 'create', 'kamar', $kd, $kdBangsal);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Kamar $kd ditambahkan.");
         }
         redirect(url('kamar'));

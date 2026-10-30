@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', "Penanggung jawab $kd tidak dapat dihapus karena masih dipakai di " . implode(', ', $sebab) . '.');
         } else {
             db_exec('DELETE FROM penjab WHERE kd_pj = ?', [$kd]);
+            audit_catat('penjab', 'delete', 'penjab', $kd);
             flash_set('success', "Penanggung jawab $kd dihapus.");
         }
         redirect(url('penjab'));
@@ -55,12 +56,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'UPDATE penjab SET png_jawab=?, nama_perusahaan=?, alamat_asuransi=?, no_telp=?, attn=?, status=? WHERE kd_pj=?',
                 [$data['png_jawab'], $data['nama_perusahaan'], $data['alamat_asuransi'], $data['no_telp'], $data['attn'], $data['status'], $kd]
             ));
+            if ($galat === null) {
+                audit_catat('penjab', 'save', 'penjab', $kd, $data['png_jawab']);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Penanggung jawab $kd diperbarui.");
         } else {
             $galat = db_coba(fn() => db_exec(
                 'INSERT INTO penjab (kd_pj, png_jawab, nama_perusahaan, alamat_asuransi, no_telp, attn, status) VALUES (?,?,?,?,?,?,?)',
                 [$kd, $data['png_jawab'], $data['nama_perusahaan'], $data['alamat_asuransi'], $data['no_telp'], $data['attn'], $data['status']]
             ));
+            if ($galat === null) {
+                audit_catat('penjab', 'create', 'penjab', $kd, $data['png_jawab']);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Penanggung jawab $kd ditambahkan.");
         }
         redirect(url('penjab'));

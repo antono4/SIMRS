@@ -34,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', "Dokter $kd tidak dapat dihapus karena masih dipakai di " . implode(', ', $sebab) . '.');
         } else {
             db_exec('DELETE FROM dokter WHERE kd_dokter = ?', [$kd]);
+            audit_catat('dokter', 'delete', 'dokter', $kd);
             flash_set('success', "Dokter $kd berhasil dihapus.");
         }
         redirect(url('dokter'));
@@ -70,6 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
             $data['kd_dokter'] = $kd;
             $galat = db_coba(fn() => db_exec("UPDATE dokter SET $set WHERE kd_dokter = :kd_dokter", $data));
+            if ($galat === null) {
+                audit_catat('dokter', 'save', 'dokter', $kd, $data['nm_dokter']);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Data dokter $kd diperbarui.");
         } else {
             $pdo = db();
@@ -104,6 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $marks = ':' . implode(', :', array_keys($data));
                 db_exec("INSERT INTO dokter ($cols) VALUES ($marks)", $data);
                 $pdo->commit();
+                audit_catat('dokter', 'create', 'dokter', $kd, $data['nm_dokter']);
                 flash_set('success', "Dokter baru ($kd) ditambahkan" . ($adaPegawai === 0 ? ' sekaligus sebagai pegawai.' : '.'));
             } catch (Throwable $e) {
                 $pdo->rollBack();
