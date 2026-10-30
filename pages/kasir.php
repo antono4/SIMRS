@@ -38,7 +38,7 @@ if (!$kunjungan && $_SERVER['REQUEST_METHOD'] !== 'POST') {
       <div class="card-header">
         <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
           <h3 class="card-title mb-0">Tagihan Kunjungan</h3>
-          <form class="d-flex gap-2" method="get" action="index.php">
+          <form class="d-flex flex-wrap gap-2" method="get" action="index.php">
             <input type="hidden" name="page" value="kasir" />
             <input type="date" class="form-control form-control-sm" name="tgl" value="<?= e($tgl) ?>" />
             <button class="btn btn-sm btn-outline-primary"><i class="bi bi-funnel"></i></button>
