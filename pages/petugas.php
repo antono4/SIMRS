@@ -15,6 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', "Petugas $nip tidak dapat dihapus karena masih dipakai di $tindakan tindakan.");
         } else {
             $galat = db_coba(fn() => db_exec('DELETE FROM petugas WHERE nip = ?', [$nip]));
+            if ($galat === null) {
+                audit_catat('petugas', 'delete', 'petugas', $nip);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Petugas $nip dihapus.");
         }
         redirect(url('petugas'));
@@ -64,12 +67,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $params = array_values($data);
             $params[] = $nip;
             $galat = db_coba(fn() => db_exec("UPDATE petugas SET $set WHERE nip = ?", $params));
+            if ($galat === null) {
+                audit_catat('petugas', 'save', 'petugas', $nip);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Petugas $nip diperbarui.");
         } else {
             $cols = implode(', ', array_keys($data));
             $marks = implode(', ', array_fill(0, count($data), '?'));
             $params = array_merge([$nip], array_values($data));
             $galat = db_coba(fn() => db_exec("INSERT INTO petugas (nip, $cols) VALUES (?, $marks)", $params));
+            if ($galat === null) {
+                audit_catat('petugas', 'create', 'petugas', $nip);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Petugas $nip ditambahkan.");
         }
         redirect(url('petugas'));
@@ -196,6 +205,22 @@ $total = (int)db_val("SELECT COUNT(*) FROM petugas p $where", $params);
 $perPage = 25;
 $hal = max(1, (int)($_GET['hal'] ?? 1));
 $offset = ($hal - 1) * $perPage;
+
+// Ekspor CSV memakai seluruh hasil filter, bukan hanya halaman yang tampil.
+if (($_GET['ekspor'] ?? '') === 'csv') {
+    audit_catat('petugas', 'cetak', 'petugas', $q, 'Ekspor CSV ' . $total . ' baris');
+    ekspor_csv(
+        ekspor_nama('petugas'),
+        ['NIP', 'Nama Petugas', 'L/P', 'Jabatan', 'Tempat Lahir', 'Tgl. Lahir', 'Telepon', 'Email', 'Status'],
+        ekspor_batch(
+            "SELECT p.nip, p.nama, p.jk, j.nm_jbtn, p.tmp_lahir, p.tgl_lahir, p.no_telp, p.email, p.status
+             FROM petugas p LEFT JOIN jabatan j ON j.kd_jbtn = p.kd_jbtn
+             $where ORDER BY p.nama",
+            $params
+        )
+    );
+}
+
 $rows = db_all(
     "SELECT p.*, j.nm_jbtn FROM petugas p LEFT JOIN jabatan j ON j.kd_jbtn = p.kd_jbtn
      $where ORDER BY p.nama LIMIT $perPage OFFSET $offset",
@@ -214,6 +239,7 @@ require_once __DIR__ . '/../includes/header.php';
           <button class="btn btn-sm btn-outline-primary"><i class="bi bi-search"></i></button>
         </form>
         <a href="<?= e(url('petugas', ['action' => 'form'])) ?>" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Petugas Baru</a>
+        <?= ekspor_tombol('petugas', $q !== '' ? ['q' => $q] : []) ?>
       </div>
     </div>
   </div>

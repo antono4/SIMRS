@@ -66,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($nomorAntrian !== null) {
             $pesan .= ' Nomor antrian: ' . antrian_nomor_tampil($nomorAntrian, $kdPoli) . ' (' . $poli['nm_poli'] . ').';
         }
+        audit_catat('registrasi', 'create', 'reg_periksa', $noRawat, $pasien['nm_pasien']);
         flash_set('success', $pesan);
         redirect(url('registrasi', ['tgl' => $tgl]));
     }
@@ -76,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $allowed = ['Belum', 'Sudah', 'Batal', 'Berkas Diterima', 'Dirujuk', 'Meninggal', 'Dirawat', 'Pulang Paksa'];
         if (in_array($stts, $allowed, true)) {
             db_exec('UPDATE reg_periksa SET stts = ? WHERE no_rawat = ?', [$stts, $noRawat]);
+            audit_catat('registrasi', 'save', 'reg_periksa', $noRawat, 'Status -> ' . $stts);
             flash_set('success', "Status $noRawat menjadi $stts.");
         }
         redirect(url('registrasi', ['tgl' => $_POST['tgl'] ?? date('Y-m-d')]));
@@ -104,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', "Registrasi $noRawat tidak dapat dihapus karena sudah memiliki " . implode(', ', $sebab) . '. Hapus data tersebut lebih dulu.');
         } else {
             db_exec('DELETE FROM reg_periksa WHERE no_rawat = ?', [$noRawat]);
+            audit_catat('registrasi', 'delete', 'reg_periksa', $noRawat);
             flash_set('success', "Registrasi $noRawat dihapus.");
         }
         redirect(url('registrasi', ['tgl' => $_POST['tgl'] ?? date('Y-m-d')]));
@@ -244,6 +247,24 @@ $rows = db_all(
     $params
 );
 $poliList = db_all('SELECT kd_poli, nm_poli FROM poliklinik ORDER BY nm_poli');
+
+// Ekspor CSV: seluruh kunjungan pada tanggal & poliklinik yang sedang difilter.
+if (($_GET['ekspor'] ?? '') === 'csv') {
+    audit_catat('registrasi', 'cetak', 'reg_periksa', $tgl, 'Ekspor CSV ' . count($rows) . ' baris');
+    ekspor_csv(
+        'kunjungan-' . $tgl,
+        ['No. Rawat', 'Tgl. Registrasi', 'Jam', 'No. RM', 'Nama Pasien', 'Poliklinik', 'Dokter', 'Cara Bayar', 'Status', 'Lanjut', 'Bayar'],
+        array_map(
+            static fn(array $r): array => [
+                $r['no_rawat'], $r['tgl_registrasi'], substr((string)$r['jam_reg'], 0, 5), $r['no_rkm_medis'],
+                $r['nm_pasien'], $r['nm_poli'], $r['nm_dokter'], $r['png_jawab'] ?? '-',
+                $r['stts'], $r['status_lanjut'], $r['status_bayar'],
+            ],
+            $rows
+        )
+    );
+}
+
 require_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="card">
@@ -263,6 +284,7 @@ require_once __DIR__ . '/../includes/header.php';
           <button class="btn btn-sm btn-outline-primary"><i class="bi bi-funnel"></i></button>
         </form>
         <a href="<?= e(url('registrasi', ['action' => 'form'])) ?>" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Registrasi Baru</a>
+        <?= ekspor_tombol('registrasi', array_filter(['tgl' => $tgl, 'poli' => $poliFilter], fn($v) => $v !== '')) ?>
       </div>
     </div>
   </div>

@@ -239,6 +239,10 @@ require_once __DIR__ . '/../includes/header.php';
                 </small>
               </td>
               <td class="text-end text-nowrap">
+                <a class="btn btn-sm btn-outline-dark" title="Cetak tiket"
+                   href="<?= e(url('tiket_antrian', ['id' => $r['id']])) ?>" target="_blank" rel="noopener">
+                  <i class="bi bi-printer"></i>
+                </a>
                 <form method="post" action="<?= e(url('antrian')) ?>" class="d-inline">
                   <input type="hidden" name="act" value="panggil" />
                   <input type="hidden" name="tgl" value="<?= e($tgl) ?>" />

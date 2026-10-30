@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', "Tarif $kd tidak dapat dihapus karena dipakai di $dipakai tindakan.");
         } else {
             db_exec('DELETE FROM jns_perawatan WHERE kd_jenis_prw = ?', [$kd]);
+            audit_catat('perawatan', 'delete', 'jns_perawatan', $kd);
             flash_set('success', "Tarif $kd dihapus.");
         }
         redirect(url('perawatan'));
@@ -51,12 +52,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
             $data['kd_jenis_prw'] = $kd;
             $galat = db_coba(fn() => db_exec("UPDATE jns_perawatan SET $set WHERE kd_jenis_prw = :kd_jenis_prw", $data));
+            if ($galat === null) {
+                audit_catat('perawatan', 'save', 'jns_perawatan', $kd, $data['nm_perawatan']);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Tarif $kd diperbarui.");
         } else {
             $data['kd_jenis_prw'] = $kd;
             $cols = implode(', ', array_keys($data));
             $marks = ':' . implode(', :', array_keys($data));
             $galat = db_coba(fn() => db_exec("INSERT INTO jns_perawatan ($cols) VALUES ($marks)", $data));
+            if ($galat === null) {
+                audit_catat('perawatan', 'create', 'jns_perawatan', $kd, $data['nm_perawatan']);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Tarif $kd ditambahkan.");
         }
         redirect(url('perawatan'));
@@ -159,6 +166,26 @@ if ($q !== '') {
 }
 $total = (int)db_val("SELECT COUNT(*) FROM jns_perawatan j $where", $params);
 $offset = ($hal - 1) * $perPage;
+
+// Ekspor CSV memakai seluruh hasil filter, bukan hanya halaman yang tampil.
+if (($_GET['ekspor'] ?? '') === 'csv') {
+    audit_catat('perawatan', 'cetak', 'jns_perawatan', $q, 'Ekspor CSV ' . $total . ' baris');
+    ekspor_csv(
+        ekspor_nama('tarif-perawatan'),
+        ['Kode', 'Perawatan', 'Kategori', 'Poli', 'Cara Bayar', 'Tarif Dokter', 'Tarif Perawat', 'Status'],
+        ekspor_batch(
+            "SELECT j.kd_jenis_prw, j.nm_perawatan, k.nm_kategori, pl.nm_poli, pj.png_jawab,
+                    j.total_byrdr, j.total_byrpr, j.status
+             FROM jns_perawatan j
+             LEFT JOIN kategori_perawatan k ON k.kd_kategori = j.kd_kategori
+             LEFT JOIN poliklinik pl ON pl.kd_poli = j.kd_poli
+             LEFT JOIN penjab pj ON pj.kd_pj = j.kd_pj
+             $where ORDER BY k.nm_kategori, j.nm_perawatan",
+            $params
+        )
+    );
+}
+
 $rows = db_all(
     "SELECT j.*, k.nm_kategori, pl.nm_poli, pj.png_jawab FROM jns_perawatan j
      LEFT JOIN kategori_perawatan k ON k.kd_kategori = j.kd_kategori
@@ -172,7 +199,7 @@ require_once __DIR__ . '/../includes/header.php';
 <div class="card">
   <div class="card-header">
     <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
-      <h3 class="card-title mb-0">Daftar Tarif (<?= number_format($total) ?>)</h3>
+      <h3 class="card-title mb-0">Daftar Tarif (<?= number_format($total, 0, ',', '.') ?>)</h3>
       <div class="d-flex flex-wrap gap-2">
         <form class="d-flex" method="get" action="index.php">
           <input type="hidden" name="page" value="perawatan" />
@@ -180,6 +207,7 @@ require_once __DIR__ . '/../includes/header.php';
           <button class="btn btn-sm btn-outline-primary"><i class="bi bi-search"></i></button>
         </form>
         <a href="<?= e(url('perawatan', ['action' => 'form'])) ?>" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Tarif Baru</a>
+        <?= ekspor_tombol('perawatan', $q !== '' ? ['q' => $q] : []) ?>
       </div>
     </div>
   </div>

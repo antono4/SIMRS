@@ -27,9 +27,17 @@ const PAGE_PERMISSIONS = [
     'tindakan' => 'tindakan_ralan',
     'diagnosa' => 'diagnosa_pasien',
     'resep' => 'resep_obat',
+    // Rekam medis memakai izin catatan_pasien: kolom `rekam_medis` tidak ada di
+    // tabel user skema ini, sedangkan catatan_pasien ada dan belum dipakai modul lain.
+    'rekam_medis' => 'catatan_pasien',
     'kamarinap' => 'kamar_inap',
     'kasir' => 'kasir_ralan',
     'billing' => 'kasir_ralan',   // cetak billing: izin sama dengan Kasir
+    'kartu_berobat' => 'pasien',        // cetak kartu berobat
+    'tiket_antrian' => 'registrasi',    // cetak tiket antrian
+    'etiket_resep' => 'resep_obat',     // cetak etiket obat
+    'cetak_rekam_medis' => 'catatan_pasien',
+    'log_aktivitas' => null,   // dicek manual (hanya admin) di pages/log_aktivitas.php
     'laporan' => 'kunjungan_ralan',
     'users' => 'pegawai_user',
     'pengaturan' => 'pegawai_admin',
@@ -55,6 +63,7 @@ const PERMISSION_CATALOG = [
     'kasir_ralan' => 'Kasir / Billing',
     'kunjungan_ralan' => 'Laporan Kunjungan',
     'pegawai_user' => 'Manajemen Pengguna',
+    'catatan_pasien' => 'Rekam Medis (catatan pasien)',
 ];
 
 function auth_can(string $page): bool

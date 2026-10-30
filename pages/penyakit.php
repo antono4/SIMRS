@@ -18,6 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', "Penyakit $kd tidak dapat dihapus karena dipakai di $dipakai diagnosa pasien.");
         } else {
             $galat = db_coba(fn() => db_exec('DELETE FROM penyakit WHERE kd_penyakit = ?', [$kd]));
+            if ($galat === null) {
+                audit_catat('penyakit', 'delete', 'penyakit', $kd);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Penyakit $kd dihapus.");
         }
         redirect(url('penyakit'));
@@ -60,12 +63,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $params = array_values($data);
             $params[] = $kd;
             $galat = db_coba(fn() => db_exec("UPDATE penyakit SET $set WHERE kd_penyakit = ?", $params));
+            if ($galat === null) {
+                audit_catat('penyakit', 'save', 'penyakit', $kd);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Penyakit $kd diperbarui.");
         } else {
             $cols = implode(', ', array_keys($data));
             $marks = implode(', ', array_fill(0, count($data), '?'));
             $params = array_merge([$kd], array_values($data));
             $galat = db_coba(fn() => db_exec("INSERT INTO penyakit (kd_penyakit, $cols) VALUES (?, $marks)", $params));
+            if ($galat === null) {
+                audit_catat('penyakit', 'create', 'penyakit', $kd);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Penyakit $kd ditambahkan.");
         }
         redirect(url('penyakit', ['q' => $kd]));
@@ -78,6 +87,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', "Kategori $kd tidak dapat dihapus karena dipakai di $dipakai penyakit.");
         } else {
             $galat = db_coba(fn() => db_exec('DELETE FROM kategori_penyakit WHERE kd_ktg = ?', [$kd]));
+            if ($galat === null) {
+                audit_catat('penyakit', 'delete', 'kategori_penyakit', $kd);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Kategori $kd dihapus.");
         }
         redirect(url('penyakit', ['action' => 'kategori']));
@@ -302,6 +314,23 @@ $total = (int)db_val("SELECT COUNT(*) FROM penyakit p $where", $params);
 $perPage = 25;
 $hal = max(1, (int)($_GET['hal'] ?? 1));
 $offset = ($hal - 1) * $perPage;
+
+// Ekspor CSV memakai seluruh hasil filter, bukan hanya halaman yang tampil.
+// Tabel ini besar (puluhan ribu baris), jadi diambil bertahap.
+if (($_GET['ekspor'] ?? '') === 'csv') {
+    audit_catat('penyakit', 'cetak', 'penyakit', $q, 'Ekspor CSV ' . $total . ' baris');
+    ekspor_csv(
+        ekspor_nama('penyakit-icd10'),
+        ['Kode ICD-10', 'Nama Penyakit', 'Kategori', 'Penularan', 'Keterangan'],
+        ekspor_batch(
+            "SELECT p.kd_penyakit, p.nm_penyakit, k.nm_kategori, p.status, p.keterangan
+             FROM penyakit p LEFT JOIN kategori_penyakit k ON k.kd_ktg = p.kd_ktg
+             $where ORDER BY p.kd_penyakit",
+            $params
+        )
+    );
+}
+
 $rows = db_all(
     "SELECT p.kd_penyakit, p.nm_penyakit, p.status, p.keterangan, k.nm_kategori,
             (SELECT COUNT(*) FROM diagnosa_pasien dp WHERE dp.kd_penyakit = p.kd_penyakit) AS dipakai
@@ -330,6 +359,7 @@ require_once __DIR__ . '/../includes/header.php';
         </form>
         <a href="<?= e(url('penyakit', ['action' => 'kategori'])) ?>" class="btn btn-sm btn-outline-secondary"><i class="bi bi-tags me-1"></i>Kategori</a>
         <a href="<?= e(url('penyakit', ['action' => 'form'])) ?>" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Penyakit Baru</a>
+        <?= ekspor_tombol('penyakit', $filterParams) ?>
       </div>
     </div>
   </div>

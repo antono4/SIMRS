@@ -54,17 +54,21 @@ membaca/menulis ke database `sik`. Untuk mencobanya, lihat bagian [Instalasi](#-
 | **Grafik kunjungan** | Tren kunjungan 14 hari terakhir dan kunjungan per poliklinik (Chart.js) |
 | **Master data** | Pasien, dokter, poliklinik, penjamin, dan tarif perawatan |
 | **Data penunjang** | Pegawai (SDM), petugas/paramedis, penyakit ICD-10 & kategori, barang/obat, bangsal, dan kamar |
-| **Data referensi** | Satu modul untuk 25 tabel acuan: wilayah, data penunjang pasien, kepegawaian, farmasi, dan medis |
+| **Data referensi** | Satu modul untuk 26 tabel acuan: wilayah, data penunjang pasien, kepegawaian, farmasi, dan medis |
 | **Registrasi kunjungan** | Pendaftaran rawat jalan & rawat inap, nomor rekam medis otomatis |
 | **Antrian poliklinik** | Nomor antrian otomatis per poliklinik saat registrasi, pemanggilan, dan pemantauan status — nomor memuat kode poli, mis. `INT-007` |
 | **Pemisah antrian** | Satu warna tetap + huruf awalan per poliklinik, sama di modul Antrian dan layar display |
 | **Layar display** | Layar TV ruang tunggu (tanpa login) dengan nomor dipanggil, bel, dan pengumuman suara |
 | **Tindakan medis** | Pencatatan tindakan dokter dan petugas dengan tarif otomatis |
 | **Diagnosa & resep** | Diagnosa ICD-10 dan resep obat per kunjungan |
+| **Rekam medis (SOAP)** | Catatan per kunjungan — keluhan, pemeriksaan, penilaian, rencana, tanda vital (TD, nadi, napas, suhu, SpO₂, GCS), IMT otomatis, dan alergi |
+| **Cetak dokumen** | Kartu berobat, tiket antrian, etiket obat, dan ringkasan rekam medis — siap cetak ke A4 atau PDF |
 | **Rawat inap** | Check-in/check-out kamar, perhitungan lama inap dan biaya |
 | **Kasir** | Pembayaran kunjungan, penerbitan nota, dan pembatalan pembayaran |
 | **Cetak billing** | Nota kunjungan siap cetak: kop instansi, rincian tarif, total, dan terbilang; langsung ke A4 atau PDF |
+| **Ekspor CSV** | Unduh daftar pasien, dokter, pegawai, petugas, obat, penyakit, tarif perawatan, kamar, registrasi, log aktivitas, dan tiap laporan; mengikuti filter yang sedang aktif dan aman dari injeksi formula |
 | **Laporan** | Lima laporan: kunjungan per poli/dokter/penjamin, tindakan & tarif, diagnosa/morbiditas, rawat inap, serta resep & obat |
+| **Log aktivitas** | Jejak audit tambah/ubah/hapus data dari **seluruh modul** (pasien, dokter, pegawai, petugas, poliklinik, penjab, perawatan, penyakit, obat, bangsal, kamar, data referensi, registrasi, tindakan, diagnosa, resep, rekam medis, pengguna) plus pencetakan dokumen dan ekspor CSV — siapa, kapan, modul apa, dari IP mana; hanya untuk administrator |
 | **Hak akses** | Izin per modul untuk setiap pengguna (diterapkan di server, bukan hanya di menu) |
 | **Tema siang/malam** | Pilihan tema yang disimpan di browser (`localStorage`), dioptimalkan agar tetap kontras di kedua tema |
 | **Instalasi mandiri** | Wizard instalasi dan halaman diagnostik lingkungan |
@@ -112,6 +116,24 @@ langsung ke kertas A4 atau disimpan sebagai PDF lewat dialog cetak peramban.
   <img src="docs/images/resep.png" alt="Resep obat per kunjungan" width="410">
 </p>
 
+<p align="center"><img src="docs/images/rekam_medis.png" alt="Rekam medis SOAP per kunjungan" width="720"></p>
+
+### Cetak dokumen
+
+Kartu berobat, tiket antrian, etiket obat, dan ringkasan rekam medis memakai kop
+instansi yang sama dengan cetak billing, dan langsung siap dicetak atau disimpan
+sebagai PDF.
+
+<p align="center">
+  <img src="docs/images/kartu_berobat.png" alt="Kartu berobat pasien" width="410">
+  <img src="docs/images/tiket_antrian.png" alt="Tiket antrian poliklinik" width="410">
+</p>
+
+<p align="center">
+  <img src="docs/images/cetak_rekam_medis.png" alt="Ringkasan rekam medis" width="410">
+  <img src="docs/images/etiket_resep.png" alt="Etiket obat" width="410">
+</p>
+
 ### Data master
 
 <p align="center">
@@ -149,6 +171,8 @@ langsung ke kertas A4 atau disimpan sebagai PDF lewat dialog cetak peramban.
 
 <p align="center"><img src="docs/images/laporan.png" alt="Laporan kunjungan, tindakan, diagnosa, rawat inap, dan obat" width="720"></p>
 
+<p align="center">Daftar pasien, dokter, pegawai, petugas, obat, penyakit, tarif perawatan, kamar, registrasi, log aktivitas, dan tiap laporan punya tombol <strong>Ekspor CSV</strong> yang mengikuti filter yang sedang aktif, sehingga berkas yang diunduh sama persis dengan yang tampil di layar.</p>
+
 ### Administrasi & pengguna
 
 <p align="center">
@@ -160,6 +184,8 @@ langsung ke kertas A4 atau disimpan sebagai PDF lewat dialog cetak peramban.
   <img src="docs/images/akun.png" alt="Profil dan ganti kata sandi" width="410">
   <img src="docs/images/pengaturan.png" alt="Identitas rumah sakit" width="410">
 </p>
+
+<p align="center"><img src="docs/images/log_aktivitas.png" alt="Log aktivitas: jejak audit perubahan data" width="720"></p>
 
 ### Pemasangan & diagnostik
 
@@ -265,10 +291,18 @@ Alur permintaan:
   <img src="docs/images/erd.svg" alt="Diagram relasi inti basis data" width="820">
 </p>
 
-Skema `sik` berisi **52 tabel** dengan **55 relasi foreign key**. Tabel `reg_periksa`
+Skema `sik` berisi **54 tabel** dengan **56 relasi foreign key**. Tabel `reg_periksa`
 menjadi pusat data: setiap kunjungan mengacu ke satu pasien, satu dokter, satu
 poliklinik, dan satu penjamin. Data klinis dan keuangan (tindakan, diagnosa, resep,
 kamar inap, nota) menggantung pada `no_rawat` kunjungan tersebut.
+
+Dua tabel ditambahkan di atas skema asli, dengan pola `CREATE TABLE IF NOT EXISTS`
+sehingga instalasi lama ikut naik versi sendiri saat halamannya dibuka:
+
+| Tabel | Isi |
+|-------|-----|
+| `rekam_medis` | Catatan SOAP per kunjungan: keluhan, pemeriksaan, penilaian, rencana, dan tanda vital |
+| `log_aktivitas` | Jejak audit perubahan data: siapa mengubah apa, kapan, dari alamat IP mana |
 
 Diagram berikut merangkum perjalanan satu kunjungan, dari pendaftaran sampai nota
 siap cetak, supaya jelas modul mana yang menulis data ke mana:
@@ -312,10 +346,16 @@ SIMRS/
 │   ├── tindakan.php          #   Tindakan dokter & petugas
 │   ├── diagnosa.php          #   Diagnosa ICD-10
 │   ├── resep.php             #   Resep obat
+│   ├── rekam_medis.php       #   Rekam medis (SOAP) per kunjungan
+│   ├── cetak_rekam_medis.php #   Cetak ringkasan rekam medis (A4/PDF)
+│   ├── kartu_berobat.php     #   Cetak kartu berobat pasien
+│   ├── tiket_antrian.php     #   Cetak tiket antrian
+│   ├── etiket_resep.php      #   Cetak etiket obat
 │   ├── kamarinap.php         #   Rawat inap
 │   ├── kasir.php             #   Kasir & pembayaran
 │   ├── billing.php           #   Cetak billing / nota (mandiri, siap cetak A4)
 │   ├── laporan.php           #   Laporan kunjungan, tindakan, diagnosa, rawat inap, obat
+│   ├── log_aktivitas.php     #   Log aktivitas / jejak audit (khusus administrator)
 │   ├── users.php             #   Manajemen pengguna & izin
 │   ├── pengaturan.php        #   Pengaturan identitas rumah sakit
 │   ├── akun.php              #   Profil pengguna
@@ -324,16 +364,20 @@ SIMRS/
 │   ├── admin.php             #   Halaman administrator
 │   ├── update.php            #   Halaman pembaru (publik, unduh .bat)
 │   ├── logout.php            #   Keluar
-│   ├── 403.php · 404.php     #   Halaman galat
+│   ├── 403.php · 404.php · galat.php  #  Halaman galat
 ├── includes/                 # Kode bersama
 │   ├── db.php                #   Koneksi PDO + helper query
 │   ├── auth.php              #   Autentikasi (AES_DECRYPT)
 │   ├── authz.php             #   Otorisasi per modul
-│   ├── helpers.php           #   Fungsi bantu (url, flash, redirect)
+│   ├── helpers.php           #   Fungsi bantu (url, flash, redirect, inisial kop)
 │   ├── kunjungan.php         #   Komponen data kunjungan
 │   ├── referensi.php         #   Definisi tabel acuan + penjaga hapus berbasis skema
 │   ├── antrian.php           #   Logika antrian (nomor, panggil, ringkasan)
-│   ├── settings.php          #   Identitas rumah sakit
+│   ├── settings.php          #   Identitas rumah sakit & catatan login (tracker)
+│   ├── rekam_medis.php       #   Data & DDL rekam medis (SOAP)
+│   ├── audit.php             #   Log audit aktivitas (log_aktivitas)
+│   ├── ekspor.php            #   Ekspor CSV yang aman dari injeksi formula
+│   ├── cetak.php             #   Kerangka dokumen cetak (kop instansi bersama)
 │   ├── header.php            #   Kerangka tampilan atas
 │   └── footer.php            #   Kerangka tampilan bawah
 ├── assets/                   # Aset statis
@@ -343,7 +387,7 @@ SIMRS/
 │   ├── icons/ · chartjs/     #   Ikon & grafik
 │   └── favicon.svg           #   Ikon situs
 ├── database/
-│   ├── sik.sql               # Skema + data contoh (52 tabel, 18 MB)
+│   ├── sik.sql               # Skema + data contoh (54 tabel, 19 MB)
 │   └── sik.sql.gz            # Versi terkompresi untuk impor via phpMyAdmin (1,3 MB)
 ├── tools/
 │   └── merge-config.php      # Memindahkan kredensial ke config.php baru saat update
@@ -395,7 +439,7 @@ dengan pengguna `root` tanpa kata sandi.
 
 ### ⚠️ Impor lewat phpMyAdmin: pakai `sik.sql.gz`, bukan `sik.sql`
 
-`database/sik.sql` berukuran **18,4 MB**. Batas unggah bawaan XAMPP adalah **2 MB**
+`database/sik.sql` berukuran **19,3 MB**. Batas unggah bawaan XAMPP adalah **2 MB**
 (`upload_max_filesize = 2M`), sehingga phpMyAdmin menolak berkas itu — sering tanpa
 pesan yang jelas, dan **database tetap kosong**.
 
@@ -439,7 +483,7 @@ Pengguna Windows tidak perlu mengetik perintah SQL. Klik dua kali
 2. Meminta kata sandi MySQL (kosongkan bila bawaan).
 3. Mengimpor `database\sik.sql` sehingga database `sik` muncul di
    <http://localhost/phpmyadmin>.
-4. Memverifikasi hasilnya: jumlah tabel (harus 52) dan baris `poliklinik`.
+4. Memverifikasi hasilnya: jumlah tabel (harus 54) dan baris `poliklinik`.
 5. Menawarkan membuka phpMyAdmin setelah selesai.
 
 Berkas ini mengimpor langsung lewat `mysql.exe`, jadi **tidak terkena batas unggah
@@ -463,20 +507,28 @@ baru berlaku setelah pengguna login ulang.
 
 | Izin di `?page=users` | Membuka modul |
 |-----------------------|---------------|
-| Master Pasien | Pasien |
+| Master Pasien | Pasien, Kartu Berobat |
 | Master Dokter | Dokter |
-| Registrasi, Poliklinik & Penjab | Registrasi, Poliklinik, Penanggung Jawab, Antrian |
+| Master Petugas / Paramedis | Petugas / Paramedis |
+| Master Pegawai | Pegawai (SDM) |
+| Registrasi, Poliklinik & Penjab | Registrasi, Poliklinik, Penanggung Jawab, Antrian, Tiket Antrian |
 | Tarif Perawatan | Tarif Perawatan |
 | Tindakan / Perawatan | Tindakan |
 | Diagnosa ICD-10 | Diagnosa |
-| Resep Obat | Resep |
+| Master Penyakit (ICD-10) | Master Penyakit |
+| Resep Obat | Resep, Etiket Obat |
+| Master Data Barang / Obat | Barang / Obat |
 | Kamar Inap | Kamar Inap |
+| Master Bangsal & Kamar | Bangsal, Kamar |
 | Kasir / Billing | Kasir, Cetak Billing |
 | Laporan Kunjungan | Laporan |
 | Manajemen Pengguna | Pengguna |
+| Rekam Medis (catatan pasien) | Rekam Medis, Cetak Rekam Medis |
 
 Halaman yang tidak butuh izin khusus: Dashboard, Akun Saya, dan layar display
-(publik). Panel Administrator hanya terbuka untuk peran `admin`.
+(publik). Data Referensi menaungi beberapa grup tabel dan memeriksa izinnya per
+grup; grup yang tidak diizinkan akan ditolak (403), bukan dialihkan diam-diam.
+Panel Administrator dan Log Aktivitas hanya terbuka untuk peran `admin`.
 
 > **Penting untuk produksi:** ganti kredensial bawaan, gunakan pengguna database
 > dengan hak minimum, aktifkan HTTPS, dan hapus `info.php` (menampilkan `phpinfo()`),
@@ -551,8 +603,10 @@ Tidak perlu berkas `.bat`; gunakan git langsung:
 git pull
 ```
 
-Perubahan struktur database diterapkan otomatis saat halaman terkait dibuka
-(lihat `antrian_bootstrap()`), jadi tidak ada impor ulang yang diperlukan.
+Perubahan struktur database diterapkan otomatis saat halaman terkait dibuka:
+`antrian_bootstrap()`, `rekam_medis_bootstrap()`, dan `audit_bootstrap()` memakai
+`CREATE TABLE IF NOT EXISTS`, jadi tidak ada impor ulang yang diperlukan. Untuk
+instalasi baru, `database/sik.sql` (dan `sik.sql.gz`) sudah memuat seluruh 54 tabel.
 
 ## 🧩 Daftar Modul
 
@@ -565,16 +619,29 @@ Perubahan struktur database diterapkan otomatis saat halaman terkait dibuka
 | Poliklinik | `?page=poliklinik` | Master poliklinik dan tarif registrasi |
 | Penanggung Jawab | `?page=penjab` | Master penjamin (umum/asuransi) |
 | Tarif Perawatan | `?page=perawatan` | Master tarif tindakan |
+| Pegawai | `?page=pegawai` | Master pegawai (SDM) |
+| Petugas / Paramedis | `?page=petugas` | Master petugas / paramedis |
+| Penyakit | `?page=penyakit` | Master penyakit ICD-10 dan kategori |
+| Barang / Obat | `?page=obat` | Master data barang / obat |
+| Bangsal | `?page=bangsal` | Master bangsal |
+| Kamar | `?page=kamar` | Master kamar |
+| Data Referensi | `?page=referensi` | 26 tabel acuan (wilayah, data penunjang pasien, kepegawaian, farmasi, medis), izin per grup |
 | Registrasi | `?page=registrasi` | Pendaftaran kunjungan rawat jalan/inap |
 | Antrian | `?page=antrian` | Nomor antrian per poliklinik, pemanggilan, dan pemantauan |
 | Display Antrian | `?page=display` | Layar TV ruang tunggu (tanpa login) |
 | Tindakan | `?page=tindakan` | Tindakan dokter dan petugas |
 | Diagnosa | `?page=diagnosa` | Diagnosa ICD-10 per kunjungan |
 | Resep | `?page=resep` | Resep obat per kunjungan |
+| Rekam Medis | `?page=rekam_medis&no_rawat=...` | Catatan SOAP per kunjungan: keluhan, pemeriksaan, penilaian, rencana, tanda vital, dan alergi |
+| Cetak Rekam Medis | `?page=cetak_rekam_medis&no_rawat=...` | Ringkasan rekam medis siap cetak (A4/PDF) |
+| Kartu Berobat | `?page=kartu_berobat&rm=...` | Kartu berobat pasien siap cetak |
+| Tiket Antrian | `?page=tiket_antrian&id=...` | Tiket antrian siap cetak |
+| Etiket Resep | `?page=etiket_resep&resep=...` | Etiket obat siap cetak |
 | Kamar Inap | `?page=kamarinap` | Masuk/pulang rawat inap |
 | Kasir | `?page=kasir` | Rincian tagihan, proses pembayaran, dan penerbitan nota |
 | Cetak Billing | `?page=billing&no_rawat=...` | Nota kunjungan siap cetak (A4/PDF), memakai perhitungan yang sama dengan Kasir |
-| Laporan | `?page=laporan` | Laporan kunjungan per periode |
+| Laporan | `?page=laporan` | Lima laporan: kunjungan, tindakan & tarif, diagnosa/morbiditas, rawat inap, resep & obat |
+| Log Aktivitas | `?page=log_aktivitas` | Jejak audit perubahan data (khusus administrator) |
 | Pengguna | `?page=users` | Manajemen pengguna dan izin modul |
 | Pengaturan | `?page=pengaturan` | Identitas rumah sakit |
 | Akun | `?page=akun` | Profil dan ganti kata sandi |

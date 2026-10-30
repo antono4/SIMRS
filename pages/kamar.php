@@ -20,6 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', "Kamar $kd tidak dapat dihapus karena memiliki $inap riwayat rawat inap. Nonaktifkan kamar bila sudah tidak dipakai.");
         } else {
             $galat = db_coba(fn() => db_exec('DELETE FROM kamar WHERE kd_kamar = ?', [$kd]));
+            if ($galat === null) {
+                audit_catat('kamar', 'delete', 'kamar', $kd);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Kamar $kd dihapus.");
         }
         redirect(url('kamar'));
@@ -54,12 +57,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'UPDATE kamar SET kd_bangsal=?, trf_kamar=?, status=?, kelas=?, statusdata=? WHERE kd_kamar=?',
                 [$kdBangsal, $trf, $status, $kelas, $statusdata, $kd]
             ));
+            if ($galat === null) {
+                audit_catat('kamar', 'save', 'kamar', $kd, $kdBangsal);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Kamar $kd diperbarui.");
         } else {
             $galat = db_coba(fn() => db_exec(
                 'INSERT INTO kamar (kd_kamar, kd_bangsal, trf_kamar, status, kelas, statusdata) VALUES (?,?,?,?,?,?)',
                 [$kd, $kdBangsal, $trf, $status, $kelas, $statusdata]
             ));
+            if ($galat === null) {
+                audit_catat('kamar', 'create', 'kamar', $kd, $kdBangsal);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Kamar $kd ditambahkan.");
         }
         redirect(url('kamar'));
@@ -151,6 +160,23 @@ if ($bangsalFilter !== '') {
     $where .= ' AND k.kd_bangsal = ?';
     $params[] = $bangsalFilter;
 }
+
+// Ekspor CSV memakai seluruh hasil filter, bukan hanya yang tampil.
+if (($_GET['ekspor'] ?? '') === 'csv') {
+    audit_catat('kamar', 'cetak', 'kamar', $q . ($bangsalFilter !== '' ? '/' . $bangsalFilter : ''), 'Ekspor CSV kamar');
+    ekspor_csv(
+        ekspor_nama('kamar'),
+        ['Kode Kamar', 'Bangsal', 'Kelas', 'Tarif/Hari', 'Status', 'Data', 'Riwayat Inap'],
+        ekspor_batch(
+            "SELECT k.kd_kamar, b.nm_bangsal, k.kelas, k.trf_kamar, k.status, k.statusdata,
+                    (SELECT COUNT(*) FROM kamar_inap ki WHERE ki.kd_kamar = k.kd_kamar) AS jml_inap
+             FROM kamar k LEFT JOIN bangsal b ON b.kd_bangsal = k.kd_bangsal
+             $where ORDER BY b.nm_bangsal, k.kd_kamar",
+            $params
+        )
+    );
+}
+
 $rows = db_all(
     "SELECT k.*, b.nm_bangsal, (SELECT COUNT(*) FROM kamar_inap ki WHERE ki.kd_kamar = k.kd_kamar) AS jml_inap
      FROM kamar k LEFT JOIN bangsal b ON b.kd_bangsal = k.kd_bangsal
@@ -178,6 +204,7 @@ require_once __DIR__ . '/../includes/header.php';
           <button class="btn btn-sm btn-outline-primary"><i class="bi bi-funnel"></i></button>
         </form>
         <a href="<?= e(url('kamar', ['action' => 'form'])) ?>" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Kamar Baru</a>
+        <?= ekspor_tombol('kamar', array_filter(['q' => $q, 'bangsal' => $bangsalFilter])) ?>
       </div>
     </div>
   </div>

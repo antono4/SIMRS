@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'INSERT INTO diagnosa_pasien (no_rawat, kd_penyakit, status, prioritas, status_penyakit) VALUES (?,?,?,?,?)',
                 [$noRawat, $kdPenyakit, $kunjungan['status_lanjut'], $prioritas, $_POST['status_penyakit'] ?? 'Baru']
             );
+            audit_catat('diagnosa', 'create', 'diagnosa_pasien', $noRawat, $kdPenyakit);
             flash_set('success', "Diagnosa $kdPenyakit ditambahkan sebagai diagnosa ke-$prioritas.");
         }
         redirect(url('diagnosa', ['no_rawat' => $noRawat]));
@@ -39,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($sisa as $i => $s) {
             db_exec('UPDATE diagnosa_pasien SET prioritas = ? WHERE no_rawat = ? AND kd_penyakit = ?', [$i + 1, $noRawat, $s['kd_penyakit']]);
         }
+        audit_catat('diagnosa', 'delete', 'diagnosa_pasien', $noRawat, (string)($_POST['kd_penyakit'] ?? ''));
         flash_set('success', 'Diagnosa dihapus.');
         redirect(url('diagnosa', ['no_rawat' => $noRawat]));
     }

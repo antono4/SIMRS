@@ -20,17 +20,41 @@ if (!$menuRef) {
     return;
 }
 
-$grupAktif = $_GET['grup'] ?? array_key_first($menuRef);
-if (!isset($menuRef[$grupAktif])) {
-    $grupAktif = array_key_first($menuRef);
+// Grup yang diminta eksplisit tetapi tidak boleh dibuka harus ditolak, bukan
+// diam-diam dialihkan ke grup pertama — kalau tidak, URL yang meminta satu
+// kumpulan data akan menampilkan kumpulan data lain tanpa pemberitahuan.
+$grupDiminta = $_GET['grup'] ?? null;
+if ($grupDiminta !== null && !isset($menuRef[$grupDiminta])) {
+    if (isset(REFERENSI_GRUP[$grupDiminta])) {
+        http_response_code(403);
+        $pageTitle = 'Akses Ditolak';
+        require_once __DIR__ . '/403.php';
+        return;
+    }
+    http_response_code(404);
+    $pageTitle = 'Halaman Tidak Ditemukan';
+    require_once __DIR__ . '/404.php';
+    return;
 }
+
+$grupAktif = $grupDiminta ?? array_key_first($menuRef);
 $tabelGrup = $menuRef[$grupAktif];
 $tabelAktif = $_GET['tabel'] ?? $tabelGrup[0]['slug'];
 $def = referensi_ambil($tabelAktif);
-// Pastikan tabel yang diminta memang ada di grup aktif dan boleh dibuka
-if ($def === null || $def['grup'] !== $grupAktif) {
+if ($def === null) {
+    // Nama tabel tidak dikenal (mis. penanda lama) — pakai tabel pertama grup.
     $tabelAktif = $tabelGrup[0]['slug'];
     $def = referensi_ambil($tabelAktif);
+} elseif ($def['grup'] !== $grupAktif) {
+    if (!isset($menuRef[$def['grup']])) {
+        http_response_code(403);
+        $pageTitle = 'Akses Ditolak';
+        require_once __DIR__ . '/403.php';
+        return;
+    }
+    // Tabel itu milik grup lain yang boleh dibuka: ikuti grup tabelnya.
+    $grupAktif = $def['grup'];
+    $tabelGrup = $menuRef[$grupAktif];
 }
 
 $pk = $def['pk'];
@@ -47,6 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', referensi_pesan_rujukan($def['label'], $rujukan));
         } else {
             $galat = db_coba(fn() => db_exec("DELETE FROM `{$def['tabel']}` WHERE `$pk` = ?", [$nilai]));
+            if ($galat === null) {
+                audit_catat('referensi', 'delete', $def['tabel'], (string)$nilai, $def['label']);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "{$def['label']} $nilai dihapus.");
         }
         redirect(url('referensi', $urlDasar));
@@ -98,6 +125,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $params = array_values($data);
             $params[] = $nilaiPk;
             $galat = db_coba(fn() => db_exec("UPDATE `{$def['tabel']}` SET $set WHERE `$pk` = ?", $params));
+            if ($galat === null) {
+                audit_catat('referensi', 'save', $def['tabel'], (string)$nilaiPk, $def['label']);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "{$def['label']} $nilaiPk diperbarui.");
         } else {
             if (!$namaKolom) {
@@ -113,6 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     array_unshift($params, $nilaiPk);
                 }
                 $galat = db_coba(fn() => db_exec($sql, $params));
+            }
+            if ($galat === null) {
+                audit_catat('referensi', 'create', $def['tabel'], (string)$nilaiPk, $def['label']);
             }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "{$def['label']} ditambahkan.");
         }

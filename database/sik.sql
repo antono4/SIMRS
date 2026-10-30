@@ -4895,6 +4895,34 @@ COMMIT;
 SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
+-- Table structure for table `log_aktivitas`
+-- Log audit (tambahan SIMRS Web, tidak ada di skema asli): mencatat siapa
+-- mengubah data apa. Aplikasi juga membuat tabel ini sendiri saat pertama
+-- dipakai, jadi instalasi lama tidak perlu menjalankan ulang wizard instalasi.
+--
+
+DROP TABLE IF EXISTS `log_aktivitas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `log_aktivitas` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `waktu` datetime NOT NULL DEFAULT current_timestamp(),
+  `pengguna` varchar(50) NOT NULL,
+  `peran` varchar(20) NOT NULL DEFAULT '',
+  `modul` varchar(40) NOT NULL,
+  `aksi` varchar(20) NOT NULL,
+  `tabel` varchar(64) NOT NULL,
+  `kunci` varchar(120) DEFAULT NULL,
+  `keterangan` varchar(255) DEFAULT NULL,
+  `alamat_ip` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_log_waktu` (`waktu`),
+  KEY `idx_log_modul` (`modul`,`waktu`),
+  KEY `idx_log_pengguna` (`pengguna`,`waktu`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `nota_jalan`
 --
 
@@ -56944,6 +56972,50 @@ INSERT INTO `reg_periksa` VALUES
 UNLOCK TABLES;
 COMMIT;
 SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
+
+--
+-- Table structure for table `rekam_medis`
+-- Catatan rekam medis (SOAP) per kunjungan (tambahan SIMRS Web). Pada SIMRS
+-- asli catatan ini tersebar di `pemeriksaan_ralan`/`pemeriksaan_ranap`; kedua
+-- tabel itu tidak ada di skema ini, jadi dipakai satu tabel dengan penanda
+-- `status_lanjut` agar rawat jalan dan rawat inap berbagi formulir.
+-- Aplikasi juga membuat tabel ini sendiri saat pertama dipakai.
+--
+
+DROP TABLE IF EXISTS `rekam_medis`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rekam_medis` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `no_rawat` varchar(17) NOT NULL,
+  `status_lanjut` enum('Ralan','Ranap') NOT NULL DEFAULT 'Ralan',
+  `tgl_perawatan` date NOT NULL,
+  `jam` time NOT NULL,
+  `kd_dokter` varchar(20) DEFAULT NULL,
+  `nip` varchar(20) DEFAULT NULL,
+  `keluhan` text DEFAULT NULL,
+  `pemeriksaan` text DEFAULT NULL,
+  `penilaian` text DEFAULT NULL,
+  `rencana` text DEFAULT NULL,
+  `tensi` varchar(12) DEFAULT NULL,
+  `nadi` varchar(12) DEFAULT NULL,
+  `respirasi` varchar(12) DEFAULT NULL,
+  `suhu` varchar(12) DEFAULT NULL,
+  `spo2` varchar(12) DEFAULT NULL,
+  `tinggi` varchar(12) DEFAULT NULL,
+  `berat` varchar(12) DEFAULT NULL,
+  `gcs` varchar(12) DEFAULT NULL,
+  `kesadaran` varchar(20) DEFAULT NULL,
+  `alergi` varchar(120) DEFAULT NULL,
+  `dibuat_pada` datetime NOT NULL DEFAULT current_timestamp(),
+  `diubah_pada` datetime DEFAULT NULL,
+  `diubah_oleh` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_rekam_rawat` (`no_rawat`,`tgl_perawatan`,`jam`),
+  KEY `idx_rekam_tgl` (`tgl_perawatan`),
+  CONSTRAINT `rekam_medis_ibfk_1` FOREIGN KEY (`no_rawat`) REFERENCES `reg_periksa` (`no_rawat`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `resep_dokter`

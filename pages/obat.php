@@ -17,6 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', "Barang $kd tidak dapat dihapus karena dipakai di $dipakai baris resep. Nonaktifkan barang bila sudah tidak dijual.");
         } else {
             $galat = db_coba(fn() => db_exec('DELETE FROM databarang WHERE kode_brng = ?', [$kd]));
+            if ($galat === null) {
+                audit_catat('obat', 'delete', 'databarang', $kd);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Barang $kd dihapus.");
         }
         redirect(url('obat'));
@@ -76,12 +79,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $params = array_values($data);
             $params[] = $kd;
             $galat = db_coba(fn() => db_exec("UPDATE databarang SET $set WHERE kode_brng = ?", $params));
+            if ($galat === null) {
+                audit_catat('obat', 'save', 'databarang', $kd);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Barang $kd diperbarui.");
         } else {
             $cols = implode(', ', array_keys($data));
             $marks = implode(', ', array_fill(0, count($data), '?'));
             $params = array_merge([$kd], array_values($data));
             $galat = db_coba(fn() => db_exec("INSERT INTO databarang (kode_brng, $cols) VALUES (?, $marks)", $params));
+            if ($galat === null) {
+                audit_catat('obat', 'create', 'databarang', $kd);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Barang $kd ditambahkan.");
         }
         redirect(url('obat'));
@@ -221,6 +230,27 @@ $total = (int)db_val("SELECT COUNT(*) FROM databarang d $where", $params);
 $perPage = 25;
 $hal = max(1, (int)($_GET['hal'] ?? 1));
 $offset = ($hal - 1) * $perPage;
+
+// Ekspor CSV memakai seluruh hasil filter, bukan hanya halaman yang tampil.
+if (($_GET['ekspor'] ?? '') === 'csv') {
+    audit_catat('obat', 'cetak', 'databarang', $q, 'Ekspor CSV ' . $total . ' baris');
+    ekspor_csv(
+        ekspor_nama('data-barang'),
+        ['Kode', 'Nama Barang', 'Jenis', 'Satuan', 'Golongan', 'Kategori', 'Harga Beli', 'Tarif Ralan', 'Status', 'Stok Minimal'],
+        ekspor_batch(
+            "SELECT d.kode_brng, d.nama_brng, j.nama AS jenis, s.satuan, g.nama AS golongan,
+                    k.nama AS kategori, d.h_beli, d.ralan, d.status, d.stokminimal
+             FROM databarang d
+             LEFT JOIN jenis j ON j.kdjns = d.kdjns
+             LEFT JOIN kodesatuan s ON s.kode_sat = d.kode_sat
+             LEFT JOIN golongan_barang g ON g.kode = d.kode_golongan
+             LEFT JOIN kategori_barang k ON k.kode = d.kode_kategori
+             $where ORDER BY d.nama_brng",
+            $params
+        )
+    );
+}
+
 $rows = db_all(
     "SELECT d.kode_brng, d.nama_brng, d.h_beli, d.ralan, d.status, d.stokminimal,
             j.nama AS jenis, s.satuan, g.nama AS golongan, k.nama AS kategori,
@@ -254,6 +284,7 @@ require_once __DIR__ . '/../includes/header.php';
           <button class="btn btn-sm btn-outline-primary"><i class="bi bi-search"></i></button>
         </form>
         <a href="<?= e(url('obat', ['action' => 'form'])) ?>" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Barang Baru</a>
+        <?= ekspor_tombol('obat', $filterParams) ?>
       </div>
     </div>
   </div>
