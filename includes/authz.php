@@ -9,9 +9,18 @@ const PAGE_PERMISSIONS = [
     'dashboard' => null,
     'pasien' => 'pasien',
     'dokter' => 'dokter',
+    'pegawai' => 'pegawai_admin',
+    'petugas' => 'petugas',
     'poliklinik' => 'registrasi',
     'penjab' => 'registrasi',
     'perawatan' => 'tarif_ralan',
+    'penyakit' => 'penyakit',
+    'obat' => 'obat',
+    'bangsal' => 'kamar',
+    'kamar' => 'kamar',
+    // Data Referensi membuka tabel berbeda per grup; izinnya dicek per grup di
+    // pages/referensi.php (auth_can_perm), jadi di sini cukup "boleh login".
+    'referensi' => null,
     'registrasi' => 'registrasi',
     'antrian' => 'registrasi',
     'display' => null,   // layar publik, tanpa login
@@ -32,12 +41,17 @@ const PAGE_PERMISSIONS = [
 const PERMISSION_CATALOG = [
     'pasien' => 'Master Pasien',
     'dokter' => 'Master Dokter',
+    'petugas' => 'Master Petugas / Paramedis',
+    'pegawai_admin' => 'Master Pegawai',
     'registrasi' => 'Registrasi, Poliklinik & Penjab',
     'tarif_ralan' => 'Tarif Perawatan',
     'tindakan_ralan' => 'Tindakan / Perawatan',
     'diagnosa_pasien' => 'Diagnosa ICD-10',
+    'penyakit' => 'Master Penyakit (ICD-10)',
     'resep_obat' => 'Resep Obat',
+    'obat' => 'Master Data Barang / Obat',
     'kamar_inap' => 'Kamar Inap',
+    'kamar' => 'Master Bangsal & Kamar',
     'kasir_ralan' => 'Kasir / Billing',
     'kunjungan_ralan' => 'Laporan Kunjungan',
     'pegawai_user' => 'Manajemen Pengguna',
@@ -54,6 +68,26 @@ function auth_can(string $page): bool
     }
     $flag = PAGE_PERMISSIONS[$page] ?? null;
     if ($flag === null) {
+        return true;
+    }
+    return !empty($user['permissions'][$flag]);
+}
+
+/**
+ * Periksa satu kolom izin langsung (dipakai modul yang menaungi beberapa
+ * halaman, mis. Data Referensi yang membuka tabel berbeda per grup).
+ * Nama izin kosong berarti tidak dibatasi.
+ */
+function auth_can_perm(string $flag): bool
+{
+    $user = auth_user();
+    if ($user === null) {
+        return false;
+    }
+    if (($user['role'] ?? '') === 'admin') {
+        return true;
+    }
+    if ($flag === '') {
         return true;
     }
     return !empty($user['permissions'][$flag]);

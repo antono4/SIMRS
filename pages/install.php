@@ -359,7 +359,7 @@ $settingSekarang = $dbOk ? (setting_rs() ?? []) : [];
                 <div class="col-md-1"><button class="btn btn-sm btn-outline-primary w-100">Simpan</button></div>
               </form>
             </details>
-            <div class="d-flex gap-2">
+            <div class="d-flex flex-wrap gap-2">
               <?php if ($dbOk): ?>
                 <form method="post"><input type="hidden" name="do" value="db" /><button class="btn btn-primary"><i class="bi bi-arrow-right me-1"></i>Lanjut</button></form>
               <?php else: ?>
@@ -418,7 +418,7 @@ $settingSekarang = $dbOk ? (setting_rs() ?? []) : [];
                   <input class="form-control" name="propinsi" value="<?= e($settingSekarang['propinsi'] ?? '') ?>" />
                 </div>
               </div>
-              <div class="d-flex gap-2">
+              <div class="d-flex flex-wrap gap-2">
                 <button class="btn btn-primary"><i class="bi bi-save me-1"></i>Simpan & Lanjut</button>
                 <a href="index.php?page=install&step=3" class="btn btn-outline-secondary">Kembali</a>
               </div>

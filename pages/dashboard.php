@@ -190,7 +190,7 @@ require_once __DIR__ . '/../includes/header.php';
           <p><?= e($k['label']) ?></p>
         </div>
         <i class="small-box-icon bi <?= e($k['ikon']) ?>"></i>
-        <a href="<?= e($k['tautan']) ?>" class="small-box-footer link-<?= $k['warna'] === 'warning' ? 'dark' : 'light' ?> d-flex justify-content-between align-items-center">
+        <a href="<?= e($k['tautan']) ?>" class="small-box-footer link-<?= in_array($k['warna'], ['warning', 'info'], true) ? 'dark' : 'light' ?> d-flex justify-content-between align-items-center">
           <span>Lihat detail</span><i class="bi bi-arrow-right-circle"></i>
         </a>
       </div>
