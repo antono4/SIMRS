@@ -105,6 +105,7 @@ function kunjungan_card(array $v): void
           </div>
         </div>
         <div class="mt-2 border-top pt-2 d-flex flex-wrap gap-2">
+          <a class="btn btn-sm btn-outline-dark" href="<?= e(url('rekam_medis', ['no_rawat' => $v['no_rawat']])) ?>"><i class="bi bi-journal-medical me-1"></i>Rekam Medis</a>
           <a class="btn btn-sm btn-outline-primary" href="<?= e(url('tindakan', ['no_rawat' => $v['no_rawat']])) ?>"><i class="bi bi-bandaid me-1"></i>Tindakan</a>
           <a class="btn btn-sm btn-outline-danger" href="<?= e(url('diagnosa', ['no_rawat' => $v['no_rawat']])) ?>"><i class="bi bi-clipboard2-pulse me-1"></i>Diagnosa</a>
           <a class="btn btn-sm btn-outline-success" href="<?= e(url('resep', ['no_rawat' => $v['no_rawat']])) ?>"><i class="bi bi-capsule me-1"></i>Resep</a>

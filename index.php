@@ -11,6 +11,9 @@ require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/authz.php';
 require_once __DIR__ . '/includes/settings.php';
 require_once __DIR__ . '/includes/antrian.php';
+require_once __DIR__ . '/includes/ekspor.php';
+require_once __DIR__ . '/includes/audit.php';
+require_once __DIR__ . '/includes/rekam_medis.php';
 
 $page = preg_replace('/[^a-z0-9_]/i', '', $_GET['page'] ?? 'dashboard');
 
@@ -50,9 +53,15 @@ $routes = [
     'tindakan' => 'tindakan.php',
     'diagnosa' => 'diagnosa.php',
     'resep' => 'resep.php',
+    'rekam_medis' => 'rekam_medis.php',
     'kamarinap' => 'kamarinap.php',
     'kasir' => 'kasir.php',
     'billing' => 'billing.php',
+    'kartu_berobat' => 'kartu_berobat.php',
+    'tiket_antrian' => 'tiket_antrian.php',
+    'etiket_resep' => 'etiket_resep.php',
+    'cetak_rekam_medis' => 'cetak_rekam_medis.php',
+    'log_aktivitas' => 'log_aktivitas.php',
     'laporan' => 'laporan.php',
     'users' => 'users.php',
     'pengaturan' => 'pengaturan.php',
@@ -60,10 +69,18 @@ $routes = [
     'admin' => 'admin.php',
 ];
 
+// Halaman galat didaftarkan sebagai rute supaya ?page=403 / ?page=404
+// menampilkan halaman yang benar, bukan selalu jatuh ke 404.
+$routes['403'] = '403.php';
+$routes['404'] = '404.php';
+
 if (!isset($routes[$page])) {
-    http_response_code(404);
     $page = '404';
-    $routes['404'] = '404.php';
+}
+if ($page === '404') {
+    http_response_code(404);
+} elseif ($page === '403') {
+    http_response_code(403);
 }
 
 // Halaman yang tidak memerlukan login
@@ -76,7 +93,6 @@ if (!in_array($page, $publicPages, true)) {
     if (!auth_can($page)) {
         http_response_code(403);
         $page = '403';
-        $routes['403'] = '403.php';
     }
 }
 

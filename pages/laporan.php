@@ -278,6 +278,34 @@ if ($tab === 'obat') {
 $rp = static fn(float|int|string|null $n): string => 'Rp ' . number_format((float)$n, 0, ',', '.');
 
 $pageScripts = '';
+// Ekspor CSV: setiap tabel pada tab aktif ditulis sebagai satu bagian, dengan
+// baris pemisah "== Nama Bagian ==" agar berkasnya tetap terbaca meski kolom
+// antar tabel berbeda.
+if (($_GET['ekspor'] ?? '') === 'csv') {
+    $baris = [];
+    foreach ($data as $namaBagian => $isi) {
+        if (!is_array($isi) || $isi === []) {
+            continue;
+        }
+        if (!is_array(reset($isi))) {
+            $isi = [$isi];   // hasil db_row (satu baris)
+        }
+        $kolom = array_keys($isi[0]);
+        $baris[] = ['Bagian: ' . $namaBagian];
+        $baris[] = $kolom;
+        foreach ($isi as $r) {
+            $baris[] = array_map(static fn($k) => $r[$k] ?? '', $kolom);
+        }
+        $baris[] = [''];
+    }
+    audit_catat('laporan', 'cetak', $tab, $dari . '..' . $sampai, 'Ekspor CSV laporan ' . $tab);
+    ekspor_csv(
+        ekspor_nama('laporan-' . $tab),
+        ['Laporan: ' . $tab, 'Periode: ' . $dari . ' s/d ' . $sampai, 'Poliklinik: ' . ($poli !== '' ? $poli : 'Semua')],
+        $baris
+    );
+}
+
 if ($tab === 'kunjungan') {
     $pageScripts = '<script src="assets/chartjs/chart.umd.js"></script><script>
 (function () {
@@ -336,6 +364,9 @@ require_once __DIR__ . '/../includes/header.php';
       </div>
       <div class="col-auto">
         <button class="btn btn-primary"><i class="bi bi-funnel me-1"></i>Tampilkan</button>
+      </div>
+      <div class="col-auto">
+        <?= ekspor_tombol('laporan', ['tab' => $tab, 'dari' => $dari, 'sampai' => $sampai] + ($poli !== '' ? ['poli' => $poli] : [])) ?>
       </div>
     </form>
   </div>

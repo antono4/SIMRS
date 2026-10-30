@@ -151,6 +151,23 @@ if ($bangsalFilter !== '') {
     $where .= ' AND k.kd_bangsal = ?';
     $params[] = $bangsalFilter;
 }
+
+// Ekspor CSV memakai seluruh hasil filter, bukan hanya yang tampil.
+if (($_GET['ekspor'] ?? '') === 'csv') {
+    audit_catat('kamar', 'cetak', 'kamar', $q . ($bangsalFilter !== '' ? '/' . $bangsalFilter : ''), 'Ekspor CSV kamar');
+    ekspor_csv(
+        ekspor_nama('kamar'),
+        ['Kode Kamar', 'Bangsal', 'Kelas', 'Tarif/Hari', 'Status', 'Data', 'Riwayat Inap'],
+        ekspor_batch(
+            "SELECT k.kd_kamar, b.nm_bangsal, k.kelas, k.trf_kamar, k.status, k.statusdata,
+                    (SELECT COUNT(*) FROM kamar_inap ki WHERE ki.kd_kamar = k.kd_kamar) AS jml_inap
+             FROM kamar k LEFT JOIN bangsal b ON b.kd_bangsal = k.kd_bangsal
+             $where ORDER BY b.nm_bangsal, k.kd_kamar",
+            $params
+        )
+    );
+}
+
 $rows = db_all(
     "SELECT k.*, b.nm_bangsal, (SELECT COUNT(*) FROM kamar_inap ki WHERE ki.kd_kamar = k.kd_kamar) AS jml_inap
      FROM kamar k LEFT JOIN bangsal b ON b.kd_bangsal = k.kd_bangsal
@@ -178,6 +195,7 @@ require_once __DIR__ . '/../includes/header.php';
           <button class="btn btn-sm btn-outline-primary"><i class="bi bi-funnel"></i></button>
         </form>
         <a href="<?= e(url('kamar', ['action' => 'form'])) ?>" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Kamar Baru</a>
+        <?= ekspor_tombol('kamar', array_filter(['q' => $q, 'bangsal' => $bangsalFilter])) ?>
       </div>
     </div>
   </div>

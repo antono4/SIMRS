@@ -30,6 +30,31 @@ function e(?string $value): string
 }
 
 /**
+ * Inisial nama untuk penanda kop cetak: "RSUD Kota" -> "RK".
+ * mbstring bersifat opsional di aplikasi ini (lihat pages/diagnostik.php),
+ * jadi sediakan fallback substr/strtoupper bila ekstensi tidak terpasang.
+ */
+function nama_inisial(string $nama, int $maks = 2): string
+{
+    $nama = to_utf8($nama);
+    $potong = fn(string $s, int $n) => function_exists('mb_substr') ? mb_substr($s, 0, $n) : substr($s, 0, $n);
+    $panjang = fn(string $s) => function_exists('mb_strlen') ? mb_strlen($s) : strlen($s);
+
+    $inisial = '';
+    foreach (preg_split('/\s+/', trim($nama)) ?: [] as $kata) {
+        if ($kata === '') {
+            continue;
+        }
+        $huruf = $potong($kata, 1);
+        $inisial .= function_exists('mb_strtoupper') ? mb_strtoupper($huruf) : strtoupper($huruf);
+        if ($panjang($inisial) >= $maks) {
+            break;
+        }
+    }
+    return $inisial;
+}
+
+/**
  * Terjemahkan PDOException menjadi pesan yang bisa dibaca petugas.
  *
  * Skema `sik` menegakkan batasan yang tidak diperiksa aplikasi: panjang kolom

@@ -240,6 +240,22 @@ if ($q !== '') {
 }
 $total = (int)db_val("SELECT COUNT(*) FROM dokter d $where", $params);
 $offset = ($hal - 1) * $perPage;
+
+// Ekspor CSV memakai seluruh hasil filter, bukan hanya halaman yang tampil.
+if (($_GET['ekspor'] ?? '') === 'csv') {
+    audit_catat('dokter', 'cetak', 'dokter', $q, 'Ekspor CSV ' . $total . ' baris');
+    ekspor_csv(
+        ekspor_nama('dokter'),
+        ['Kode', 'Nama Dokter', 'Spesialis', 'L/P', 'Tgl. Lahir', 'No. Telp', 'Email', 'Status'],
+        ekspor_batch(
+            "SELECT d.kd_dokter, d.nm_dokter, s.nm_sps, d.jk, d.tgl_lahir, d.no_telp, d.email, d.status
+             FROM dokter d LEFT JOIN spesialis s ON s.kd_sps = d.kd_sps
+             $where ORDER BY d.kd_dokter",
+            $params
+        )
+    );
+}
+
 $rows = db_all(
     "SELECT d.*, s.nm_sps FROM dokter d LEFT JOIN spesialis s ON s.kd_sps = d.kd_sps
      $where ORDER BY d.kd_dokter LIMIT $perPage OFFSET $offset",
@@ -250,7 +266,7 @@ require_once __DIR__ . '/../includes/header.php';
 <div class="card">
   <div class="card-header">
     <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
-      <h3 class="card-title mb-0">Daftar Dokter (<?= number_format($total) ?>)</h3>
+      <h3 class="card-title mb-0">Daftar Dokter (<?= number_format($total, 0, ',', '.') ?>)</h3>
       <div class="d-flex flex-wrap gap-2">
         <form class="d-flex" method="get" action="index.php">
           <input type="hidden" name="page" value="dokter" />
@@ -258,6 +274,7 @@ require_once __DIR__ . '/../includes/header.php';
           <button class="btn btn-sm btn-outline-primary"><i class="bi bi-search"></i></button>
         </form>
         <a href="<?= e(url('dokter', ['action' => 'form'])) ?>" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Dokter Baru</a>
+        <?= ekspor_tombol('dokter', $q !== '' ? ['q' => $q] : []) ?>
       </div>
     </div>
   </div>

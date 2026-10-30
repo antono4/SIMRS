@@ -132,6 +132,9 @@ kunjungan_card($kunjungan);
           <div class="d-flex justify-content-between align-items-center">
             <h3 class="card-title mb-0">Resep <?= e($resepAktif) ?></h3>
             <div class="d-flex flex-wrap gap-2">
+              <a class="btn btn-sm btn-outline-dark" href="<?= e(url('etiket_resep', ['no_rawat' => $noRawat, 'resep' => $resepAktif])) ?>" target="_blank" rel="noopener">
+                <i class="bi bi-printer me-1"></i>Cetak Etiket
+              </a>
               <?php if ($header && $header['tgl_penyerahan'] === '0000-00-00'): ?>
                 <form method="post" action="<?= e(url('resep')) ?>">
                   <input type="hidden" name="act" value="serah" />

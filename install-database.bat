@@ -97,7 +97,7 @@ rem ---------- 4. Konfirmasi ----------
 echo.
 echo [4/5] Siap mengimpor
 echo       Database tujuan : %DB_NAME%
-echo       Isi dump        : 52 tabel + data contoh
+echo       Isi dump        : 54 tabel + data contoh
 echo.
 echo       Database %DB_NAME% dibuat bila belum ada. Tabel yang namanya
 echo       sama akan ditimpa ulang, jadi aman dijalankan berulang.
@@ -134,10 +134,10 @@ if not defined POLI set "POLI=0"
 
 echo.
 echo [5/5] Verifikasi
-echo       Tabel terbentuk       : %TABEL% dari 52
+echo       Tabel terbentuk       : %TABEL% dari 54
 echo       Baris tabel poliklinik: %POLI%
 
-if %TABEL% LSS 52 goto :kurang
+if %TABEL% LSS 54 goto :kurang
 if %POLI% LSS 1 goto :kurang
 
 echo.
@@ -161,7 +161,7 @@ exit /b 0
 
 :kurang
 echo.
-echo [X] Impor belum lengkap: %TABEL% dari 52 tabel, poliklinik %POLI% baris.
+echo [X] Impor belum lengkap: %TABEL% dari 54 tabel, poliklinik %POLI% baris.
 echo     Jalankan berkas ini sekali lagi - impor aman diulang.
 echo     Bila tetap sama, buka:
 echo     http://localhost/SIMRS/index.php?page=diagnostik

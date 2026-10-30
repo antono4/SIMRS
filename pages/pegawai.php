@@ -24,6 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', "Pegawai $nik tidak dapat dihapus karena masih dipakai di " . implode(' dan ', $sebab) . '.');
         } else {
             $galat = db_coba(fn() => db_exec('DELETE FROM pegawai WHERE nik = ?', [$nik]));
+            if ($galat === null) {
+                audit_catat('pegawai', 'delete', 'pegawai', $nik);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Pegawai $nik dihapus.");
         }
         redirect(url('pegawai'));
@@ -82,12 +85,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $params = array_values($data);
             $params[] = $nik;
             $galat = db_coba(fn() => db_exec("UPDATE pegawai SET $set WHERE nik = ?", $params));
+            if ($galat === null) {
+                audit_catat('pegawai', 'save', 'pegawai', $nik);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Pegawai $nik diperbarui.");
         } else {
             $cols = implode(', ', array_keys($data));
             $marks = implode(', ', array_fill(0, count($data), '?'));
             $params = array_merge([$nik], array_values($data));
             $galat = db_coba(fn() => db_exec("INSERT INTO pegawai (nik, $cols) VALUES (?, $marks)", $params));
+            if ($galat === null) {
+                audit_catat('pegawai', 'create', 'pegawai', $nik);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Pegawai $nik ditambahkan.");
         }
         redirect(url('pegawai'));
@@ -281,6 +290,24 @@ $total = (int)db_val("SELECT COUNT(*) FROM pegawai p $where", $params);
 $perPage = 25;
 $hal = max(1, (int)($_GET['hal'] ?? 1));
 $offset = ($hal - 1) * $perPage;
+
+// Ekspor CSV memakai seluruh hasil filter, bukan hanya halaman yang tampil.
+if (($_GET['ekspor'] ?? '') === 'csv') {
+    audit_catat('pegawai', 'cetak', 'pegawai', $q, 'Ekspor CSV ' . $total . ' baris');
+    ekspor_csv(
+        ekspor_nama('pegawai'),
+        ['NIK', 'Nama', 'L/P', 'Jabatan', 'Jenjang Jabatan', 'Departemen', 'Status Aktif'],
+        ekspor_batch(
+            "SELECT p.nik, p.nama, p.jk, p.jbtn, j.nama AS jenjang, d.nama AS dept, p.stts_aktif
+             FROM pegawai p
+             LEFT JOIN jnj_jabatan j ON j.kode = p.jnj_jabatan
+             LEFT JOIN departemen d ON d.dep_id = p.departemen
+             $where ORDER BY p.nama",
+            $params
+        )
+    );
+}
+
 $rows = db_all(
     "SELECT p.nik, p.nama, p.jk, p.jbtn, p.stts_aktif, j.nama AS jenjang, d.nama AS dept,
             EXISTS(SELECT 1 FROM dokter dk WHERE dk.kd_dokter = p.nik) AS is_dokter
@@ -303,6 +330,7 @@ require_once __DIR__ . '/../includes/header.php';
           <button class="btn btn-sm btn-outline-primary"><i class="bi bi-search"></i></button>
         </form>
         <a href="<?= e(url('pegawai', ['action' => 'form'])) ?>" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Pegawai Baru</a>
+        <?= ekspor_tombol('pegawai', $q !== '' ? ['q' => $q] : []) ?>
       </div>
     </div>
   </div>

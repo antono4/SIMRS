@@ -31,11 +31,13 @@ $menu = [
     ],
     ['page' => 'registrasi', 'label' => 'Registrasi', 'icon' => 'bi-clipboard2-plus'],
     ['page' => 'antrian', 'label' => 'Antrian', 'icon' => 'bi-ticket-perforated'],
+    ['page' => 'rekam_medis', 'label' => 'Rekam Medis', 'icon' => 'bi-journal-medical'],
     ['page' => 'kamarinap', 'label' => 'Kamar Inap', 'icon' => 'bi-hospital'],
     ['page' => 'kasir', 'label' => 'Kasir / Billing', 'icon' => 'bi-cash-coin'],
     ['page' => 'laporan', 'label' => 'Laporan Kunjungan', 'icon' => 'bi-bar-chart'],
     ['page' => 'users', 'label' => 'Pengguna', 'icon' => 'bi-person-gear'],
     ['page' => 'pengaturan', 'label' => 'Pengaturan', 'icon' => 'bi-gear'],
+    ['page' => 'log_aktivitas', 'label' => 'Log Aktivitas', 'icon' => 'bi-clock-history', 'admin_only' => true],
     ['page' => 'admin', 'label' => 'Administrator', 'icon' => 'bi-shield-lock', 'admin_only' => true],
     ['page' => 'akun', 'label' => 'Akun Saya', 'icon' => 'bi-person-circle'],
 ];

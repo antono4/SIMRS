@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', "Pasien $rm tidak dapat dihapus karena memiliki $dipakai riwayat registrasi.");
         } else {
             db_exec('DELETE FROM pasien WHERE no_rkm_medis = ?', [$rm]);
+            audit_catat('pasien', 'delete', 'pasien', $rm);
             flash_set('success', "Data pasien $rm berhasil dihapus.");
         }
         redirect(url('pasien'));
@@ -81,12 +82,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
             $data['no_rkm_medis'] = $rm;
             $galat = db_coba(fn() => db_exec("UPDATE pasien SET $set WHERE no_rkm_medis = :no_rkm_medis", $data));
+            if ($galat === null) {
+                audit_catat('pasien', 'save', 'pasien', $rm, $data['nm_pasien']);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Data pasien $rm berhasil diperbarui.");
         } else {
             $data['no_rkm_medis'] = $rm;
             $cols = implode(', ', array_keys($data));
             $marks = ':' . implode(', :', array_keys($data));
             $galat = db_coba(fn() => db_exec("INSERT INTO pasien ($cols) VALUES ($marks)", $data));
+            if ($galat === null) {
+                audit_catat('pasien', 'create', 'pasien', $rm, $data['nm_pasien']);
+            }
             flash_set($galat === null ? 'success' : 'danger', $galat ?? "Pasien baru dengan No. RM $rm berhasil ditambahkan.");
         }
         redirect(url('pasien'));
@@ -353,6 +360,22 @@ if ($q !== '') {
 }
 $total = (int)db_val("SELECT COUNT(*) FROM pasien $where", $params);
 $offset = ($hal - 1) * $perPage;
+
+// Ekspor CSV memakai seluruh hasil filter, bukan hanya halaman yang tampil.
+if (($_GET['ekspor'] ?? '') === 'csv') {
+    audit_catat('pasien', 'cetak', 'pasien', $q, 'Ekspor CSV ' . $total . ' baris');
+    ekspor_csv(
+        ekspor_nama('pasien'),
+        ['No. RM', 'Nama Pasien', 'L/P', 'Tgl. Lahir', 'Alamat', 'Telepon', 'Cara Bayar'],
+        ekspor_batch(
+            "SELECT p.no_rkm_medis, p.nm_pasien, p.jk, p.tgl_lahir, p.alamat, p.no_tlp, pj.png_jawab
+             FROM pasien p LEFT JOIN penjab pj ON pj.kd_pj = p.kd_pj
+             $where ORDER BY p.no_rkm_medis DESC",
+            $params
+        )
+    );
+}
+
 $rows = db_all(
     "SELECT p.no_rkm_medis, p.nm_pasien, p.jk, p.tgl_lahir, p.alamat, p.no_tlp, pj.png_jawab
      FROM pasien p LEFT JOIN penjab pj ON pj.kd_pj = p.kd_pj
@@ -365,7 +388,7 @@ require_once __DIR__ . '/../includes/header.php';
 <div class="card">
   <div class="card-header">
     <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
-      <h3 class="card-title mb-0">Daftar Pasien (<?= number_format($total) ?>)</h3>
+      <h3 class="card-title mb-0">Daftar Pasien (<?= number_format($total, 0, ',', '.') ?>)</h3>
       <div class="d-flex flex-wrap gap-2">
         <form class="d-flex" method="get" action="index.php">
           <input type="hidden" name="page" value="pasien" />
@@ -373,6 +396,7 @@ require_once __DIR__ . '/../includes/header.php';
           <button class="btn btn-sm btn-outline-primary"><i class="bi bi-search"></i></button>
         </form>
         <a href="<?= e(url('pasien', ['action' => 'form'])) ?>" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Pasien Baru</a>
+        <?= ekspor_tombol('pasien', $q !== '' ? ['q' => $q] : []) ?>
       </div>
     </div>
   </div>
@@ -394,6 +418,7 @@ require_once __DIR__ . '/../includes/header.php';
             <td><?= e($r['no_tlp']) ?></td>
             <td><?= e($r['png_jawab'] ?? '-') ?></td>
             <td>
+              <a class="btn btn-sm btn-outline-dark" title="Cetak kartu berobat" href="<?= e(url('kartu_berobat', ['rm' => $r['no_rkm_medis']])) ?>" target="_blank" rel="noopener"><i class="bi bi-printer"></i></a>
               <a class="btn btn-sm btn-warning" href="<?= e(url('pasien', ['action' => 'form', 'rm' => $r['no_rkm_medis']])) ?>"><i class="bi bi-pencil"></i></a>
               <form method="post" action="<?= e(url('pasien')) ?>" class="d-inline" onsubmit="return confirm('Hapus pasien <?= e($r['no_rkm_medis']) ?>?')">
                 <input type="hidden" name="act" value="delete" />
