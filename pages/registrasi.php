@@ -250,8 +250,8 @@ require_once __DIR__ . '/../includes/header.php';
   <div class="card-header">
     <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
       <h3 class="card-title mb-0">Kunjungan <?= e(tgl_indo($tgl)) ?> (<?= count($rows) ?>)</h3>
-      <div class="d-flex gap-2 align-items-center">
-        <form class="d-flex gap-2" method="get" action="index.php">
+      <div class="d-flex flex-wrap gap-2 align-items-center">
+        <form class="d-flex flex-wrap gap-2" method="get" action="index.php">
           <input type="hidden" name="page" value="registrasi" />
           <input type="date" class="form-control form-control-sm" name="tgl" value="<?= e($tgl) ?>" />
           <select class="form-select form-select-sm" name="poli">

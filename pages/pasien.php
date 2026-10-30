@@ -366,7 +366,7 @@ require_once __DIR__ . '/../includes/header.php';
   <div class="card-header">
     <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
       <h3 class="card-title mb-0">Daftar Pasien (<?= number_format($total) ?>)</h3>
-      <div class="d-flex gap-2">
+      <div class="d-flex flex-wrap gap-2">
         <form class="d-flex" method="get" action="index.php">
           <input type="hidden" name="page" value="pasien" />
           <input class="form-control form-control-sm me-2" name="q" placeholder="Cari nama / No. RM / KTP / alamat" value="<?= e($q) ?>" />

@@ -1,2 +1,5 @@
 # Cadangan yang dibuat update-simrs.bat — milik tiap pemasangan, jangan di-commit.
 /backup/
+
+# Catatan kerja agen (memori/observasi lokal), bukan bagian aplikasi.
+/.openhands/

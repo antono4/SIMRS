@@ -53,6 +53,8 @@ membaca/menulis ke database `sik`. Untuk mencobanya, lihat bagian [Instalasi](#-
 | **Dashboard** | Ringkasan jumlah pasien, dokter, poliklinik, dan kunjungan hari ini |
 | **Grafik kunjungan** | Tren kunjungan 14 hari terakhir dan kunjungan per poliklinik (Chart.js) |
 | **Master data** | Pasien, dokter, poliklinik, penjamin, dan tarif perawatan |
+| **Data penunjang** | Pegawai (SDM), petugas/paramedis, penyakit ICD-10 & kategori, barang/obat, bangsal, dan kamar |
+| **Data referensi** | Satu modul untuk 25 tabel acuan: wilayah, data penunjang pasien, kepegawaian, farmasi, dan medis |
 | **Registrasi kunjungan** | Pendaftaran rawat jalan & rawat inap, nomor rekam medis otomatis |
 | **Antrian poliklinik** | Nomor antrian otomatis per poliklinik saat registrasi, pemanggilan, dan pemantauan status — nomor memuat kode poli, mis. `INT-007` |
 | **Pemisah antrian** | Satu warna tetap + huruf awalan per poliklinik, sama di modul Antrian dan layar display |
@@ -62,7 +64,7 @@ membaca/menulis ke database `sik`. Untuk mencobanya, lihat bagian [Instalasi](#-
 | **Rawat inap** | Check-in/check-out kamar, perhitungan lama inap dan biaya |
 | **Kasir** | Pembayaran kunjungan, penerbitan nota, dan pembatalan pembayaran |
 | **Cetak billing** | Nota kunjungan siap cetak: kop instansi, rincian tarif, total, dan terbilang; langsung ke A4 atau PDF |
-| **Laporan** | Laporan kunjungan per periode, per poliklinik, per dokter, per penjamin |
+| **Laporan** | Lima laporan: kunjungan per poli/dokter/penjamin, tindakan & tarif, diagnosa/morbiditas, rawat inap, serta resep & obat |
 | **Hak akses** | Izin per modul untuk setiap pengguna (diterapkan di server, bukan hanya di menu) |
 | **Tema siang/malam** | Pilihan tema yang disimpan di browser (`localStorage`), dioptimalkan agar tetap kontras di kedua tema |
 | **Instalasi mandiri** | Wizard instalasi dan halaman diagnostik lingkungan |
@@ -124,9 +126,28 @@ langsung ke kertas A4 atau disimpan sebagai PDF lewat dialog cetak peramban.
 
 <p align="center"><img src="docs/images/perawatan.png" alt="Master tarif perawatan" width="720"></p>
 
+### Data penunjang
+
+<p align="center">
+  <img src="docs/images/pegawai.png" alt="Master pegawai" width="410">
+  <img src="docs/images/petugas.png" alt="Master petugas / paramedis" width="410">
+</p>
+
+<p align="center">
+  <img src="docs/images/penyakit.png" alt="Master penyakit ICD-10" width="410">
+  <img src="docs/images/obat.png" alt="Master data barang / obat" width="410">
+</p>
+
+<p align="center">
+  <img src="docs/images/bangsal.png" alt="Master bangsal" width="410">
+  <img src="docs/images/kamar.png" alt="Master kamar" width="410">
+</p>
+
+<p align="center"><img src="docs/images/referensi.png" alt="Data referensi: wilayah, SDM, farmasi, medis" width="720"></p>
+
 ### Laporan
 
-<p align="center"><img src="docs/images/laporan.png" alt="Laporan kunjungan per periode" width="720"></p>
+<p align="center"><img src="docs/images/laporan.png" alt="Laporan kunjungan, tindakan, diagnosa, rawat inap, dan obat" width="720"></p>
 
 ### Administrasi & pengguna
 
@@ -278,6 +299,13 @@ SIMRS/
 │   ├── poliklinik.php        #   Master poliklinik
 │   ├── penjab.php            #   Master penjamin
 │   ├── perawatan.php         #   Master tarif perawatan
+│   ├── pegawai.php           #   Master pegawai (SDM)
+│   ├── petugas.php           #   Master petugas / paramedis
+│   ├── penyakit.php          #   Master penyakit ICD-10 & kategori
+│   ├── obat.php              #   Master data barang / obat
+│   ├── bangsal.php           #   Master bangsal
+│   ├── kamar.php             #   Master kamar
+│   ├── referensi.php         #   Data referensi (wilayah, SDM, farmasi, medis)
 │   ├── registrasi.php        #   Registrasi kunjungan
 │   ├── antrian.php           #   Antrian poliklinik (panggil & pantau)
 │   ├── display.php           #   Layar display antrian (publik)
@@ -287,7 +315,7 @@ SIMRS/
 │   ├── kamarinap.php         #   Rawat inap
 │   ├── kasir.php             #   Kasir & pembayaran
 │   ├── billing.php           #   Cetak billing / nota (mandiri, siap cetak A4)
-│   ├── laporan.php           #   Laporan kunjungan
+│   ├── laporan.php           #   Laporan kunjungan, tindakan, diagnosa, rawat inap, obat
 │   ├── users.php             #   Manajemen pengguna & izin
 │   ├── pengaturan.php        #   Pengaturan identitas rumah sakit
 │   ├── akun.php              #   Profil pengguna
@@ -303,6 +331,7 @@ SIMRS/
 │   ├── authz.php             #   Otorisasi per modul
 │   ├── helpers.php           #   Fungsi bantu (url, flash, redirect)
 │   ├── kunjungan.php         #   Komponen data kunjungan
+│   ├── referensi.php         #   Definisi tabel acuan + penjaga hapus berbasis skema
 │   ├── antrian.php           #   Logika antrian (nomor, panggil, ringkasan)
 │   ├── settings.php          #   Identitas rumah sakit
 │   ├── header.php            #   Kerangka tampilan atas

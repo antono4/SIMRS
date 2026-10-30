@@ -12,9 +12,21 @@ $menu = [
         'children' => [
             ['page' => 'pasien', 'label' => 'Pasien', 'icon' => 'bi-people'],
             ['page' => 'dokter', 'label' => 'Dokter', 'icon' => 'bi-heart-pulse'],
+            ['page' => 'pegawai', 'label' => 'Pegawai', 'icon' => 'bi-person-badge'],
+            ['page' => 'petugas', 'label' => 'Petugas / Paramedis', 'icon' => 'bi-person-workspace'],
             ['page' => 'poliklinik', 'label' => 'Poliklinik', 'icon' => 'bi-hospital'],
             ['page' => 'penjab', 'label' => 'Penanggung Jawab', 'icon' => 'bi-shield-check'],
             ['page' => 'perawatan', 'label' => 'Tarif Perawatan', 'icon' => 'bi-cash-stack'],
+        ],
+    ],
+    [
+        'page' => 'penunjang', 'label' => 'Data Penunjang', 'icon' => 'bi-journal-medical',
+        'children' => [
+            ['page' => 'penyakit', 'label' => 'Penyakit (ICD-10)', 'icon' => 'bi-clipboard2-pulse'],
+            ['page' => 'obat', 'label' => 'Barang / Obat', 'icon' => 'bi-capsule'],
+            ['page' => 'bangsal', 'label' => 'Bangsal', 'icon' => 'bi-building'],
+            ['page' => 'kamar', 'label' => 'Kamar', 'icon' => 'bi-door-open'],
+            ['page' => 'referensi', 'label' => 'Data Referensi', 'icon' => 'bi-list-columns-reverse'],
         ],
     ],
     ['page' => 'registrasi', 'label' => 'Registrasi', 'icon' => 'bi-clipboard2-plus'],

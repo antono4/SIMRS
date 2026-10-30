@@ -56,3 +56,20 @@ Aplikasi web PHP (AdminLTE 4 + MySQL) hasil pengembangan ulang SIMRS (Java).
   (izin `pegawai_admin`).
 - Tema siang/malam: skrip inline di `<head>` membaca `localStorage['sk-theme']` (default light) →
   `data-bs-theme` di `<html>`; tombol `#themeToggle` + ikon `#themeIcon` di navbar & login.
+- Master data tambahan (pola daftar + form + hapus yang sama seperti pasien/dokter):
+  `pegawai` (izin `pegawai_admin`), `petugas` (`petugas`), `penyakit` + kategori ICD-10 (`penyakit`),
+  `obat`/data barang (`obat`), `bangsal` + `kamar` (`kamar`), dan `referensi` (Data Referensi).
+- Data Referensi (`includes/referensi.php` + `pages/referensi.php`) membuka tabel berbeda per grup
+  (`REFERENSI_GRUP`: wilayah/sdm/pasien/medis/penunjang). Karena satu halaman menaungi banyak tabel,
+  izinnya dicek per grup lewat `auth_can_perm()` — bukan `auth_can()` yang hanya menerima nama halaman.
+  Variabelnya memakai awalan `$menuRef`, **bukan** `$menu`, karena `$menu` sudah dipakai sidebar di
+  `includes/header.php` yang di-include setelah halaman (tabrakan ini pernah jadi bug).
+- Kontras tema: warna Bootstrap bawaan tidak selalu lolos 4,5:1 sebagai teks. Token tombol
+  `.btn-outline-*` diatur per tema di `assets/css/simrs.css` (mis. `warning` #ffc107 hanya 1,63:1 di
+  tema terang; `primary` #0d6efd hanya 3,74:1 di tema gelap). Kartu `.small-box` dashboard memakai
+  overlay `rgba(0,0,0,.22)` + `link-light`/`link-dark` per warna kartu, karena satu warna teks tidak
+  cukup untuk keempat warna. Saat mengaudit kontras, **komposit dulu lapisan tembus pandang**
+  (`getComputedStyle().backgroundColor` sering `rgba(...)`); mengabaikannya menghasilkan temuan palsu.
+- Tata letak: toolbar daftar memakai `d-flex flex-wrap gap-2`, input pencarian `min-width:9rem`, dan
+  `<select>` filter `max-width:11rem`. Tanpa batas itu `<select style="width:auto">` melebar mengikuti
+  opsi terpanjang dan meluber di layar 375px.
