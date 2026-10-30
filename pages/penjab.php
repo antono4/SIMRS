@@ -8,9 +8,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $act = $_POST['act'] ?? '';
     if ($act === 'delete') {
         $kd = $_POST['kd_pj'] ?? '';
-        $dipakai = (int)db_val('SELECT COUNT(*) FROM pasien WHERE kd_pj = ?', [$kd]);
-        if ($dipakai > 0) {
-            flash_set('danger', "Penanggung jawab $kd tidak dapat dihapus karena dipakai $dipakai pasien.");
+        // kd_pj direferensikan pasien, reg_periksa, dan jns_perawatan — semuanya
+        // RESTRICT, jadi ketiganya harus diperiksa sebelum menghapus.
+        $pasien = (int)db_val('SELECT COUNT(*) FROM pasien WHERE kd_pj = ?', [$kd]);
+        $registrasi = (int)db_val('SELECT COUNT(*) FROM reg_periksa WHERE kd_pj = ?', [$kd]);
+        $tarif = (int)db_val('SELECT COUNT(*) FROM jns_perawatan WHERE kd_pj = ?', [$kd]);
+        if ($pasien > 0 || $registrasi > 0 || $tarif > 0) {
+            $sebab = [];
+            if ($pasien > 0) {
+                $sebab[] = "$pasien pasien";
+            }
+            if ($registrasi > 0) {
+                $sebab[] = "$registrasi registrasi";
+            }
+            if ($tarif > 0) {
+                $sebab[] = "$tarif tarif perawatan";
+            }
+            flash_set('danger', "Penanggung jawab $kd tidak dapat dihapus karena masih dipakai di " . implode(', ', $sebab) . '.');
         } else {
             db_exec('DELETE FROM penjab WHERE kd_pj = ?', [$kd]);
             flash_set('success', "Penanggung jawab $kd dihapus.");
@@ -32,14 +46,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', 'Kode dan nama penanggung jawab wajib diisi.');
             redirect(url('penjab', ['action' => 'form'] + ($isEdit ? ['kd' => $kd] : [])));
         }
+        if (strlen($kd) > 3) {
+            flash_set('danger', 'Kode penanggung jawab maksimal 3 karakter.');
+            redirect(url('penjab', ['action' => 'form'] + ($isEdit ? ['kd' => $kd] : [])));
+        }
         if ($isEdit) {
-            db_exec('UPDATE penjab SET png_jawab=?, nama_perusahaan=?, alamat_asuransi=?, no_telp=?, attn=?, status=? WHERE kd_pj=?',
-                [$data['png_jawab'], $data['nama_perusahaan'], $data['alamat_asuransi'], $data['no_telp'], $data['attn'], $data['status'], $kd]);
-            flash_set('success', "Penanggung jawab $kd diperbarui.");
+            $galat = db_coba(fn() => db_exec(
+                'UPDATE penjab SET png_jawab=?, nama_perusahaan=?, alamat_asuransi=?, no_telp=?, attn=?, status=? WHERE kd_pj=?',
+                [$data['png_jawab'], $data['nama_perusahaan'], $data['alamat_asuransi'], $data['no_telp'], $data['attn'], $data['status'], $kd]
+            ));
+            flash_set($galat === null ? 'success' : 'danger', $galat ?? "Penanggung jawab $kd diperbarui.");
         } else {
-            db_exec('INSERT INTO penjab (kd_pj, png_jawab, nama_perusahaan, alamat_asuransi, no_telp, attn, status) VALUES (?,?,?,?,?,?,?)',
-                [$kd, $data['png_jawab'], $data['nama_perusahaan'], $data['alamat_asuransi'], $data['no_telp'], $data['attn'], $data['status']]);
-            flash_set('success', "Penanggung jawab $kd ditambahkan.");
+            $galat = db_coba(fn() => db_exec(
+                'INSERT INTO penjab (kd_pj, png_jawab, nama_perusahaan, alamat_asuransi, no_telp, attn, status) VALUES (?,?,?,?,?,?,?)',
+                [$kd, $data['png_jawab'], $data['nama_perusahaan'], $data['alamat_asuransi'], $data['no_telp'], $data['attn'], $data['status']]
+            ));
+            flash_set($galat === null ? 'success' : 'danger', $galat ?? "Penanggung jawab $kd ditambahkan.");
         }
         redirect(url('penjab'));
     }

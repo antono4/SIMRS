@@ -83,8 +83,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($act === 'delete') {
         $noRawat = $_POST['no_rawat'] ?? '';
-        db_exec('DELETE FROM reg_periksa WHERE no_rawat = ?', [$noRawat]);
-        flash_set('success', "Registrasi $noRawat dihapus.");
+        // Data klinis dan nota memakai ON DELETE RESTRICT, jadi registrasi yang
+        // sudah punya tindakan/diagnosa/resep/nota tidak bisa dihapus langsung.
+        // Periksa dulu supaya muncul pesan, bukan halaman galat 500.
+        $terkait = [
+            'tindakan dokter' => 'SELECT COUNT(*) FROM rawat_jl_dr WHERE no_rawat = ?',
+            'tindakan petugas' => 'SELECT COUNT(*) FROM rawat_jl_pr WHERE no_rawat = ?',
+            'diagnosa' => 'SELECT COUNT(*) FROM diagnosa_pasien WHERE no_rawat = ?',
+            'resep' => 'SELECT COUNT(*) FROM resep_obat WHERE no_rawat = ?',
+            'nota pembayaran' => 'SELECT COUNT(*) FROM nota_jalan WHERE no_rawat = ?',
+        ];
+        $sebab = [];
+        foreach ($terkait as $label => $sql) {
+            $jml = (int)db_val($sql, [$noRawat]);
+            if ($jml > 0) {
+                $sebab[] = "$jml $label";
+            }
+        }
+        if ($sebab) {
+            flash_set('danger', "Registrasi $noRawat tidak dapat dihapus karena sudah memiliki " . implode(', ', $sebab) . '. Hapus data tersebut lebih dulu.');
+        } else {
+            db_exec('DELETE FROM reg_periksa WHERE no_rawat = ?', [$noRawat]);
+            flash_set('success', "Registrasi $noRawat dihapus.");
+        }
         redirect(url('registrasi', ['tgl' => $_POST['tgl'] ?? date('Y-m-d')]));
     }
 }
