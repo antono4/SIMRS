@@ -118,7 +118,7 @@ $nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['no
     .disp-clock .jam { font-size: clamp(1.6rem, 3.4vw, 3rem); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
     .disp-clock .tanggal { color: var(--disp-muted); font-size: clamp(.7rem, 1vw, .95rem); }
 
-    .disp-main { flex: 1; display: grid; grid-template-columns: 1.15fr 1fr; gap: 1rem; padding: 1rem 1.6rem; min-height: 0; }
+    .disp-main { flex: 1; display: grid; grid-template-columns: 1.1fr 1fr; gap: 1rem; padding: 1rem 1.6rem; min-height: 0; }
 
     .disp-now {
       border-radius: 1.2rem;
@@ -127,49 +127,80 @@ $nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['no
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       padding: 1rem; text-align: center; min-height: 0;
     }
-    .disp-now .label { color: var(--disp-accent); letter-spacing: .28em; text-transform: uppercase; font-size: clamp(.65rem, 1.1vw, 1rem); font-weight: 600; }
+    .disp-now .label { color: var(--disp-accent); letter-spacing: .24em; text-transform: uppercase; font-size: clamp(.8rem, 1.7vmin, 1.5rem); font-weight: 600; }
     .disp-now .nomor {
-      /* Nomor kini memuat kode poliklinik ("INT-007"), jadi ukurannya lebih kecil
-         dari sebelumnya supaya tetap muat satu baris di layar TV. */
-      font-size: clamp(2.6rem, 10.5vw, 9.5rem); font-weight: 800; line-height: 1;
+      /* Nomor memuat kode poliklinik ("INT-007"), dan skalanya dipatok ke sisi
+         terpendek layar (vmin) supaya tetap muat satu baris di TV 16:9 mana pun. */
+      font-size: clamp(2.4rem, 13vmin, 9rem); font-weight: 800; line-height: 1;
       font-variant-numeric: tabular-nums;
       color: #fff; text-shadow: 0 0 42px rgba(0, 209, 255, .55);
       margin: .1em 0;
     }
-    .disp-now .poli { font-size: clamp(1.1rem, 2.6vw, 2.4rem); font-weight: 600; color: var(--disp-gold); }
-    .disp-now .menunggu { color: var(--disp-muted); font-size: clamp(.75rem, 1.1vw, 1.05rem); margin-top: .5rem; }
-    .disp-now .kosong { color: var(--disp-muted); font-size: clamp(1rem, 2vw, 1.6rem); }
+    .disp-now .poli { font-size: clamp(1.1rem, 3.6vmin, 3.4rem); font-weight: 600; color: var(--disp-gold); }
+    .disp-now .menunggu { color: var(--disp-muted); font-size: clamp(.8rem, 1.9vmin, 1.6rem); margin-top: .5rem; }
+    .disp-now .kosong { color: var(--disp-muted); font-size: clamp(1rem, 2.4vmin, 2rem); }
 
     .disp-list { display: flex; flex-direction: column; min-height: 0; }
-    .disp-list h2 { margin: 0 0 .5rem; font-size: clamp(.75rem, 1.1vw, 1rem); letter-spacing: .18em; text-transform: uppercase; color: var(--disp-muted); }
-    .disp-cards { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .6rem; overflow: auto; align-content: start; }
+    .disp-list h2 { margin: 0 0 .5rem; font-size: clamp(.75rem, 1.6vmin, 1.3rem); letter-spacing: .16em; text-transform: uppercase; color: var(--disp-muted); }
+    /* Semua poliklinik harus terlihat tanpa digulir: layar TV tidak dioperasikan
+       siapa pun, jadi isi di bawah lipatan sama saja hilang. Lebar kolom dibuat
+       kecil supaya jumlah kolom bertambah saat tinggi layar berkurang. */
+    .disp-cards { flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: .55rem; overflow: auto; align-content: start; }
+    .disp-cards::-webkit-scrollbar { width: 8px; }
+    .disp-cards::-webkit-scrollbar-thumb { background: var(--disp-line); border-radius: 999px; }
+    /* Rumah sakit besar bisa punya >12 poliklinik aktif. Tanpa mode rapat,
+       poliklinik di baris bawah terpotong dan pasiennya tidak melihat nomornya.
+       Mode ini menyempitkan kolom, merapatkan jarak, dan melepas baris
+       "Berikutnya" — nomor berjalan dan jumlah menunggu tetap ditampilkan. */
+    .disp-cards.padat { grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.75rem), 1fr)); gap: .4rem; }
+    .disp-cards.padat .disp-card { padding: .45rem .6rem; }
+    .disp-cards.padat .disp-card .next { display: none; }
+    .disp-cards.padat .disp-card .nm { font-size: clamp(.75rem, 1.8vmin, 1.5rem); margin-bottom: .2rem; }
+    /* Baris "Berikutnya" dilepas di mode rapat, jadi ada ruang untuk baris nama
+       keempat. Nama terpanjang ("UNIT LABORAT PATOLOGI KLINIS") butuh ini. */
+    .disp-cards.padat .disp-card .nm-teks { -webkit-line-clamp: 4; }
+
     .disp-card {
       border: 1px solid var(--disp-line); border-radius: .8rem;
       background: rgba(255, 255, 255, .045);
-      padding: .65rem .85rem;
+      padding: .6rem .75rem;
+      display: flex; flex-direction: column; justify-content: center; min-width: 0;
     }
     .disp-card.aktif { border-color: rgba(255, 194, 51, .6); background: rgba(255, 194, 51, .12); }
-    .disp-card .nm { display: flex; align-items: center; gap: .6rem; font-weight: 600; font-size: clamp(.85rem, 1.3vw, 1.15rem); margin-bottom: .25rem; }
+    .disp-card .nm { display: flex; align-items: center; gap: .4rem; font-weight: 600; font-size: clamp(.8rem, 1.6vmin, 1.5rem); line-height: 1.12; margin-bottom: .3rem; min-width: 0; }
+    /* Nama poliklinik adalah penanda utama bagi pasien, jadi jangan dipotong:
+       "INT Poli Penyakit Dalam" tidak boleh terpangkas jadi "...Penyakit".
+       Tiga baris cukup untuk semua nama di data, dan nama tetap utuh. */
+    .disp-card .nm-teks {
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+      overflow: hidden; min-width: 0; overflow-wrap: anywhere;
+    }
     /* Pemisah warna per poliklinik — disalin dari simrs.css karena halaman ini
        sengaja tidak memuat CSS aplikasi. Warna tetap sama dengan modul Antrian. */
     .sk-poli-mark {
       display: inline-flex; align-items: center; justify-content: center;
-      width: 2.6rem; height: 2.6rem; flex: none; border-radius: 999px;
+      width: clamp(1.6rem, 3vmin, 2.6rem); height: clamp(1.6rem, 3vmin, 2.6rem);
+      flex: none; border-radius: 999px;
       background: var(--sk-poli, #0e7490); color: #fff;
-      font-size: 1.15rem; font-weight: 700; line-height: 1;
+      font-size: clamp(.75rem, 1.5vmin, 1.3rem); font-weight: 700; line-height: 1;
     }
     .disp-card.aktif .sk-poli-mark { box-shadow: 0 0 0 3px rgba(255, 194, 51, .55); }
+    @keyframes dispDenyut { 0%, 100% { border-color: rgba(255, 194, 51, .6); } 50% { border-color: rgba(255, 194, 51, 1); } }
+    .disp-card.aktif { animation: dispDenyut 2.2s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) { .disp-card.aktif { animation: none; } }
     .disp-card .baris { display: flex; align-items: baseline; gap: .55rem; }
-    .disp-card .angka { font-size: clamp(1.5rem, 2.8vw, 2.4rem); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
-    .disp-card .angka.kosong { color: var(--disp-muted); font-size: 1.4rem; }
-    .disp-card .kecil { color: var(--disp-muted); font-size: clamp(.65rem, .9vw, .85rem); }
-    .disp-card .next { color: var(--disp-muted); font-size: clamp(.68rem, .95vw, .9rem); margin-top: .3rem; }
+    .disp-card .angka { font-size: clamp(1.3rem, 3.4vmin, 3.2rem); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+    /* Kartu yang belum dipanggil memakai ukuran sama, hanya diredupkan — ukuran
+       kecil membuat kartu tampak kosong saat dibaca dari jauh. */
+    .disp-card .angka.kosong { color: var(--disp-muted); }
+    .disp-card .kecil { color: var(--disp-muted); font-size: clamp(.7rem, 1.7vmin, 1.4rem); }
+    .disp-card .next { color: var(--disp-muted); font-size: clamp(.7rem, 1.7vmin, 1.4rem); margin-top: .3rem; }
     .disp-card .next b { color: var(--disp-fg); }
 
     .disp-footer {
       display: flex; align-items: center; justify-content: space-between; gap: 1rem;
       padding: .55rem 1.6rem; border-top: 1px solid var(--disp-line);
-      background: rgba(6, 16, 36, .6); font-size: clamp(.68rem, .95vw, .9rem); color: var(--disp-muted);
+      background: rgba(6, 16, 36, .6); font-size: clamp(.7rem, 1.5vmin, 1.1rem); color: var(--disp-muted);
     }
     .disp-ticker { flex: 1; overflow: hidden; white-space: nowrap; }
     .disp-ticker span { display: inline-block; padding-left: 100%; animation: ticker 28s linear infinite; }
@@ -181,6 +212,21 @@ $nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['no
     }
     .disp-btn[aria-pressed="true"] { border-color: var(--disp-accent); color: var(--disp-accent); }
     .disp-status { flex: none; }
+    /* Layar tinggi (1080p ke atas) punya ruang vertikal berlebih, jadi kolom
+       dibuat lebar agar nama poliklinik tidak terpotong. */
+    @media (min-height: 1000px) {
+      /* Layar tinggi: kolom dilebarkan (bukan diperbanyak) supaya nama poliklinik
+         tidak terpotong di monitor 1440p ke atas. */
+      .disp-cards { grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+      .disp-cards.padat { grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); }
+    }
+    @media (max-height: 800px) {
+      /* Layar pendek: beri daftar lebih banyak lebar supaya kolom bertambah dan
+         barisnya berkurang — tinggi layar, bukan lebar, yang jadi kendala. */
+      .disp-main { grid-template-columns: .6fr 1fr; padding: .7rem 1.2rem; gap: .7rem; }
+      .disp-list h2 { margin-bottom: .35rem; }
+      .disp-cards { gap: .45rem; }
+    }
     @media (max-width: 900px) { .disp-main { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -215,11 +261,11 @@ $nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['no
 
     <section class="disp-list">
       <h2>Antrian per Poliklinik</h2>
-      <div class="disp-cards" id="daftarPoli">
+      <div class="disp-cards<?= count($ringkasan) > 12 ? ' padat' : '' ?>" id="daftarPoli">
         <?php foreach ($ringkasan as $r): ?>
           <?php $dipanggil = $r['nomor_dipanggil']; ?>
           <article class="disp-card<?= $dipanggil !== null ? ' aktif' : '' ?>" style="--sk-poli: <?= e(poli_warna((string)$r['kd_poli'])) ?>">
-            <div class="nm"><span class="sk-poli-mark sk-poli-mark-lg"><?= e(poli_awalan((string)$r['nm_poli'], (string)$r['kd_poli'])) ?></span><?= e($r['nm_poli']) ?></div>
+            <div class="nm"><span class="sk-poli-mark sk-poli-mark-lg"><?= e(poli_awalan((string)$r['nm_poli'], (string)$r['kd_poli'])) ?></span><span class="nm-teks"><?= e($r['nm_poli']) ?></span></div>
             <div class="baris">
               <?php if ($dipanggil !== null): ?>
                 <span class="angka"><?= e(antrian_nomor_tampil((int)$dipanggil, (string)$r['kd_poli'])) ?></span>
@@ -239,7 +285,7 @@ $nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['no
           </article>
         <?php endforeach; ?>
         <?php if (!$adaAntrian): ?>
-          <div class="disp-card"><div class="nm">Belum ada antrian hari ini</div>
+          <div class="disp-card"><div class="nm"><span class="nm-teks">Belum ada antrian hari ini</span></div>
             <div class="next">Nomor dibuat otomatis saat registrasi kunjungan.</div></div>
         <?php endif; ?>
       </div>
@@ -365,6 +411,8 @@ $nomorDipanggil = $panggilan !== null ? antrian_nomor_tampil((int)$panggilan['no
              '<div class="baris">' + angka + '<span class="kecil">' + r.menunggu + ' menunggu</span></div>' +
              '<div class="next">Berikutnya: ' + next + '</div></article>';
     });
+    // Mode rapat dihitung ulang tiap render karena daftar bisa bertambah/berkurang.
+    elDaftar.classList.toggle('padat', (data.daftar || []).length > 12);
     // Hari tanpa antrian: tetap tampilkan keterangan, jangan biarkan layar kosong.
     elDaftar.innerHTML = kartu.length
       ? kartu.join('')
