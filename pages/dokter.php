@@ -10,9 +10,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($act === 'delete') {
         $kd = $_POST['kd_dokter'] ?? '';
-        $dipakai = (int)db_val('SELECT COUNT(*) FROM reg_periksa WHERE kd_dokter = ?', [$kd]);
-        if ($dipakai > 0) {
-            flash_set('danger', "Dokter $kd tidak dapat dihapus karena dipakai di $dipakai registrasi.");
+        // Dokter direferensikan reg_periksa (CASCADE), rawat_jl_dr,
+        // resep_obat (CASCADE), dan pegawai (RESTRICT). Periksa semuanya agar
+        // penghapusan tidak berakhir sebagai galat 500.
+        $registrasi = (int)db_val('SELECT COUNT(*) FROM reg_periksa WHERE kd_dokter = ?', [$kd]);
+        $tindakan = (int)db_val('SELECT COUNT(*) FROM rawat_jl_dr WHERE kd_dokter = ?', [$kd]);
+        $resep = (int)db_val('SELECT COUNT(*) FROM resep_obat WHERE kd_dokter = ?', [$kd]);
+        $pegawai = (int)db_val('SELECT COUNT(*) FROM pegawai WHERE nik = ?', [$kd]);
+        if ($registrasi > 0 || $tindakan > 0 || $resep > 0 || $pegawai > 0) {
+            $sebab = [];
+            if ($registrasi > 0) {
+                $sebab[] = "$registrasi registrasi";
+            }
+            if ($tindakan > 0) {
+                $sebab[] = "$tindakan tindakan";
+            }
+            if ($resep > 0) {
+                $sebab[] = "$resep resep";
+            }
+            if ($pegawai > 0) {
+                $sebab[] = 'data pegawai';
+            }
+            flash_set('danger', "Dokter $kd tidak dapat dihapus karena masih dipakai di " . implode(', ', $sebab) . '.');
         } else {
             db_exec('DELETE FROM dokter WHERE kd_dokter = ?', [$kd]);
             flash_set('success', "Dokter $kd berhasil dihapus.");
@@ -43,11 +62,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', 'Nama dokter wajib diisi.');
             redirect(url('dokter', ['action' => 'form'] + ($isEdit ? ['kd' => $kd] : [])));
         }
+        if (strlen($kd) > 20) {
+            flash_set('danger', 'Kode dokter maksimal 20 karakter.');
+            redirect(url('dokter', ['action' => 'form'] + ($isEdit ? ['kd' => $kd] : [])));
+        }
         if ($isEdit) {
             $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
             $data['kd_dokter'] = $kd;
-            db_exec("UPDATE dokter SET $set WHERE kd_dokter = :kd_dokter", $data);
-            flash_set('success', "Data dokter $kd diperbarui.");
+            $galat = db_coba(fn() => db_exec("UPDATE dokter SET $set WHERE kd_dokter = :kd_dokter", $data));
+            flash_set($galat === null ? 'success' : 'danger', $galat ?? "Data dokter $kd diperbarui.");
         } else {
             $pdo = db();
             $pdo->beginTransaction();
@@ -81,11 +104,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $marks = ':' . implode(', :', array_keys($data));
                 db_exec("INSERT INTO dokter ($cols) VALUES ($marks)", $data);
                 $pdo->commit();
+                flash_set('success', "Dokter baru ($kd) ditambahkan" . ($adaPegawai === 0 ? ' sekaligus sebagai pegawai.' : '.'));
             } catch (Throwable $e) {
                 $pdo->rollBack();
-                throw $e;
+                flash_set('danger', db_pesan_galat($e));
             }
-            flash_set('success', "Dokter baru ($kd) ditambahkan" . ($adaPegawai === 0 ? ' sekaligus sebagai pegawai.' : '.'));
         }
         redirect(url('dokter'));
     }
@@ -115,7 +138,7 @@ if ($action === 'form') {
         <div class="row g-3">
           <div class="col-md-3">
             <label class="form-label">Kode Dokter</label>
-            <input class="form-control" name="kd_dokter" value="<?= e($dokter['kd_dokter']) ?>" <?= $kd ? 'readonly' : '' ?> required />
+            <input class="form-control" name="kd_dokter" maxlength="20" value="<?= e($dokter['kd_dokter']) ?>" <?= $kd ? 'readonly' : '' ?> required />
             <?php if (!$kd): ?>
               <div class="form-text">Otomatis didaftarkan juga sebagai pegawai (NIK) bila belum ada.</div>
             <?php endif; ?>

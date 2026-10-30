@@ -72,18 +72,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', 'Nama pasien wajib diisi.');
             redirect(url('pasien', ['action' => 'form'] + ($isEdit ? ['rm' => $rm] : [])));
         }
+        if (strlen($rm) > 15) {
+            flash_set('danger', 'No. Rekam Medis maksimal 15 karakter.');
+            redirect(url('pasien', ['action' => 'form'] + ($isEdit ? ['rm' => $rm] : [])));
+        }
 
         if ($isEdit) {
             $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
             $data['no_rkm_medis'] = $rm;
-            db_exec("UPDATE pasien SET $set WHERE no_rkm_medis = :no_rkm_medis", $data);
-            flash_set('success', "Data pasien $rm berhasil diperbarui.");
+            $galat = db_coba(fn() => db_exec("UPDATE pasien SET $set WHERE no_rkm_medis = :no_rkm_medis", $data));
+            flash_set($galat === null ? 'success' : 'danger', $galat ?? "Data pasien $rm berhasil diperbarui.");
         } else {
             $data['no_rkm_medis'] = $rm;
             $cols = implode(', ', array_keys($data));
             $marks = ':' . implode(', :', array_keys($data));
-            db_exec("INSERT INTO pasien ($cols) VALUES ($marks)", $data);
-            flash_set('success', "Pasien baru dengan No. RM $rm berhasil ditambahkan.");
+            $galat = db_coba(fn() => db_exec("INSERT INTO pasien ($cols) VALUES ($marks)", $data));
+            flash_set($galat === null ? 'success' : 'danger', $galat ?? "Pasien baru dengan No. RM $rm berhasil ditambahkan.");
         }
         redirect(url('pasien'));
     }
@@ -133,7 +137,7 @@ if ($action === 'form') {
               <div class="row g-3">
                 <div class="col-md-4">
                   <label class="form-label">No. Rekam Medis</label>
-                  <input class="form-control" name="no_rkm_medis" value="<?= e($pasien['no_rkm_medis']) ?>" <?= $rm ? 'readonly' : '' ?> required />
+                  <input class="form-control" name="no_rkm_medis" maxlength="15" value="<?= e($pasien['no_rkm_medis']) ?>" <?= $rm ? 'readonly' : '' ?> required />
                 </div>
                 <div class="col-md-8">
                   <label class="form-label">Nama Pasien *</label>

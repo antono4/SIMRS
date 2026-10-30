@@ -43,17 +43,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', 'Kode dan nama perawatan wajib diisi.');
             redirect(url('perawatan', ['action' => 'form'] + ($isEdit ? ['kd' => $kd] : [])));
         }
+        if (strlen($kd) > 15) {
+            flash_set('danger', 'Kode perawatan maksimal 15 karakter.');
+            redirect(url('perawatan', ['action' => 'form'] + ($isEdit ? ['kd' => $kd] : [])));
+        }
         if ($isEdit) {
             $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
             $data['kd_jenis_prw'] = $kd;
-            db_exec("UPDATE jns_perawatan SET $set WHERE kd_jenis_prw = :kd_jenis_prw", $data);
-            flash_set('success', "Tarif $kd diperbarui.");
+            $galat = db_coba(fn() => db_exec("UPDATE jns_perawatan SET $set WHERE kd_jenis_prw = :kd_jenis_prw", $data));
+            flash_set($galat === null ? 'success' : 'danger', $galat ?? "Tarif $kd diperbarui.");
         } else {
             $data['kd_jenis_prw'] = $kd;
             $cols = implode(', ', array_keys($data));
             $marks = ':' . implode(', :', array_keys($data));
-            db_exec("INSERT INTO jns_perawatan ($cols) VALUES ($marks)", $data);
-            flash_set('success', "Tarif $kd ditambahkan.");
+            $galat = db_coba(fn() => db_exec("INSERT INTO jns_perawatan ($cols) VALUES ($marks)", $data));
+            flash_set($galat === null ? 'success' : 'danger', $galat ?? "Tarif $kd ditambahkan.");
         }
         redirect(url('perawatan'));
     }

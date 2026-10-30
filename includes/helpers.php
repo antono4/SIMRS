@@ -29,6 +29,46 @@ function e(?string $value): string
     return htmlspecialchars(to_utf8($value), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+/**
+ * Terjemahkan PDOException menjadi pesan yang bisa dibaca petugas.
+ *
+ * Skema `sik` menegakkan batasan yang tidak diperiksa aplikasi: panjang kolom
+ * (kode kepanjangan) dan foreign key (baris induk yang masih dipakai). Tanpa
+ * penerjemahan ini, aksi biasa seperti menyimpan atau menghapus data master
+ * berubah menjadi halaman galat 500.
+ */
+function db_pesan_galat(Throwable $e): string
+{
+    $pesan = $e->getMessage();
+    if (str_contains($pesan, '1406') || stripos($pesan, 'Data too long') !== false) {
+        return 'Nilai yang dimasukkan terlalu panjang untuk kolom database. Perpendek kode/teks lalu simpan lagi.';
+    }
+    if (str_contains($pesan, '1451')) {
+        return 'Data ini masih dipakai data lain, jadi belum dapat dihapus. Hapus atau ubah dulu data yang memakainya.';
+    }
+    if (str_contains($pesan, '1452')) {
+        return 'Data terkait yang dipilih tidak ditemukan. Muat ulang halaman lalu pilih ulang dari daftar.';
+    }
+    if (str_contains($pesan, '1062')) {
+        return 'Kode tersebut sudah dipakai. Gunakan kode lain.';
+    }
+    return 'Gagal menyimpan ke database: ' . $pesan;
+}
+
+/**
+ * Jalankan aksi tulis yang mungkin melanggar batasan skema.
+ * Mengembalikan null bila berhasil, atau pesan galat yang ramah bila gagal.
+ */
+function db_coba(callable $aksi): ?string
+{
+    try {
+        $aksi();
+        return null;
+    } catch (PDOException $e) {
+        return db_pesan_galat($e);
+    }
+}
+
 function url(string $page, array $params = []): string
 {
     $params = array_merge(['page' => $page], $params);

@@ -38,9 +38,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', 'Nama pengguna wajib diisi.');
             redirect(url('users', ['action' => 'form']));
         }
+        if (strlen($username) > 150) {
+            flash_set('danger', 'Nama pengguna maksimal 150 karakter.');
+            redirect(url('users', ['action' => 'form']));
+        }
 
         if ($isEdit) {
             $original = $_POST['original_username'] ?? '';
+            if ($username !== $original) {
+                $bentrok = (int)db_val('SELECT COUNT(*) FROM user WHERE CAST(AES_DECRYPT(id_user, ?) AS CHAR) = ?', [$key, $username]);
+                if ($bentrok > 0) {
+                    flash_set('danger', "Nama pengguna $username sudah dipakai.");
+                    redirect(url('users', ['action' => 'form', 'u' => $original]));
+                }
+            }
             $set = [];
             $params = [];
             foreach (PERMISSION_CATALOG as $flag => $label) {
@@ -61,8 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $sql .= ' WHERE CAST(AES_DECRYPT(id_user, ?) AS CHAR) = ?';
             $params[] = $key;
             $params[] = $original;
-            db_exec($sql, $params);
-            flash_set('success', "Pengguna $username diperbarui.");
+            $galat = db_coba(fn() => db_exec($sql, $params));
+            flash_set($galat === null ? 'success' : 'danger', $galat ?? "Pengguna $username diperbarui.");
         } else {
             if ($password === '') {
                 flash_set('danger', 'Kata sandi wajib diisi untuk pengguna baru.');

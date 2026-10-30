@@ -8,9 +8,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $act = $_POST['act'] ?? '';
     if ($act === 'delete') {
         $kd = $_POST['kd_poli'] ?? '';
-        $dipakai = (int)db_val('SELECT COUNT(*) FROM reg_periksa WHERE kd_poli = ?', [$kd]);
-        if ($dipakai > 0) {
-            flash_set('danger', "Poliklinik $kd tidak dapat dihapus karena dipakai di $dipakai registrasi.");
+        // Poliklinik direferensikan dua tabel: reg_periksa (CASCADE) dan
+        // jns_perawatan (RESTRICT). Tanpa memeriksa keduanya, penghapusan
+        // poliklinik yang masih punya tarif perawatan gagal dengan galat 500.
+        $registrasi = (int)db_val('SELECT COUNT(*) FROM reg_periksa WHERE kd_poli = ?', [$kd]);
+        $tarif = (int)db_val('SELECT COUNT(*) FROM jns_perawatan WHERE kd_poli = ?', [$kd]);
+        if ($registrasi > 0 || $tarif > 0) {
+            $sebab = [];
+            if ($registrasi > 0) {
+                $sebab[] = "$registrasi registrasi";
+            }
+            if ($tarif > 0) {
+                $sebab[] = "$tarif tarif perawatan";
+            }
+            flash_set('danger', "Poliklinik $kd tidak dapat dihapus karena masih dipakai di " . implode(' dan ', $sebab) . '.');
         } else {
             db_exec('DELETE FROM poliklinik WHERE kd_poli = ?', [$kd]);
             flash_set('success', "Poliklinik $kd dihapus.");
@@ -30,14 +41,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('danger', 'Kode dan nama poliklinik wajib diisi.');
             redirect(url('poliklinik', ['action' => 'form'] + ($isEdit ? ['kd' => $kd] : [])));
         }
+        if (strlen($kd) > 5) {
+            flash_set('danger', 'Kode poliklinik maksimal 5 karakter.');
+            redirect(url('poliklinik', ['action' => 'form'] + ($isEdit ? ['kd' => $kd] : [])));
+        }
         if ($isEdit) {
-            db_exec('UPDATE poliklinik SET nm_poli=?, registrasi=?, registrasilama=?, status=? WHERE kd_poli=?',
-                [$data['nm_poli'], $data['registrasi'], $data['registrasilama'], $data['status'], $kd]);
-            flash_set('success', "Poliklinik $kd diperbarui.");
+            $galat = db_coba(fn() => db_exec(
+                'UPDATE poliklinik SET nm_poli=?, registrasi=?, registrasilama=?, status=? WHERE kd_poli=?',
+                [$data['nm_poli'], $data['registrasi'], $data['registrasilama'], $data['status'], $kd]
+            ));
+            flash_set($galat === null ? 'success' : 'danger', $galat ?? "Poliklinik $kd diperbarui.");
         } else {
-            db_exec('INSERT INTO poliklinik (kd_poli, nm_poli, registrasi, registrasilama, status) VALUES (?,?,?,?,?)',
-                [$kd, $data['nm_poli'], $data['registrasi'], $data['registrasilama'], $data['status']]);
-            flash_set('success', "Poliklinik $kd ditambahkan.");
+            $galat = db_coba(fn() => db_exec(
+                'INSERT INTO poliklinik (kd_poli, nm_poli, registrasi, registrasilama, status) VALUES (?,?,?,?,?)',
+                [$kd, $data['nm_poli'], $data['registrasi'], $data['registrasilama'], $data['status']]
+            ));
+            flash_set($galat === null ? 'success' : 'danger', $galat ?? "Poliklinik $kd ditambahkan.");
         }
         redirect(url('poliklinik'));
     }
